@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workspaces</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.14);--sheet:#232325;--group:rgba(255,255,255,.05);--editor:#1C1C1E;--control:#3A3A3E;--accent:#3FD3C2;--accentFill:rgba(63,211,194,.20);--onAccent:#04231F;--shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 .5px rgba(0,0,0,.9);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.09);--sheet:#F2F2F4;--group:#FFFFFF;--editor:#FFFFFF;--control:#FFFFFF;--accent:#0B7A72;--accentFill:rgba(11,122,114,.14);--onAccent:#FFFFFF;--shadow:0 30px 80px rgba(0,0,0,.25),0 0 0 .5px rgba(0,0,0,.2);color:var(--label)}
+.card{width:640px;border-radius:12px;background:var(--sheet);box-shadow:var(--shadow);font-size:13px;overflow:hidden}
+.field{height:30px;box-sizing:border-box;border-radius:7px;background:var(--editor);box-shadow:0 0 0 3px var(--accentFill),inset 0 0 0 1px var(--accent);border:none;padding:0 10px;font:inherit;color:var(--label);width:100%}
+.btn{height:28px;padding:0 14px;border-radius:7px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 1.5px rgba(0,0,0,.14);border:none;font:inherit;color:var(--label);white-space:nowrap}
+.btn.primary{background:var(--accent);color:var(--onAccent);font-weight:500}
+.sub{font-size:12px;line-height:17px;color:var(--label2)}
+.row{min-height:56px;box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:8px 14px;border-top:1px solid var(--hair)}
+.row:first-child{border-top:none}
+.row.cur{background:var(--accentFill)}
+.mini{display:flex;gap:3px;align-items:flex-end;flex:none;width:56px}
+.mini span{background:var(--fill2);border-radius:2px;box-shadow:inset 0 0 0 .5px var(--hair)}
+.row.cur .mini span{background:var(--accent);opacity:.55}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+</style>
+</helmet>
+<div class="sf" style="width: 1440px; min-height: 800px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Workspaces</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">A workspace is a snapshot of every layout on every display. Save one at the desk, another for the laptop alone, and switch with one click.</p>
+  </header>
+  <div style="display: flex; gap: 64px;">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <div class="{{t.cls}}" style="display: flex; flex-direction: column; gap: 14px;">
+        <span class="lbl">{{t.name}} · save sheet</span>
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <span style="font-size: 15px; font-weight: 600;">Save Workspace</span>
+          <label class="sub" for="ws-{{t.cls}}">Name</label>
+          <input id="ws-{{t.cls}}" class="field" value="Docked Dev">
+          <span class="sub">Saves 3 displays, 6 layouts and window positions for 14 apps. Windows aren't closed or moved.</span>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;"><button type="button" class="btn">Cancel</button><button type="button" class="btn primary">Save</button></div>
+        </div>
+        <span class="lbl" style="margin-top: 10px;">{{t.name}} · saved</span>
+        <div class="card">
+          <sc-for list="{{list}}" as="w" hint-placeholder-count="3">
+            <div class="row {{w.cls}}">
+              <div class="mini" aria-hidden="true"><sc-for list="{{w.d}}" as="d" hint-placeholder-count="2"><span style="width: {{d.w}}px; height: {{d.h}}px;"></span></sc-for></div>
+              <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;"><span style="font-weight: 600;">{{w.name}}</span><span class="sub">{{w.meta}}</span></div>
+              <button type="button" class="btn">{{w.action}}</button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      list: [
+        { name: 'Docked Dev', meta: '3 displays · 6 layouts · current', d: [{ w: 22, h: 14 }, { w: 9, h: 16 }, { w: 14, h: 10 }], cls: 'cur', action: 'Update' },
+        { name: 'Travel', meta: '1 display · 4 layouts · saved Oct 12', d: [{ w: 22, h: 14 }], cls: '', action: 'Load' },
+        { name: 'Home Desk', meta: '2 displays · 5 layouts · saved Sep 3', d: [{ w: 22, h: 14 }, { w: 22, h: 14 }], cls: '', action: 'Load' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

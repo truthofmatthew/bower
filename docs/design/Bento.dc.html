@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bento Box</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--hair:rgba(255,255,255,.14);--desk:#2B3348;--bar:rgba(0,0,0,.35);--tile:#2A2A2D;--tilebar:#343437;--hud:rgba(36,36,40,.78);--accent:#3FD3C2;color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--hair:rgba(0,0,0,.12);--desk:#B9CBDD;--bar:rgba(255,255,255,.5);--tile:#FFFFFF;--tilebar:#F1F1F3;--hud:rgba(250,250,252,.82);--accent:#0B7A72;color:var(--label)}
+.mat{backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%)}
+.sec{border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:16px}
+.dark.sec{background:#17181B}.light.sec{background:#E4E4E8}
+.disp{width:290px;height:182px;border-radius:9px;background:var(--desk);box-shadow:0 0 0 1px var(--hair),0 8px 24px rgba(0,0,0,.25);display:flex;flex-direction:column;overflow:hidden}
+.grid{flex:1;display:grid;gap:5px;padding:5px}
+.tile{border-radius:5px;background:var(--tile);box-shadow:0 0 0 .5px var(--hair);display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0}
+.tb{height:11px;background:var(--tilebar);display:flex;align-items:center;gap:3px;padding:0 4px;flex:none}
+.dot{width:7px;height:7px;border-radius:2px;flex:none}
+.cap{font-size:13px;color:var(--label2)}
+</style>
+</helmet>
+<div class="sf" style="width: 1440px; min-height: 960px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Bento Box</h2>
+    <p style="margin: 0; max-width: 1000px; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">A display in Bento Box mode tiles its windows automatically: the most recently focused window takes the left column, the rest fill an even grid on the right. 6 pt gaps and 6 pt outer margin. Opening or closing a window retiles instantly and shows a short toast.</p>
+  </header>
+  <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+    <section class="sec {{t.cls}}">
+      <div style="font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--label2);">{{t.name}}</div>
+      <div style="display: flex; gap: 22px; align-items: flex-start;">
+        <sc-for list="{{diagrams}}" as="d" hint-placeholder-count="4">
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 8px;">
+            <div class="disp" role="img" aria-label="{{d.aria}}">
+              <div style="height: 6px; background: var(--bar); flex: none;"></div>
+              <div class="grid" style="grid-template-columns: {{d.cols}}; grid-template-rows: {{d.rows}};">
+                <sc-for list="{{d.tiles}}" as="w" hint-placeholder-count="3">
+                  <div class="tile" style="grid-column: {{w.c}}; grid-row: {{w.r}};"><div class="tb"><span class="dot" style="background: {{w.color}};"></span></div></div>
+                </sc-for>
+              </div>
+            </div>
+            <figcaption class="cap">{{d.name}}</figcaption>
+          </figure>
+        </sc-for>
+      </div>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <div class="mat" role="status" style="display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px 0 12px; border-radius: 18px; background: var(--hud); box-shadow: 0 0 0 .5px var(--hair), 0 10px 30px rgba(0,0,0,.3); font-size: 13px; font-weight: 500;">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><path d="M13.25 8A5.25 5.25 0 1 1 11.7 4.3M13.25 2.25V5.5H10" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Retiled · 5 windows on Studio Display
+        </div>
+        <span class="cap">Toast: bottom-centre of the display, 64 pt above the Dock. Fades in 150 ms, holds 1.4 s, fades out 200 ms. Reduce Motion: no slide, fade only.</span>
+      </div>
+    </section>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":960}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const C = ['#2F6FEB', '#262626', '#D1394B', '#1E88E5', '#EF6C35', '#F2C230', '#3A86FF'];
+    const t = (c, r, i) => ({ c, r, color: C[i] });
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      diagrams: [
+        { name: '2 windows · halves', aria: 'Two windows side by side', cols: 'repeat(2, minmax(0, 1fr))', rows: '1fr', tiles: [t('1', '1', 0), t('2', '1', 1)] },
+        { name: '3 windows · main + stack', aria: 'One main window and two stacked', cols: 'repeat(2, minmax(0, 1fr))', rows: 'repeat(2, minmax(0, 1fr))', tiles: [t('1', '1 / span 2', 0), t('2', '1', 1), t('2', '2', 2)] },
+        { name: '5 windows · main + 2×2', aria: 'One main window and a two by two grid', cols: 'repeat(3, minmax(0, 1fr))', rows: 'repeat(2, minmax(0, 1fr))', tiles: [t('1', '1 / span 2', 0), t('2', '1', 1), t('3', '1', 2), t('2', '2', 3), t('3', '2', 4)] },
+        { name: '7 windows · main + 3×2', aria: 'One main window and a three by two grid', cols: 'repeat(4, minmax(0, 1fr))', rows: 'repeat(2, minmax(0, 1fr))', tiles: [t('1', '1 / span 2', 0), t('2', '1', 1), t('3', '1', 2), t('4', '1', 3), t('2', '2', 4), t('3', '2', 5), t('4', '2', 6)] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

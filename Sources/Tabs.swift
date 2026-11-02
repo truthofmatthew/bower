@@ -1,0 +1,427 @@
+import SwiftUI
+import UniformTypeIdentifiers
+
+/// One display's tab groups in one layout: one group, or two side by side. Window keys, left to right.
+struct TabGroups: Codable, Equatable {
+    var groups: [[String]] = [[]]
+    var active: [String?] = [nil]
+    /// The group holding the focused window; only its active tab gets the accent underline.
+    var focus = 0
+}
+
+/// Tabs.dc.html: windows from any app share a pane under a 30 pt strip. The active tab's window fills the pane;
+/// the others are parked until their tab is chosen.
+final class TabsController {
+    static let stripHeight: CGFloat = 30
+
+    private let engine: Engine
+    private var strips: [String: StripPanel] = [:]
+    private var edge: EdgePanel?
+    private var dragging: String?
+
+    init(engine: Engine) { self.engine = engine }
+
+    private func key(_ s: NSScreen, layout: Int? = nil) -> String { "\(layout ?? engine.state.current)|\(s.uuid)" }
+
+    private func state(_ s: NSScreen) -> TabGroups { engine.state.tabs[key(s)] ?? TabGroups() }
+
+    private func save(_ tg: TabGroups, _ s: NSScreen) { engine.store.update { $0.tabs[self.key(s)] = tg } }
+
+    /// Windows in tab groups of the current layout that aren't the active tab: switching layouts leaves them parked.
+    func isInactiveTab(_ windowKey: String) -> Bool {
+        NSScreen.screens.contains { s in
+            guard engine.mode(of: s) == .tabs else { return false }
+            let tg = state(s)
+            return tg.groups.indices.contains { tg.groups[$0].contains(windowKey) && tg.active[$0] != windowKey }
+        }
+    }
+
+    // MARK: Layout
+
+    /// (strip, pane) for each group, in AX coordinates.
+    func rects(_ s: NSScreen, groups n: Int) -> [(strip: CGRect, pane: CGRect)] {
+        let v = s.axVisibleFrame
+        let h = Self.stripHeight
+        guard n == 2 else { return [(CGRect(x: v.minX, y: v.minY, width: v.width, height: h), CGRect(x: v.minX, y: v.minY + h, width: v.width, height: v.height - h))] }
+        let w = ((v.width - 1) / 2).rounded(.down)
+        let right = v.minX + w + 1  // 1 pt divider
+        return [(CGRect(x: v.minX, y: v.minY, width: w, height: h), CGRect(x: v.minX, y: v.minY + h, width: w, height: v.height - h)),
+                (CGRect(x: right, y: v.minY, width: v.maxX - right, height: h), CGRect(x: right, y: v.minY + h, width: v.maxX - right, height: v.height - h))]
+    }
+
+    /// The display a window belongs to: where it is, or where it returns to if parked.
+    private func screen(of w: Win) -> NSScreen? {
+        guard let f = w.frame else { return nil }
+        return NSScreen.containing(ax: engine.isParked(f) ? engine.state.saved[w.key] ?? f : f)
+    }
+
+    func applyAll() {
+        var shown = Set<String>()
+        for s in NSScreen.screens where engine.mode(of: s) == .tabs {
+            apply(s)
+            shown.insert(s.uuid)
+        }
+        for (k, p) in strips where !shown.contains(String(k.split(separator: "#")[0])) { p.orderOut(nil) }
+        // A display that just left Tabs mode: the windows behind other tabs come back, stacked in the pane.
+        for s in NSScreen.screens where !shown.contains(s.uuid) {
+            let keys = Set(state(s).groups.joined())
+            guard !keys.isEmpty else { continue }
+            for w in AX.windows() where keys.contains(w.key) {
+                if let f = w.frame, engine.isParked(f), let back = engine.state.saved[w.key] { w.setFrame(back) }
+            }
+            engine.store.update { $0.tabs[self.key(s)] = nil }
+        }
+    }
+
+    /// Syncs the groups with the windows on the display, places the active tabs and parks the rest.
+    func apply(_ s: NSScreen, focusActive: Bool = false) {
+        let current = engine.state.current
+        let wins = AX.windows().filter { w in
+            (engine.state.assignment[w.key] ?? current) == current && screen(of: w) == s && !(w.frame.map(engine.isPinned) ?? false)
+        }
+        let byKey = Dictionary(wins.map { ($0.key, $0) }, uniquingKeysWith: { a, _ in a })
+        var tg = state(s)
+        tg.groups = tg.groups.map { $0.filter { byKey[$0] != nil } }
+        let known = Set(tg.groups.joined())
+        for w in wins where !known.contains(w.key) {
+            tg.groups[min(tg.focus, tg.groups.count - 1)].append(w.key)
+            tg.active[min(tg.focus, tg.groups.count - 1)] = w.key
+        }
+        if tg.groups.count == 2, tg.groups.contains(where: \.isEmpty) {
+            tg = TabGroups(groups: [tg.groups.joined().map { $0 }], active: [tg.active.compactMap { $0 }.first], focus: 0)
+        }
+        while tg.active.count < tg.groups.count { tg.active.append(nil) }
+        for g in tg.groups.indices where tg.active[g].map({ !tg.groups[g].contains($0) }) ?? true { tg.active[g] = tg.groups[g].first }
+        tg.focus = min(tg.focus, tg.groups.count - 1)
+        save(tg, s)
+
+        let r = rects(s, groups: tg.groups.count)
+        for g in tg.groups.indices {
+            for k in tg.groups[g] {
+                guard let w = byKey[k], let f = w.frame else { continue }
+                if k == tg.active[g] {
+                    if f != r[g].pane { w.setFrame(r[g].pane) }
+                } else if engine.isParked(f) {
+                    engine.store.update { $0.saved[k] = r[g].pane }
+                } else {
+                    engine.park(w, frame: r[g].pane)
+                }
+            }
+            showStrip(s, group: g, rect: r[g].strip, tg: tg, wins: byKey)
+        }
+        for (k, p) in strips where k.hasPrefix(s.uuid + "#") && Int(k.split(separator: "#")[1])! >= tg.groups.count { p.orderOut(nil) }
+        if focusActive, let k = tg.active[tg.focus], let w = byKey[k] { w.focus() }
+    }
+
+    private func showStrip(_ s: NSScreen, group g: Int, rect: CGRect, tg: TabGroups, wins: [String: Win]) {
+        let id = "\(s.uuid)#\(g)"
+        let panel = strips[id] ?? StripPanel(controller: self)
+        strips[id] = panel
+        panel.model.screen = s
+        panel.model.group = g
+        panel.model.focused = g == tg.focus
+        panel.model.active = tg.active[g]
+        panel.model.tabs = tg.groups[g].compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } }
+        panel.setFrame(NSScreen.appKit(rect), display: true)
+        panel.orderFrontRegardless()
+    }
+
+    // MARK: Actions from the strip
+
+    func activate(_ windowKey: String, on s: NSScreen) {
+        var tg = state(s)
+        guard let g = tg.groups.firstIndex(where: { $0.contains(windowKey) }) else { return }
+        tg.active[g] = windowKey
+        tg.focus = g
+        save(tg, s)
+        apply(s, focusActive: true)
+    }
+
+    func close(_ windowKey: String) {
+        guard let w = AX.windows().first(where: { $0.key == windowKey }),
+              let button: AXUIElement = AX.value(w.el, kAXCloseButtonAttribute) else { return }
+        AXUIElementPerformAction(button, kAXPressAction as CFString)
+    }
+
+    /// Drag a tab onto the other group's strip.
+    func move(_ windowKey: String, toGroup g: Int, on s: NSScreen) {
+        var tg = state(s)
+        guard tg.groups.indices.contains(g) else { return }
+        for i in tg.groups.indices { tg.groups[i].removeAll { $0 == windowKey } }
+        tg.groups[g].append(windowKey)
+        tg.active[g] = windowKey
+        tg.focus = g
+        save(tg, s)
+        hideEdge()
+        apply(s, focusActive: true)
+    }
+
+    /// Drop a tab on the pane's right edge: it becomes a second group.
+    func split(_ windowKey: String, on s: NSScreen) {
+        var tg = state(s)
+        guard tg.groups.count == 1, tg.groups[0].count > 1 else { return hideEdge() }
+        tg.groups[0].removeAll { $0 == windowKey }
+        tg.groups.append([windowKey])
+        tg.active = [tg.groups[0].first, windowKey]
+        tg.focus = 1
+        save(tg, s)
+        hideEdge()
+        apply(s, focusActive: true)
+    }
+
+    /// ⌃Tab: next tab in the group that holds the focused window. Returns false if that window isn't in a tab group.
+    func cycleFocusedGroup() -> Bool {
+        guard let fw = AX.focusedWindow(), let s = screen(of: fw), engine.mode(of: s) == .tabs else { return false }
+        let tg = state(s)
+        guard let g = tg.groups.firstIndex(where: { $0.contains(fw.key) }), tg.groups[g].count > 1,
+              let i = tg.groups[g].firstIndex(of: fw.key) else { return false }
+        activate(tg.groups[g][(i + 1) % tg.groups[g].count], on: s)
+        return true
+    }
+
+    /// Keeps the underline on the group holding the focused window.
+    func focusChanged() {
+        guard let fw = AX.focusedWindow(), let s = screen(of: fw), engine.mode(of: s) == .tabs else { return }
+        var tg = state(s)
+        guard let g = tg.groups.firstIndex(where: { $0.contains(fw.key) }), g != tg.focus else { return }
+        tg.focus = g
+        save(tg, s)
+        for (id, p) in strips where id.hasPrefix(s.uuid + "#") { p.model.focused = p.model.group == g }
+    }
+
+    func began(dragging windowKey: String, on s: NSScreen) {
+        dragging = windowKey
+        guard state(s).groups.count == 1 else { return }
+        let pane = rects(s, groups: 1)[0].pane
+        let zone = CGRect(x: pane.maxX - 80, y: pane.minY, width: 80, height: pane.height)
+        let e = edge ?? EdgePanel(controller: self)
+        edge = e
+        e.target = s
+        e.setFrame(NSScreen.appKit(zone), display: true)
+        e.orderFrontRegardless()
+        // There is no drag-ended callback for a cancelled drag; the zone goes away on its own.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [weak self] in self?.hideEdge() }
+    }
+
+    func draggedKey() -> String? { dragging }
+
+    private func hideEdge() {
+        edge?.orderOut(nil)
+        dragging = nil
+    }
+
+    func hideAll() {
+        for p in strips.values { p.orderOut(nil) }
+        hideEdge()
+    }
+
+    func setMode(_ s: NSScreen) {
+        if engine.mode(of: s) == .tabs { apply(s) } else {
+            for (k, p) in strips where k.hasPrefix(s.uuid + "#") { p.orderOut(nil) }
+        }
+    }
+}
+
+// MARK: - Strip
+
+final class StripModel: ObservableObject {
+    struct Tab: Identifiable, Equatable {
+        let id: String
+        let title: String
+        let icon: NSImage?
+    }
+
+    @Published var tabs: [Tab] = []
+    @Published var active: String?
+    @Published var focused = false
+    var screen: NSScreen?
+    var group = 0
+}
+
+final class StripPanel: NSPanel {
+    let model = StripModel()
+
+    init(controller: TabsController) {
+        super.init(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: true)
+        level = .floating
+        isOpaque = false
+        backgroundColor = .clear
+        hasShadow = false
+        isReleasedWhenClosed = false
+        collectionBehavior = [.fullScreenAuxiliary, .ignoresCycle]
+        contentView = NSHostingView(rootView: TabStripView(model: model, controller: controller))
+    }
+
+    override var canBecomeKey: Bool { false }
+}
+
+/// A transparent drop zone on the pane's right edge, shown while a tab is dragged, to split the pane.
+final class EdgePanel: NSPanel {
+    /// The display whose pane this zone splits.
+    var target: NSScreen?
+
+    init(controller: TabsController) {
+        super.init(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: true)
+        level = .floating
+        isOpaque = false
+        backgroundColor = .clear
+        hasShadow = false
+        isReleasedWhenClosed = false
+        contentView = NSHostingView(rootView: EdgeZone(controller: controller, panel: self))
+    }
+}
+
+private enum TC {
+    private static func dyn(_ d: NSColor, _ l: NSColor) -> Color { Color(nsColor: NSColor(name: nil) { Theme.isDark($0) ? d : l }) }
+    static let strip = dyn(Theme.hex(0x151517), Theme.hex(0xDCDCDF))
+    static let win = dyn(Theme.hex(0x262628), Theme.hex(0xFFFFFF))
+    static let fill = dyn(Theme.rgba(255, 255, 255, 0.07), Theme.rgba(0, 0, 0, 0.045))
+    static let fill2 = dyn(Theme.rgba(255, 255, 255, 0.16), Theme.rgba(0, 0, 0, 0.10))
+    static let hair = dyn(Theme.rgba(255, 255, 255, 0.10), Theme.rgba(0, 0, 0, 0.10))
+    static let label = dyn(Theme.rgba(255, 255, 255, 0.92), Theme.rgba(0, 0, 0, 0.88))
+    static let label2 = dyn(Theme.rgba(235, 235, 245, 0.64), Theme.rgba(60, 60, 67, 0.74))
+    static let accent = dyn(Theme.hex(0x3FD3C2), Theme.hex(0x0B7A72))
+}
+
+/// `.strip`: 30 pt; tabs share the width equally, at least 120 pt each, then scroll.
+private struct TabStripView: View {
+    @ObservedObject var model: StripModel
+    let controller: TabsController
+
+    var body: some View {
+        GeometryReader { geo in
+            let w = max(120, geo.size.width / CGFloat(max(model.tabs.count, 1)))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 0) {
+                    ForEach(model.tabs) { t in
+                        TabView_(tab: t, active: t.id == model.active, underline: t.id == model.active && model.focused,
+                                 activate: { if let s = model.screen { controller.activate(t.id, on: s) } },
+                                 close: { controller.close(t.id) })
+                            .frame(width: w)
+                            .onDrag {
+                                if let s = model.screen { controller.began(dragging: t.id, on: s) }
+                                return NSItemProvider(object: t.id as NSString)
+                            }
+                    }
+                }
+            }
+        }
+        .frame(height: TabsController.stripHeight)
+        .background(TC.strip)
+        .overlay(alignment: .bottom) { TC.hair.frame(height: 1) }
+        .onDrop(of: [.plainText], isTargeted: nil) { _ in
+            guard let k = controller.draggedKey(), let s = model.screen, !model.tabs.contains(where: { $0.id == k }) else { return false }
+            controller.move(k, toGroup: model.group, on: s)
+            return true
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Tabs")
+    }
+}
+
+/// `.tab`: icon, title, close; active = window background; hover = fill; focused active = 2 pt accent underline.
+private struct TabView_: View {
+    let tab: StripModel.Tab
+    let active: Bool
+    let underline: Bool
+    let activate: () -> Void
+    let close: () -> Void
+    @State private var hover = false
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Group {
+                if let icon = tab.icon { Image(nsImage: icon).resizable() } else { TC.fill2 }
+            }
+            .frame(width: 16, height: 16).clipShape(RoundedRectangle(cornerRadius: 4))
+            Text(tab.title).font(.system(size: 12)).lineLimit(1).truncationMode(.tail)
+                .foregroundStyle(active ? TC.label : TC.label2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            CloseButton(action: close).opacity(hover || active ? 1 : 0)
+        }
+        .padding(.leading, 10).padding(.trailing, 6)
+        .frame(maxHeight: .infinity)
+        .background(active ? TC.win : hover ? TC.fill : .clear)
+        .overlay(alignment: .trailing) { if !active { TC.hair.frame(width: 1) } }
+        .overlay(alignment: .bottom) {
+            if underline { RoundedRectangle(cornerRadius: 1).fill(TC.accent).frame(height: 2).padding(.horizontal, 8) }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture(perform: activate)
+        .onHover { hover = $0 }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(active ? [.isButton, .isSelected] : .isButton)
+        .accessibilityLabel(tab.title)
+        .accessibilityAction(named: "Close tab", close)
+    }
+}
+
+/// `.x`: 16 pt; pressed = filled square.
+private struct CloseButton: View {
+    let action: () -> Void
+    var body: some View {
+        Button(action: action) {
+            Glyph(d: "M1 1l6 6M7 1 1 7", grid: 8, size: 8, width: 1.4)
+        }
+        .buttonStyle(CloseStyle())
+        .accessibilityLabel("Close tab")
+    }
+
+    private struct CloseStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .foregroundStyle(configuration.isPressed ? TC.label : TC.label2)
+                .frame(width: 16, height: 16)
+                .background(configuration.isPressed ? TC.fill2 : .clear, in: RoundedRectangle(cornerRadius: 4))
+        }
+    }
+}
+
+private struct EdgeZone: View {
+    let controller: TabsController
+    let panel: EdgePanel
+    @State private var over = false
+
+    var body: some View {
+        Rectangle()
+            .fill(over ? TC.accent.opacity(0.22) : Color.white.opacity(0.001))
+            .overlay(alignment: .leading) { if over { TC.accent.frame(width: 2) } }
+            .onDrop(of: [.plainText], isTargeted: $over) { _ in
+                guard let k = controller.draggedKey(), let s = panel.target else { return false }
+                controller.split(k, on: s)
+                return true
+            }
+    }
+}
+
+// MARK: - ⌃Tab
+
+/// A keyboard event tap for the "Next tab in group" shortcut, so it only acts when the focused window is in a
+/// tab group and otherwise reaches the app (⌃Tab switches tabs in browsers too).
+final class KeyTap {
+    var combo: () -> Combo? = { nil }
+    var handle: () -> Bool = { false }
+    private var tap: CFMachPort?
+
+    func start() {
+        guard tap == nil else { return }
+        tap = CGEvent.tapCreate(tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap,
+                                eventsOfInterest: CGEventMask(1 << CGEventType.keyDown.rawValue), callback: { _, type, event, refcon in
+            Unmanaged<KeyTap>.fromOpaque(refcon!).takeUnretainedValue().on(type, event)
+        }, userInfo: Unmanaged.passUnretained(self).toOpaque())
+        guard let tap else { return }
+        CFRunLoopAddSource(CFRunLoopGetMain(), CFMachPortCreateRunLoopSource(nil, tap, 0), .commonModes)
+        CGEvent.tapEnable(tap: tap, enable: true)
+    }
+
+    private func on(_ type: CGEventType, _ event: CGEvent) -> Unmanaged<CGEvent>? {
+        if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
+            if let tap { CGEvent.tapEnable(tap: tap, enable: true) }
+            return Unmanaged.passUnretained(event)
+        }
+        guard let c = combo(), Int(event.getIntegerValueField(.keyboardEventKeycode)) == c.key,
+              KeyNames.carbon(NSEvent.ModifierFlags(rawValue: UInt(event.flags.rawValue))) == c.mods,
+              handle() else { return Unmanaged.passUnretained(event) }
+        return nil
+    }
+}

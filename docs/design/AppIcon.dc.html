@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bower app icon</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+.note{font-size:13px;line-height:19px;color:rgba(235,235,245,.72);margin:0}
+.strip{height:24px;display:flex;align-items:center;gap:14px;padding:0 12px;border-radius:6px;font-size:13px}
+</style>
+</helmet>
+<div class="sf" style="width: 1880px; min-height: 1200px; box-sizing: border-box; padding: 48px; background: #0B0C0E; color: #F5F5F7; display: flex; gap: 48px;">
+  <div style="display: flex; flex-direction: column; gap: 12px; flex: none;">
+    <span class="lbl">1024 × 1024 · macOS icon grid (824 body, 100 margin)</span>
+    <svg role="img" aria-label="Bower app icon: a bowerbird's arch of sticks over four arranged window tiles" width="1024" height="1024" viewBox="0 0 1024 1024" style="background: repeating-conic-gradient(#1a1b1e 0% 25%, #141518 0% 50%) 0 0 / 32px 32px; border-radius: 8px;">
+      <defs>
+        <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17534E"></stop><stop offset="1" stop-color="#0B2F2C"></stop></linearGradient>
+        <filter id="sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity="0.35"></feDropShadow></filter>
+      </defs>
+      <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#body)" filter="url(#sh)"></rect>
+      <rect x="100.5" y="100.5" width="823" height="823" rx="184.5" fill="none" stroke="rgba(255,255,255,0.10)"></rect>
+      <ellipse cx="512" cy="822" rx="300" ry="26" fill="rgba(0,0,0,0.25)"></ellipse>
+      <rect x="300" y="540" width="200" height="120" rx="22" fill="#3FD3C2"></rect>
+      <rect x="524" y="540" width="200" height="120" rx="22" fill="#F3E6C8"></rect>
+      <rect x="300" y="684" width="200" height="120" rx="22" fill="#4C7BE8"></rect>
+      <rect x="524" y="684" width="200" height="120" rx="22" fill="#9FE8DD"></rect>
+      <path d="M234 830C234 400 360 226 512 226S790 400 790 830" fill="none" stroke="#F0D9A3" stroke-width="22" stroke-linecap="round"></path>
+      <path d="M266 830C266 430 380 266 512 266S758 430 758 830" fill="none" stroke="#D9B66E" stroke-width="22" stroke-linecap="round"></path>
+      <path d="M204 830C204 370 340 190 512 190S820 370 820 830" fill="none" stroke="#C49A52" stroke-width="14" stroke-linecap="round" stroke-dasharray="120 26"></path>
+    </svg>
+  </div>
+
+  <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 28px;">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <span class="lbl">Concept</span>
+      <p class="note">The bowerbird builds an arched avenue of sticks and lays out collected objects in front of it with great care, often favouring blue. The icon is that arch over four arranged tiles: a desk of windows. One tile is satin blue for the bird; the rest use the Bower Teal family. No gloss, no glow; one soft top-to-bottom body tone as macOS icons have.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <span class="lbl">Downsampled sizes</span>
+      <div style="display: flex; gap: 24px; align-items: flex-end;">
+        <sc-for list="{{sizes}}" as="s" hint-placeholder-count="5">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+            <svg aria-hidden="true" width="{{s.px}}" height="{{s.px}}" viewBox="100 100 824 824"><rect x="100" y="100" width="824" height="824" rx="185" fill="#124541"></rect><rect x="300" y="540" width="200" height="120" rx="22" fill="#3FD3C2"></rect><rect x="524" y="540" width="200" height="120" rx="22" fill="#F3E6C8"></rect><rect x="300" y="684" width="200" height="120" rx="22" fill="#4C7BE8"></rect><rect x="524" y="684" width="200" height="120" rx="22" fill="#9FE8DD"></rect><path d="M250 830C250 415 370 246 512 246S774 415 774 830" fill="none" stroke="#E8C98A" stroke-width="{{s.sw}}" stroke-linecap="round"></path></svg>
+            <span style="font-size: 12px; color: rgba(235,235,245,.6);">{{s.px}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <p class="note">At 32 pt and below the three sticks merge into one heavier arch and the dashed outer stick is dropped.</p>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <span class="lbl">Menu bar template glyph · monochrome, alpha only</span>
+      <div style="display: flex; gap: 32px; align-items: flex-start;">
+        <sc-for list="{{glyphs}}" as="g" hint-placeholder-count="2">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <svg aria-hidden="true" width="{{g.big}}" height="{{g.big}}" viewBox="0 0 {{g.n}} {{g.n}}" style="background: #F5F5F7; border-radius: 6px;">
+              <defs><pattern id="px{{g.n}}" width="1" height="1" patternUnits="userSpaceOnUse"><path d="M1 0H0V1" fill="none" stroke="rgba(0,0,0,0.12)" stroke-width="0.04"></path></pattern></defs>
+              <path d="{{g.arch}}" fill="none" stroke="#000" stroke-width="{{g.sw}}" stroke-linecap="round"></path>
+              <rect x="{{g.t1x}}" y="{{g.ty}}" width="{{g.tw}}" height="{{g.th}}" rx="0.6" fill="#000"></rect>
+              <rect x="{{g.t2x}}" y="{{g.ty}}" width="{{g.tw}}" height="{{g.th}}" rx="0.6" fill="#000"></rect>
+              <rect x="0" y="0" width="{{g.n}}" height="{{g.n}}" fill="url(#px{{g.n}})"></rect>
+            </svg>
+            <span style="font-size: 12px; color: rgba(235,235,245,.6);">{{g.n}} pt · shown at 8×</span>
+            <div class="strip" style="background: rgba(255,255,255,.82); color: #1D1D1F;"><svg aria-hidden="true" width="{{g.n}}" height="{{g.n}}" viewBox="0 0 {{g.n}} {{g.n}}"><path d="{{g.arch}}" fill="none" stroke="currentColor" stroke-width="{{g.sw}}" stroke-linecap="round"></path><rect x="{{g.t1x}}" y="{{g.ty}}" width="{{g.tw}}" height="{{g.th}}" rx="0.6" fill="currentColor"></rect><rect x="{{g.t2x}}" y="{{g.ty}}" width="{{g.tw}}" height="{{g.th}}" rx="0.6" fill="currentColor"></rect></svg><span>3 · Dev</span></div>
+            <div class="strip" style="background: rgba(30,30,34,.82); color: #F5F5F7;"><svg aria-hidden="true" width="{{g.n}}" height="{{g.n}}" viewBox="0 0 {{g.n}} {{g.n}}"><path d="{{g.arch}}" fill="none" stroke="currentColor" stroke-width="{{g.sw}}" stroke-linecap="round"></path><rect x="{{g.t1x}}" y="{{g.ty}}" width="{{g.tw}}" height="{{g.th}}" rx="0.6" fill="currentColor"></rect><rect x="{{g.t2x}}" y="{{g.ty}}" width="{{g.tw}}" height="{{g.th}}" rx="0.6" fill="currentColor"></rect></svg><span>3 · Dev</span></div>
+          </div>
+        </sc-for>
+      </div>
+      <p class="note">Ship as a PDF template image (isTemplate = true) so macOS tints it for light, dark and highlighted menu bars. Stroke lands on whole and half pixels at 1× and 2×.</p>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1880,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      sizes: [{ px: 256, sw: 26 }, { px: 128, sw: 30 }, { px: 64, sw: 40 }, { px: 32, sw: 56 }, { px: 16, sw: 72 }],
+      glyphs: [
+        { n: 16, big: 128, sw: 1.5, arch: 'M2.75 14V8a5.25 5.25 0 0 1 10.5 0v6', t1x: 5.25, t2x: 8.25, ty: 9.5, tw: 2.5, th: 4.5 },
+        { n: 18, big: 144, sw: 1.6, arch: 'M3 15.5V9a6 6 0 0 1 12 0v6.5', t1x: 6, t2x: 9.4, ty: 10.5, tw: 2.6, th: 5 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Layouts Bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.14);--fill:rgba(255,255,255,.08);--fill2:rgba(255,255,255,.14);--hud:rgba(36,36,40,.72);--accent:#3FD3C2;--accentFill:rgba(63,211,194,.22);--onAccent:#04231F;--shadow:0 14px 40px rgba(0,0,0,.45);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.12);--fill:rgba(0,0,0,.05);--fill2:rgba(0,0,0,.09);--hud:rgba(250,250,252,.78);--accent:#0B7A72;--accentFill:rgba(11,122,114,.15);--onAccent:#FFFFFF;--shadow:0 14px 40px rgba(0,0,0,.18);color:var(--label)}
+.mat{backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%)}
+.bar{display:flex;align-items:center;gap:4px;padding:6px;border-radius:16px;background:var(--hud);box-shadow:0 0 0 .5px var(--hair),var(--shadow)}
+.chip{width:96px;height:56px;box-sizing:border-box;border-radius:10px;padding:7px 8px;display:flex;flex-direction:column;justify-content:space-between;border:none;background:transparent;color:inherit;font:inherit;text-align:left;cursor:default}
+.chip .num{width:18px;height:18px;border-radius:5px;background:var(--fill2);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none;font-variant-numeric:tabular-nums}
+.chip .nm{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip.hover{background:var(--fill)}
+.chip.cur{background:var(--accentFill)}
+.chip.cur .num{background:var(--accent);color:var(--onAccent)}
+.chip.cur .nm{color:var(--accent)}
+.chip.drop{background:var(--fill2);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.chip.empty .nm{color:var(--label3);font-weight:500}
+.chip.focus{box-shadow:0 0 0 2px var(--accent)}
+.stack{display:flex;align-items:center}
+.ai{width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font:700 8px/1 "SF Mono",ui-monospace,Menlo,monospace;box-shadow:0 0 0 1.5px var(--hudSolid,#2a2a2e);flex:none;margin-right:-4px}
+.light .ai{box-shadow:0 0 0 1.5px #f4f4f6}
+.dark .ai{box-shadow:0 0 0 1.5px #2a2a2e}
+.slot{width:16px;height:16px;border-radius:5px;border:1.5px dashed var(--accent);box-sizing:border-box;margin-left:6px}
+.a-code{background:#2F6FEB}.a-term{background:#262626;color:#7CF29A}.a-chat{background:#D1394B}.a-fig{background:#EF6C35}.a-web{background:#1E88E5}.a-notes{background:#F2C230;color:#3a2a00}.a-mail{background:#3A86FF}.a-music{background:#F2545B}.a-files{background:#5AA2F0}
+.sec{border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:16px}
+.dark.sec{background:#17181B}.light.sec{background:#E4E4E8}
+</style>
+</helmet>
+<div class="sf" style="width: 1440px; min-height: 1360px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Layouts Bar · ⌥↑</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">Floating HUD strip at the top of the active display. Click a chip (or press its number) to switch; drag a window's icon onto a chip to assign it. Esc or ⌥↑ again closes.</p>
+  </header>
+  <sc-for list="{{scenes}}" as="s" hint-placeholder-count="2">
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div style="font-size: 13px; font-weight: 600; color: rgba(235,235,245,.7);">{{s.title}}</div>
+      <div class="{{s.cls}}" style="position: relative; width: 1200px; height: 340px; border-radius: 12px; overflow: hidden;">
+        <dc-import name="Desktop" theme="{{s.cls}}" hint-size="1200px,750px"></dc-import>
+        <div class="bar mat" style="position: absolute; left: 54px; top: 36px;">
+          <sc-for list="{{s.chips}}" as="c" hint-placeholder-count="9">
+            <button type="button" class="chip {{c.cls}}" aria-label="{{c.aria}}">
+              <span style="display: flex; align-items: center; gap: 6px;"><span class="num">{{c.n}}</span><span class="nm">{{c.name}}</span></span>
+              <span class="stack">
+                <sc-for list="{{c.apps}}" as="a" hint-placeholder-count="2"><span class="ai {{a.cls}}">{{a.g}}</span></sc-for>
+                <sc-if value="{{c.drop}}" hint-placeholder-val="{{false}}"><span class="slot"></span></sc-if>
+              </span>
+            </button>
+          </sc-for>
+          <span style="width: 1px; height: 40px; background: var(--hair); margin: 0 4px;"></span>
+          <button type="button" class="chip" style="width: 112px;" aria-label="Unassigned windows, 2">
+            <span style="display: flex; align-items: center; gap: 6px;">
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 18 18"><path d="M2.5 10.5h3.5l1 2h4l1-2h3.5M2.5 10.5 4.5 4h9l2 6.5v3.5h-13z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"></path></svg>
+              <span class="nm">Unassigned</span>
+            </span>
+            <span class="stack"><span class="ai a-notes">≡</span><span class="ai a-web">◎</span></span>
+          </button>
+          <button type="button" class="chip" style="width: {{s.pinW}}px; align-items: center; justify-content: center; flex-direction: row; gap: 6px; {{s.pinStyle}}" aria-label="{{s.pinAria}}">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"><path d="M10.5 1.5 14.5 5.5 12 6.5 9.5 9l.5 3.5-1 1-3-3-3.5 3.5M5.5 10.5l-3-3 1-1L7 7l2.5-2.5 1-2.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+            <sc-if value="{{s.pinned}}" hint-placeholder-val="{{false}}"><span class="nm" style="color: var(--accent);">Pinned</span></sc-if>
+          </button>
+        </div>
+        <sc-if value="{{s.dragging}}" hint-placeholder-val="{{false}}">
+          <div style="position: absolute; left: 376px; top: 78px; width: 34px; height: 34px; border-radius: 9px; background: #D1394B; color: #fff; font: 700 14px/34px 'SF Mono', ui-monospace, Menlo, monospace; text-align: center; box-shadow: 0 10px 24px rgba(0,0,0,.45), 0 0 0 .5px rgba(0,0,0,.3); opacity: .95;">#</div>
+          <svg aria-hidden="true" width="18" height="22" viewBox="0 0 18 22" style="position: absolute; left: 400px; top: 100px;"><path d="M1.5 1.5v16l4.2-3.9 2.9 6.4 2.6-1.1-2.9-6.3h5.8z" fill="#000" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"></path></svg>
+          <div class="mat" style="position: absolute; left: 330px; top: 128px; padding: 5px 10px; border-radius: 8px; background: var(--hud); box-shadow: 0 0 0 .5px var(--hair); font-size: 12px; font-weight: 500;">Assign “Chat — #design” to 4 · Comms</div>
+        </sc-if>
+        <sc-if value="{{s.pinned}}" hint-placeholder-val="{{false}}">
+          <div class="mat" style="position: absolute; left: 870px; top: 104px; width: 300px; padding: 10px 12px; border-radius: 10px; background: var(--hud); box-shadow: 0 0 0 .5px var(--hair), var(--shadow); font-size: 12px; line-height: 17px; color: var(--label2);"><b style="color: var(--label);">LG UltraFine is pinned.</b> It keeps 4 · Comms when you switch layouts on other displays. Click to unpin.</div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-for>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px;">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <section class="sec {{t.cls}}">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--label2);">Chip states · {{t.name}}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px 12px;">
+          <sc-for list="{{states}}" as="c" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+              <div class="bar" style="padding: 4px;">
+                <button type="button" class="chip {{c.cls}}">
+                  <span style="display: flex; align-items: center; gap: 6px;"><span class="num">{{c.n}}</span><span class="nm">{{c.name}}</span></span>
+                  <span class="stack">
+                    <sc-for list="{{c.apps}}" as="a" hint-placeholder-count="2"><span class="ai {{a.cls}}">{{a.g}}</span></sc-for>
+                    <sc-if value="{{c.drop}}" hint-placeholder-val="{{false}}"><span class="slot"></span></sc-if>
+                  </span>
+                </button>
+              </div>
+              <span style="font-size: 12px; color: var(--label2);">{{c.label}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 0; font-size: 12px; line-height: 17px; color: var(--label2);">Chip 96 × 56 pt, radius 10. Up to 4 icons stack at −4 pt overlap; a 5th becomes “+n”. Current = accent tint + solid badge. Drag-over = 1.5 pt accent ring + dashed insertion slot, so it never reads as “current”.</p>
+      </section>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1360}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const A = { code: { cls: 'a-code', g: '{}' }, term: { cls: 'a-term', g: '>_' }, chat: { cls: 'a-chat', g: '#' }, fig: { cls: 'a-fig', g: '◆' }, web: { cls: 'a-web', g: '◎' }, notes: { cls: 'a-notes', g: '≡' }, mail: { cls: 'a-mail', g: '@' }, music: { cls: 'a-music', g: '♪' }, files: { cls: 'a-files', g: '▤' } };
+    const base = [
+      ['Mail', [A.mail, A.notes]], ['Design', [A.fig, A.web, A.files]], ['Dev', [A.code, A.term, A.web]], ['Comms', [A.mail]], ['Research', [A.web, A.notes]], ['Music', [A.music]], ['Empty', []], ['Empty', []], ['Empty', []]
+    ];
+    const chips = (cur, drop) => base.map((b, i) => {
+      const empty = b[1].length === 0 && i !== drop;
+      const cls = i === cur ? 'cur' : i === drop ? 'drop' : empty ? 'empty' : '';
+      return { n: i + 1, name: b[0], apps: b[1], drop: i === drop, cls, aria: 'Layout ' + (i + 1) + ', ' + b[0] + (i === cur ? ', current' : '') };
+    });
+    const st = (label, cls, n, name, apps, drop) => ({ label, cls, n, name, apps, drop: !!drop });
+    return {
+      scenes: [
+        { title: 'Dark · dragging a window onto 4 · Comms (3 · Dev is current)', cls: 'dark', chips: chips(2, 3), dragging: true, pinned: false, pinW: 40, pinStyle: '', pinAria: 'Pin this display' },
+        { title: 'Light · on a pinned display', cls: 'light', chips: chips(3, -1), dragging: false, pinned: true, pinW: 92, pinStyle: 'background: var(--accentFill); color: var(--accent);', pinAria: 'Display pinned, click to unpin' }
+      ],
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      states: [
+        st('Rest', '', 2, 'Design', [A.fig, A.web, A.files]),
+        st('Hover', 'hover', 2, 'Design', [A.fig, A.web, A.files]),
+        st('Current', 'cur', 3, 'Dev', [A.code, A.term, A.web]),
+        st('Drag-over', 'drop', 4, 'Comms', [A.mail], true),
+        st('Empty', 'empty', 7, 'Empty', []),
+        st('Keyboard focus', 'focus', 5, 'Research', [A.web, A.notes])
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

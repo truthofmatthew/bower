@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Recipe preview pane</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 480px; height: 500px; box-sizing: border-box; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: {{c.bg}}; color: {{c.label}}; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; font-size: 13px;">
+  <div style="display: flex; align-items: baseline; justify-content: space-between;">
+    <span style="font-size: 13px; font-weight: 600;">Preview</span>
+    <span style="font-size: 12px; color: {{c.label2}};">{{summary}}</span>
+  </div>
+
+  <sc-if value="{{loading}}" hint-placeholder-val="{{false}}">
+    <div style="height: 150px; border-radius: 8px; background: {{c.fill}};"></div>
+    <div style="height: 150px; border-radius: 8px; background: {{c.fill}};"></div>
+    <div style="display: flex; align-items: center; gap: 8px; color: {{c.label2}}; font-size: 12px;">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="{{c.fill2}}" stroke-width="2"></circle><path d="M8 2a6 6 0 0 1 6 6" fill="none" stroke="{{c.accent}}" stroke-width="2" stroke-linecap="round"></path></svg>
+      Planning with llama3.1:8b…
+    </div>
+  </sc-if>
+
+  <sc-if value="{{diag}}" hint-placeholder-val="{{true}}">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;"><b>Studio Display</b><span style="color: {{c.label2}};">@main monitor</span><span style="margin-left: auto; padding: 2px 8px; border-radius: 10px; background: {{c.accentFill}}; color: {{c.accent}}; font-weight: 600; font-size: 11px;">Tabs</span></div>
+      <div style="height: 150px; border-radius: 7px; background: {{c.screen}}; padding: 8px; box-sizing: border-box; display: flex; flex-direction: column;">
+        <div style="height: 20px; border-radius: 5px 5px 0 0; background: {{c.strip}}; display: flex; font-size: 10px; overflow: hidden;">
+          <span style="flex: 1; display: flex; align-items: center; gap: 4px; padding: 0 6px; background: {{c.tile}}; font-weight: 600; box-shadow: inset 0 -2px 0 {{c.accent}};"><span style="width: 10px; height: 10px; border-radius: 3px; background: #2F6FEB;"></span>VS Code</span>
+          <span style="flex: 1; display: flex; align-items: center; gap: 4px; padding: 0 6px; color: {{c.label2}};"><span style="width: 10px; height: 10px; border-radius: 3px; background: #262626;"></span>Terminal</span>
+          <sc-if value="{{warn}}" hint-placeholder-val="{{false}}"><span style="flex: 1; display: flex; align-items: center; gap: 4px; padding: 0 6px; color: {{c.warn}}; box-shadow: inset 0 0 0 1px {{c.warn}}; border-radius: 4px; margin: 2px;"><span style="width: 10px; height: 10px; border-radius: 3px; border: 1px dashed {{c.warn}}; box-sizing: border-box;"></span>Figma</span></sc-if>
+        </div>
+        <div style="flex: 1; border-radius: 0 0 5px 5px; background: {{c.tile}};"></div>
+      </div>
+      <span style="font-size: 11px; color: {{c.label2}};">{{mainCap}}</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12px;"><b>LG UltraFine</b><span style="color: {{c.label2}};">@side monitor</span><span style="margin-left: auto; padding: 2px 8px; border-radius: 10px; background: {{c.accentFill}}; color: {{c.accent}}; font-weight: 600; font-size: 11px;">Bento Box</span></div>
+      <div style="height: 110px; border-radius: 7px; background: {{c.screen}}; padding: 8px; box-sizing: border-box; display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 6px;">
+        <div style="border-radius: 5px; background: {{c.tile}}; display: flex; align-items: flex-start; padding: 6px; gap: 5px; font-size: 10px; font-weight: 600;"><span style="width: 10px; height: 10px; border-radius: 3px; background: #D1394B;"></span>Slack</div>
+      </div>
+      <span style="font-size: 11px; color: {{c.label2}};">Layout 2 · Comms: Slack</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{warn}}" hint-placeholder-val="{{false}}">
+    <div role="status" style="display: flex; gap: 8px; align-items: flex-start; padding: 9px 10px; border-radius: 8px; background: {{c.warnBg}}; font-size: 12px; line-height: 17px;">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" style="flex: none;"><path d="M8 1.8 15 14H1z" fill="none" stroke="{{c.warn}}" stroke-width="1.4" stroke-linejoin="round"></path><path d="M8 6v3.6M8 11.6v.1" stroke="{{c.warn}}" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      <span><b style="color: {{c.warn}};">@Figma isn't running.</b> Apply anyway and Bower places its window when it opens.</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{error}}" hint-placeholder-val="{{false}}">
+    <div role="alert" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center;">
+      <svg aria-hidden="true" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="14" fill="none" stroke="{{c.danger}}" stroke-width="2"></circle><path d="M11 11l10 10M21 11 11 21" stroke="{{c.danger}}" stroke-width="2" stroke-linecap="round"></path></svg>
+      <span style="font-weight: 600;">Couldn't reach Ollama at localhost:11434</span>
+      <span style="font-size: 12px; color: {{c.label2}}; max-width: 320px;">Check that Ollama is running, or pick another endpoint in Settings › AI. Your recipe hasn't changed.</span>
+      <button type="button" style="height: 28px; padding: 0 14px; border-radius: 7px; border: none; background: {{c.control}}; box-shadow: 0 0 0 .5px {{c.hair}}, 0 1px 1.5px rgba(0,0,0,.14); color: {{c.label}}; font: inherit;">Try Again</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"state":{"editor":"enum","options":["loading","ready","warning","error"],"default":"ready"},"$preview":{"width":480,"height":500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') !== 'light';
+    const st = this.props.state ?? 'ready';
+    const c = dark
+      ? { bg: '#1A1A1C', label: 'rgba(255,255,255,0.92)', label2: 'rgba(235,235,245,0.64)', hair: 'rgba(255,255,255,0.10)', fill: 'rgba(255,255,255,0.06)', fill2: 'rgba(255,255,255,0.14)', accent: '#3FD3C2', accentFill: 'rgba(63,211,194,0.20)', screen: '#2B3348', strip: '#202022', tile: '#2E2E31', control: '#3A3A3E', warn: '#FFC94D', warnBg: 'rgba(255,201,77,0.12)', danger: '#FF7066' }
+      : { bg: '#FAFAFB', label: 'rgba(0,0,0,0.88)', label2: 'rgba(60,60,67,0.74)', hair: 'rgba(0,0,0,0.10)', fill: 'rgba(0,0,0,0.05)', fill2: 'rgba(0,0,0,0.10)', accent: '#0B7A72', accentFill: 'rgba(11,122,114,0.14)', screen: '#C3D3E3', strip: '#E4E4E7', tile: '#FFFFFF', control: '#FFFFFF', warn: '#8A5800', warnBg: 'rgba(255,190,40,0.20)', danger: '#C9302C' };
+    return {
+      c,
+      loading: st === 'loading',
+      diag: st === 'ready' || st === 'warning',
+      warn: st === 'warning',
+      error: st === 'error',
+      summary: { loading: 'Reading 6 lines…', ready: '2 layouts · 3 windows · 2 displays', warning: '3 layouts · 4 windows · 1 warning', error: 'No plan' }[st],
+      mainCap: st === 'warning' ? 'Layout 1 · Dev: VS Code, Terminal · Layout 3 · Design: Figma (waiting)' : 'Layout 1 · Dev: VS Code, Terminal'
+    };
+  }
+}
+</script>
+</body>
+</html>

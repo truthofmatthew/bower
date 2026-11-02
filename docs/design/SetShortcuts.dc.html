@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings · Shortcuts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.14);--win:#1E1E20;--chrome:#2A2A2D;--group:rgba(255,255,255,.05);--control:#3A3A3E;--field:rgba(255,255,255,.06);--accent:#3FD3C2;--accentFill:rgba(63,211,194,.20);--onAccent:#04231F;--warn:#FFC94D;--shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(0,0,0,.9);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.09);--win:#F2F2F4;--chrome:#E6E6E9;--group:#FFFFFF;--control:#FFFFFF;--field:#F7F7F8;--accent:#0B7A72;--accentFill:rgba(11,122,114,.14);--onAccent:#FFFFFF;--warn:#8A5800;--shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.2);color:var(--label)}
+.win{width:760px;height:560px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:var(--shadow);display:flex;flex-direction:column;font-size:13px;position:relative}
+.chrome{background:var(--chrome);border-bottom:1px solid var(--hair);flex:none;position:relative}
+.tl{position:absolute;left:14px;top:9px;display:flex;gap:8px}.tl span{width:12px;height:12px;border-radius:6px}
+.ttl{height:30px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.tools{display:flex;justify-content:center;gap:2px;padding:0 0 6px}
+.tool{width:78px;height:48px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:11px;color:var(--label2);border:none;background:transparent}
+.tool.sel{background:var(--fill2);color:var(--label)}.tool.sel svg{color:var(--accent)}
+.content{flex:1;min-height:0;padding:14px 24px;display:flex;flex-direction:column;gap:12px}
+.group{background:var(--group);border-radius:9px;box-shadow:0 0 0 .5px var(--hair)}
+.row{min-height:36px;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:4px 10px;border-top:1px solid var(--hair)}.row:first-child{border-top:none}
+.grow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
+.sub{font-size:11px;line-height:14px;color:var(--label2)}
+.gh{font-size:12px;font-weight:600;color:var(--label2);padding:0 4px}
+.rec{width:128px;height:28px;box-sizing:border-box;border-radius:7px;background:var(--field);box-shadow:inset 0 0 0 .5px var(--hair);display:inline-flex;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:12px;color:var(--label);border:none;flex:none}
+.rec.recording{box-shadow:0 0 0 2px var(--accent);background:var(--accentFill);color:var(--label2)}
+.rec.conflict{box-shadow:inset 0 0 0 1px var(--warn)}
+.kc{min-width:18px;height:18px;padding:0 4px;box-sizing:border-box;border-radius:4px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 0 var(--hair);font-size:11px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.seg{display:inline-flex;padding:2px;border-radius:8px;background:var(--fill)}
+.seg button{height:24px;padding:0 14px;border:none;border-radius:6px;background:transparent;font:inherit;font-size:12px;color:var(--label)}
+.seg .on{background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 2px rgba(0,0,0,.15);font-weight:500}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+</style>
+</helmet>
+<div class="sf" style="width: 1680px; min-height: 720px; box-sizing: border-box; padding: 40px 48px; background: #0B0C0E; display: flex; gap: 64px;">
+  <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span class="lbl">{{t.name}}</span>
+      <div class="win {{t.cls}}">
+        <div class="chrome">
+          <div class="tl"><span style="background: #FF5F57;"></span><span style="background: #FEBC2E;"></span><span style="background: #28C840;"></span></div>
+          <div class="ttl">Shortcuts</div>
+          <div class="tools" role="tablist">
+            <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="6">
+              <button type="button" role="tab" class="tool {{tb.cls}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 20 20"><path d="{{tb.d}}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{tb.name}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div class="content">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span>Keyboard</span>
+            <div class="seg" role="radiogroup" aria-label="Keyboard preset"><button type="button" class="on" role="radio" aria-checked="true">ANSI</button><button type="button" role="radio" aria-checked="false">ISO</button></div>
+            <span class="sub">ISO moves the ⌃⌥ thirds keys off § and uses ⌃⌥&lt; for Center Third.</span>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: flex-start;">
+            <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{left}}" as="g" hint-placeholder-count="2">
+                <div class="gh">{{g.name}}</div>
+                <div class="group">
+                  <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="2">
+                    <div class="row"><div class="grow"><span>{{r.name}}</span><span class="sub" style="color: {{r.subColor}};">{{r.sub}}</span></div><button type="button" class="rec {{r.cls}}" aria-label="{{r.aria}}"><sc-for list="{{r.keys}}" as="k" hint-placeholder-count="2"><span class="kc">{{k}}</span></sc-for>{{r.text}}</button></div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <div style="flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+              <sc-for list="{{right}}" as="g" hint-placeholder-count="1">
+                <div class="gh">{{g.name}}</div>
+                <div class="group">
+                  <sc-for list="{{g.rows}}" as="r" hint-placeholder-count="6">
+                    <div class="row"><div class="grow"><span>{{r.name}}</span><span class="sub" style="color: {{r.subColor}};">{{r.sub}}</span></div><button type="button" class="rec {{r.cls}}" aria-label="{{r.aria}}"><sc-for list="{{r.keys}}" as="k" hint-placeholder-count="2"><span class="kc">{{k}}</span></sc-for>{{r.text}}</button></div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sel = 3;
+    const T = [['General', 'M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4M10 6.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'], ['Layouts', 'M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z'], ['Displays', 'M2.5 3.5h15v10h-15zM7 17h6M10 13.5V17'], ['Shortcuts', 'M2 5.5h16v9H2zM5 8.5h1M8 8.5h1M11 8.5h1M14 8.5h1M6 11.5h8'], ['Snap Wheel', 'M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15zM10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM10 2.5V7M10 13v4.5M2.5 10H7M13 10h4.5'], ['AI', 'M5 2.5h7l3 3v12H5zM12 2.5v3h3M7.5 9.5h5M7.5 12h5M7.5 14.5h3']];
+    const r = (name, keys, extra) => Object.assign({ name, keys, sub: '', subColor: 'var(--label2)', cls: '', text: '', aria: name + ' shortcut' }, extra || {});
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      tabs: T.map((x, i) => ({ name: x[0], d: x[1], cls: i === sel ? 'sel' : '' })),
+      left: [
+        { name: 'Overlays', rows: [r('Snap Wheel', ['⌃', '⌥', 'Space'], { sub: 'Middle-click also opens it' }), r('Layouts Bar', [], { cls: 'recording', text: 'Type shortcut…', sub: 'Recording · Esc cancels, ⌫ clears' })] },
+        { name: 'Layouts', rows: [r('Switch to layout', ['⌥', '1…9']), r('Send window to layout', ['⇧', '⌥', '1…9']), r('Save workspace', ['⌃', '⌥', 'S'])] }
+      ],
+      right: [
+        { name: 'Snapping', rows: [r('Left / Right Half', ['⌃', '⌥', '← →']), r('Top / Bottom Half', ['⌃', '⌥', '↑ ↓']), r('Quarters', ['⌃', '⌥', 'U I J K']), r('Thirds', ['⌃', '⌥', 'D F G']), r('Maximize', ['⌃', '⌥', '↩']), r('Retile display', ['⌃', '⌥', 'R'], { cls: 'conflict', sub: 'Also used by Xcode › Refactor', subColor: 'var(--warn)' })] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

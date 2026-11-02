@@ -1,0 +1,252 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "AppIcon.dc.html": {
+      "h": 1200,
+      "title": "App icon & menu bar glyph",
+      "w": 1880,
+      "x": 0,
+      "y": 11220
+    },
+    "Bento.dc.html": {
+      "h": 960,
+      "title": "Bento Box",
+      "w": 1440,
+      "x": 1520,
+      "y": 5140
+    },
+    "Desktop.dc.html": {
+      "h": 750,
+      "title": "Component · Test desktop",
+      "w": 1200,
+      "x": 5500,
+      "y": 0
+    },
+    "FirstRun.dc.html": {
+      "h": 1240,
+      "title": "First run",
+      "w": 1440,
+      "x": 3760,
+      "y": 8820
+    },
+    "LayoutsBar.dc.html": {
+      "h": 1360,
+      "title": "Layouts Bar (⌥↑)",
+      "w": 1440,
+      "x": 1680,
+      "y": 2880
+    },
+    "Main.dc.html": {
+      "h": 2480,
+      "title": "Snap Wheel · states",
+      "w": 1520,
+      "x": 0,
+      "y": 0
+    },
+    "MenuBar.dc.html": {
+      "h": 1100,
+      "title": "Menu bar item & menu",
+      "w": 1440,
+      "x": 3200,
+      "y": 2880
+    },
+    "Recipe.dc.html": {
+      "h": 2000,
+      "title": "Recipe editor",
+      "w": 2160,
+      "x": 0,
+      "y": 8820
+    },
+    "RecipePreview.dc.html": {
+      "h": 500,
+      "title": "Component · Recipe preview pane",
+      "w": 480,
+      "x": 6780,
+      "y": 0
+    },
+    "SetAI.dc.html": {
+      "h": 860,
+      "title": "Settings · AI",
+      "w": 1680,
+      "x": 3520,
+      "y": 7560
+    },
+    "SetDisplays.dc.html": {
+      "h": 720,
+      "title": "Settings · Displays",
+      "w": 1680,
+      "x": 3520,
+      "y": 6720
+    },
+    "SetGeneral.dc.html": {
+      "h": 720,
+      "title": "Settings · General",
+      "w": 1680,
+      "x": 0,
+      "y": 6720
+    },
+    "SetLayouts.dc.html": {
+      "h": 720,
+      "title": "Settings · Layouts",
+      "w": 1680,
+      "x": 1760,
+      "y": 6720
+    },
+    "SetShortcuts.dc.html": {
+      "h": 720,
+      "title": "Settings · Shortcuts",
+      "w": 1680,
+      "x": 0,
+      "y": 7560
+    },
+    "SetWheel.dc.html": {
+      "h": 720,
+      "title": "Settings · Snap Wheel",
+      "w": 1680,
+      "x": 1760,
+      "y": 7560
+    },
+    "SnapPreview.dc.html": {
+      "h": 1860,
+      "title": "Snap preview overlay",
+      "w": 1600,
+      "x": 0,
+      "y": 2880
+    },
+    "Tabs.dc.html": {
+      "h": 1180,
+      "title": "Tabs Mode tab strip",
+      "w": 1440,
+      "x": 0,
+      "y": 5140
+    },
+    "Tokens.dc.html": {
+      "h": 3144,
+      "title": "Component sheet · tokens, geometry, timing",
+      "w": 1800,
+      "x": 1960,
+      "y": 11220
+    },
+    "Wheel.dc.html": {
+      "h": 460,
+      "title": "Component · Wheel",
+      "w": 420,
+      "x": 5000,
+      "y": 0
+    },
+    "WheelDesktop.dc.html": {
+      "h": 1760,
+      "title": "Snap Wheel · on a busy desktop",
+      "w": 1280,
+      "x": 1600,
+      "y": 0
+    },
+    "WheelScale.dc.html": {
+      "h": 2200,
+      "title": "Snap Wheel · 1×/2× & accessibility",
+      "w": 1960,
+      "x": 2960,
+      "y": 0
+    },
+    "Workspaces.dc.html": {
+      "h": 800,
+      "title": "Workspaces",
+      "w": 1440,
+      "x": 2240,
+      "y": 8820
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-02T12:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "tWheel",
+    "tOverlays",
+    "tModes",
+    "tSettings",
+    "tFlows",
+    "tSystem"
+  ],
+  "notes": {
+    "tFlows": {
+      "kind": "title1",
+      "maxW": 5200,
+      "text": "8–10 · Recipes, workspaces, first run",
+      "w": 240,
+      "x": 0,
+      "y": 8520
+    },
+    "tModes": {
+      "kind": "title1",
+      "maxW": 2960,
+      "text": "5–6 · Window modes",
+      "w": 240,
+      "x": 0,
+      "y": 4840
+    },
+    "tOverlays": {
+      "kind": "title1",
+      "maxW": 4640,
+      "text": "2–4 · Snap preview, Layouts Bar, menu bar",
+      "w": 240,
+      "x": 0,
+      "y": 2580
+    },
+    "tSettings": {
+      "kind": "title1",
+      "maxW": 5200,
+      "text": "7 · Settings",
+      "w": 240,
+      "x": 0,
+      "y": 6420
+    },
+    "tSystem": {
+      "kind": "title1",
+      "maxW": 3760,
+      "text": "11 · Icon & component sheet",
+      "w": 240,
+      "x": 0,
+      "y": 10920
+    },
+    "tWheel": {
+      "kind": "title1",
+      "maxW": 6700,
+      "text": "1 · Snap Wheel",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Wheel.dc.html",
+    "Desktop.dc.html",
+    "RecipePreview.dc.html",
+    "WheelDesktop.dc.html",
+    "WheelScale.dc.html",
+    "SnapPreview.dc.html",
+    "LayoutsBar.dc.html",
+    "MenuBar.dc.html",
+    "Tabs.dc.html",
+    "Bento.dc.html",
+    "SetGeneral.dc.html",
+    "SetLayouts.dc.html",
+    "SetDisplays.dc.html",
+    "SetShortcuts.dc.html",
+    "SetWheel.dc.html",
+    "SetAI.dc.html",
+    "Recipe.dc.html",
+    "Workspaces.dc.html",
+    "FirstRun.dc.html",
+    "AppIcon.dc.html",
+    "Tokens.dc.html"
+  ],
+  "pages": [],
+  "title": "Bower UI"
+}

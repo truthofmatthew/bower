@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings · Layouts</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.14);--win:#1E1E20;--chrome:#2A2A2D;--group:rgba(255,255,255,.05);--groupSolid:#2A2A2D;--control:#3A3A3E;--field:rgba(255,255,255,.06);--accent:#3FD3C2;--accentFill:rgba(63,211,194,.20);--onAccent:#04231F;--shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(0,0,0,.9);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.09);--win:#F2F2F4;--chrome:#E6E6E9;--group:#FFFFFF;--groupSolid:#FFFFFF;--control:#FFFFFF;--field:#FFFFFF;--accent:#0B7A72;--accentFill:rgba(11,122,114,.14);--onAccent:#FFFFFF;--shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.2);color:var(--label)}
+.win{width:760px;height:560px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:var(--shadow);display:flex;flex-direction:column;font-size:13px;position:relative}
+.chrome{background:var(--chrome);border-bottom:1px solid var(--hair);flex:none;position:relative}
+.tl{position:absolute;left:14px;top:9px;display:flex;gap:8px}.tl span{width:12px;height:12px;border-radius:6px}
+.ttl{height:30px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.tools{display:flex;justify-content:center;gap:2px;padding:0 0 6px}
+.tool{width:78px;height:48px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:11px;color:var(--label2);border:none;background:transparent}
+.tool.sel{background:var(--fill2);color:var(--label)}.tool.sel svg{color:var(--accent)}
+.content{flex:1;min-height:0;padding:18px 24px;display:flex;gap:16px}
+.group{background:var(--group);border-radius:9px;box-shadow:0 0 0 .5px var(--hair);overflow:hidden}
+.gh{font-size:12px;font-weight:600;color:var(--label2);padding:0 4px}
+.th{height:26px;display:flex;align-items:center;gap:8px;padding:0 10px;font-size:11px;font-weight:600;color:var(--label2);border-bottom:1px solid var(--hair)}
+.tr{height:32px;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:0 10px;border-top:1px solid var(--hair)}
+.th + .tr{border-top:none}
+.tr.lift{background:var(--groupSolid);box-shadow:0 8px 20px rgba(0,0,0,.35),0 0 0 .5px var(--hair);border-radius:6px;position:relative;z-index:1;transform:translateX(4px)}
+.tr.sel{background:var(--accentFill)}
+.num{width:18px;height:18px;border-radius:5px;background:var(--fill2);font-size:11px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.num.cur{background:var(--accent);color:var(--onAccent)}
+.pop{height:24px;padding:0 6px 0 8px;border-radius:6px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 1.5px rgba(0,0,0,.14);display:inline-flex;align-items:center;justify-content:space-between;gap:6px;font:inherit;font-size:12px;color:var(--label);border:none;white-space:nowrap;box-sizing:border-box}
+.pop::after{content:"\2304";font-size:10px;color:var(--label2);transform:translateY(-3px)}
+.handle{color:var(--label3);flex:none}
+.ai{width:18px;height:18px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font:700 8px/1 "SF Mono",ui-monospace,Menlo,monospace;flex:none}
+.a-chat{background:#D1394B}.a-fig{background:#EF6C35}.a-web{background:#1E88E5}.a-mail{background:#3A86FF}.a-music{background:#F2545B}
+.pm{display:flex;border-top:1px solid var(--hair);height:28px}
+.pm button{width:30px;border:none;background:transparent;color:var(--label);font:inherit;font-size:15px;box-shadow:inset -1px 0 0 var(--hair)}
+.sub{font-size:11px;line-height:14px;color:var(--label2)}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+</style>
+</helmet>
+<div class="sf" style="width: 1680px; min-height: 720px; box-sizing: border-box; padding: 40px 48px; background: #0B0C0E; display: flex; gap: 64px;">
+  <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span class="lbl">{{t.name}}</span>
+      <div class="win {{t.cls}}">
+        <div class="chrome">
+          <div class="tl"><span style="background: #FF5F57;"></span><span style="background: #FEBC2E;"></span><span style="background: #28C840;"></span></div>
+          <div class="ttl">Layouts</div>
+          <div class="tools" role="tablist">
+            <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="6">
+              <button type="button" role="tab" class="tool {{tb.cls}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 20 20"><path d="{{tb.d}}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{tb.name}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div class="content">
+          <div style="width: 432px; flex: none; display: flex; flex-direction: column; gap: 8px;">
+            <div class="gh">Layouts · drag to reorder</div>
+            <div class="group">
+              <div class="th"><span style="width: 12px;"></span><span style="width: 18px;">#</span><span style="flex: 1;">Name</span><span style="width: 96px;">Studio Display</span><span style="width: 96px;">LG UltraFine</span></div>
+              <sc-for list="{{layouts}}" as="l" hint-placeholder-count="9">
+                <div class="tr {{l.cls}}">
+                  <svg class="handle" aria-hidden="true" width="12" height="12" viewBox="0 0 12 12"><path d="M4 2.5h.01M8 2.5h.01M4 6h.01M8 6h.01M4 9.5h.01M8 9.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+                  <span class="num {{l.numCls}}">{{l.n}}</span>
+                  <span style="flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: {{l.color}};">{{l.name}}</span>
+                  <span class="pop" style="width: 96px;">{{l.a}}</span>
+                  <span class="pop" style="width: 96px;">{{l.b}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px;">
+            <div class="gh">App routing</div>
+            <div class="group">
+              <div class="th"><span style="flex: 1;">App</span><span style="width: 112px;">Opens in</span></div>
+              <sc-for list="{{routes}}" as="r" hint-placeholder-count="5">
+                <div class="tr {{r.cls}}"><span class="ai {{r.app}}">{{r.g}}</span><span style="flex: 1; min-width: 0;">{{r.name}}</span><span class="pop" style="width: 112px;">{{r.to}}</span></div>
+              </sc-for>
+              <div class="pm"><button type="button" aria-label="Add app">+</button><button type="button" aria-label="Remove app">−</button></div>
+            </div>
+            <p class="sub" style="margin: 0 4px;">New windows of a routed app open in that layout, even while another is showing. Unrouted apps stay where you put them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sel = 1;
+    const T = [['General', 'M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4M10 6.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'], ['Layouts', 'M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z'], ['Displays', 'M2.5 3.5h15v10h-15zM7 17h6M10 13.5V17'], ['Shortcuts', 'M2 5.5h16v9H2zM5 8.5h1M8 8.5h1M11 8.5h1M14 8.5h1M6 11.5h8'], ['Snap Wheel', 'M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15zM10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM10 2.5V7M10 13v4.5M2.5 10H7M13 10h4.5'], ['AI', 'M5 2.5h7l3 3v12H5zM12 2.5v3h3M7.5 9.5h5M7.5 12h5M7.5 14.5h3']];
+    const L = [['Mail', 'Native', 'Native'], ['Design', 'Native', 'Tabs'], ['Dev', 'Tabs', 'Bento Box'], ['Comms', 'Bento Box', 'Bento Box'], ['Research', 'Tabs', 'Native'], ['Music', 'Native', 'Native'], ['Untitled', 'Native', 'Native'], ['Untitled', 'Native', 'Native'], ['Untitled', 'Native', 'Native']];
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      tabs: T.map((x, i) => ({ name: x[0], d: x[1], cls: i === sel ? 'sel' : '' })),
+      layouts: L.map((x, i) => ({ n: i + 1, name: x[0], a: x[1], b: x[2], numCls: i === 2 ? 'cur' : '', cls: i === 4 ? 'lift' : '', color: i > 5 ? 'var(--label3)' : 'var(--label)' })),
+      routes: [
+        { app: 'a-chat', g: '#', name: 'Slack', to: '4 · Comms', cls: 'sel' },
+        { app: 'a-mail', g: '@', name: 'Mail', to: '1 · Mail', cls: '' },
+        { app: 'a-fig', g: '◆', name: 'Figma', to: '2 · Design', cls: '' },
+        { app: 'a-music', g: '♪', name: 'Music', to: '6 · Music', cls: '' },
+        { app: 'a-web', g: '◎', name: 'Safari', to: 'Current layout', cls: '' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

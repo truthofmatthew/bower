@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Test desktop</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 1200px; height: 750px; position: relative; overflow: hidden; background: {{c.sky}}; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; color: {{c.text}};">
+  <svg aria-hidden="true" viewBox="0 0 1200 750" width="1200" height="750" style="position: absolute; left: 0; top: 0;">
+    <circle cx="930" cy="250" r="64" fill="{{c.sun}}"></circle>
+    <path d="M0 410 L120 330 L230 395 L360 280 L500 375 L630 300 L770 385 L900 300 L1040 372 L1200 310 L1200 750 L0 750Z" fill="{{c.m1}}"></path>
+    <path d="M0 505 L170 425 L320 492 L470 415 L615 500 L760 430 L930 515 L1085 445 L1200 495 L1200 750 L0 750Z" fill="{{c.m2}}"></path>
+    <rect x="0" y="575" width="1200" height="175" fill="{{c.m3}}"></rect>
+    <path d="M880 585h100M860 600h140M890 616h80M900 632h60" stroke="{{c.lake}}" stroke-width="4" stroke-linecap="round"></path>
+  </svg>
+
+  <div style="position: absolute; left: 0; top: 0; right: 0; height: 26px; display: flex; align-items: center; gap: 18px; padding: 0 14px; box-sizing: border-box; background: {{c.bar}}; backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); color: {{c.barText}}; font-size: 13px;">
+    <svg aria-hidden="true" width="14" height="16" viewBox="0 0 14 16"><path d="M11.2 8.5c0-1.8 1.5-2.7 1.6-2.7-.9-1.3-2.2-1.5-2.7-1.5-1.1-.1-2.2.7-2.8.7-.6 0-1.5-.7-2.4-.6C3.6 4.4 2.4 5.1 1.8 6.3c-1.3 2.2-.3 5.5.9 7.3.6.9 1.3 1.9 2.3 1.8.9 0 1.3-.6 2.4-.6s1.4.6 2.4.6c1 0 1.6-.9 2.2-1.8.7-1 1-2 1-2.1 0 0-1.8-.7-1.8-3zM9.5 3.1c.5-.6.8-1.4.7-2.2-.7 0-1.6.5-2.1 1.1-.5.5-.9 1.4-.8 2.2.8.1 1.7-.4 2.2-1.1z" fill="currentColor"></path></svg>
+    <span style="font-weight: 700;">Code</span><span>File</span><span>Edit</span><span>Selection</span><span>View</span><span>Go</span><span>Window</span><span>Help</span>
+    <span style="flex-grow: 1;"></span>
+    <span style="display: flex; align-items: center; gap: 5px; padding: 1px 7px; border-radius: 5px;">
+      <svg aria-hidden="true" width="15" height="15" viewBox="0 0 18 18"><path d="M3 15V9a6 6 0 0 1 12 0v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><rect x="6" y="10.5" width="2.6" height="4.5" rx="0.6" fill="currentColor"></rect><rect x="9.4" y="10.5" width="2.6" height="4.5" rx="0.6" fill="currentColor"></rect></svg>
+      <span style="font-weight: 500;">3 · Dev</span>
+    </span>
+    <svg aria-hidden="true" width="16" height="12" viewBox="0 0 16 12"><path d="M1 4.2a10 10 0 0 1 14 0M3.4 6.6a6.6 6.6 0 0 1 9.2 0M5.8 9a3.2 3.2 0 0 1 4.4 0" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg>
+    <svg aria-hidden="true" width="24" height="12" viewBox="0 0 24 12"><rect x="0.5" y="0.5" width="20" height="11" rx="3" fill="none" stroke="currentColor" stroke-opacity="0.5"></rect><rect x="2" y="2" width="14" height="8" rx="1.6" fill="currentColor"></rect><rect x="21.5" y="4" width="1.5" height="4" rx="0.7" fill="currentColor" fill-opacity="0.5"></rect></svg>
+    <span>Mon Nov 2&nbsp;&nbsp;9:41</span>
+  </div>
+
+  <div style="position: absolute; left: 150px; top: 360px; width: 520px; height: 290px; border-radius: 10px; overflow: hidden; background: {{c.page}}; box-shadow: {{c.shadow}};">
+    <div style="height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: {{c.winBar}}; border-bottom: 1px solid {{c.hair}};">
+      <span style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57;"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E;"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #28C840;"></span>
+      <div style="margin-left: 60px; flex-grow: 1; height: 22px; border-radius: 6px; background: {{c.field}}; font-size: 12px; line-height: 22px; text-align: center; color: {{c.text2}};">bower.app/releases</div>
+    </div>
+    <div style="display: flex; gap: 20px; padding: 20px;">
+      <div style="width: 180px; height: 120px; border-radius: 8px; background: {{c.pageHero}};"></div>
+      <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 20px; font-weight: 700;">Bower 1.4 release notes</div>
+        <div style="font-size: 12px; line-height: 18px; color: {{c.text2}};">Recipes can now target a display by nickname. Bento retiles on window close. The Layouts Bar remembers the last display you used.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 40px; top: 56px; width: 660px; height: 420px; border-radius: 10px; overflow: hidden; background: {{c.win}}; box-shadow: {{c.shadow}}; display: flex; flex-direction: column;">
+    <div style="height: 32px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: {{c.winBar}}; border-bottom: 1px solid {{c.hair}}; font-size: 12px; color: {{c.text2}};">
+      <span style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57;"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E;"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #28C840;"></span>
+      <span style="flex-grow: 1; text-align: center;">WheelView.swift — bower</span>
+    </div>
+    <div style="flex-grow: 1; display: flex; min-height: 0;">
+      <div style="width: 150px; flex: none; background: {{c.side}}; border-right: 1px solid {{c.hair}}; padding: 10px 0; font-size: 12px; line-height: 22px; color: {{c.text2}};">
+        <div style="padding: 0 12px; font-size: 11px; font-weight: 600;">BOWER</div>
+        <div style="padding: 0 12px;">▾ Sources</div>
+        <div style="padding: 0 24px;">App.swift</div>
+        <div style="padding: 0 24px;">LayoutStore.swift</div>
+        <div style="padding: 0 24px; background: {{c.sel}}; color: {{c.text}};">WheelView.swift</div>
+        <div style="padding: 0 24px;">WheelGeometry.swift</div>
+        <div style="padding: 0 24px;">SnapPreview.swift</div>
+        <div style="padding: 0 24px;">TabStrip.swift</div>
+        <div style="padding: 0 24px;">Bento.swift</div>
+        <div style="padding: 0 12px;">▸ Tests</div>
+        <div style="padding: 0 12px;">Package.swift</div>
+      </div>
+      <div style="flex-grow: 1; padding: 12px 16px; font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 12px; line-height: 20px; white-space: pre; overflow: hidden;"><span style="color: {{c.kw}};">import</span> AppKit
+
+<span style="color: {{c.kw}};">final class</span> <span style="color: {{c.ty}};">SnapWheel</span>: <span style="color: {{c.ty}};">NSPanel</span> {
+    <span style="color: {{c.kw}};">let</span> geometry = <span style="color: {{c.ty}};">WheelGeometry</span>(diameter: <span style="color: {{c.nu}};">300</span>)
+    <span style="color: {{c.kw}};">var</span> hovered: <span style="color: {{c.ty}};">Slot</span>? {
+        <span style="color: {{c.kw}};">didSet</span> { preview.<span style="color: {{c.fn}};">update</span>(for: hovered) }
+    }
+
+    <span style="color: {{c.cm}};">// Opens centred on the cursor. 120 ms in, no bounce.</span>
+    <span style="color: {{c.kw}};">func</span> <span style="color: {{c.fn}};">open</span>(at point: <span style="color: {{c.ty}};">NSPoint</span>) {
+        <span style="color: {{c.fn}};">setFrameOrigin</span>(point - geometry.center)
+        alphaValue = <span style="color: {{c.nu}};">0</span>
+        <span style="color: {{c.fn}};">orderFrontRegardless</span>()
+        <span style="color: {{c.ty}};">NSAnimationContext</span>.<span style="color: {{c.fn}};">runAnimationGroup</span> { ctx <span style="color: {{c.kw}};">in</span>
+            ctx.duration = <span style="color: {{c.nu}};">0.12</span>
+            animator().alphaValue = <span style="color: {{c.nu}};">1</span>
+        }
+    }
+}</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 720px; top: 56px; width: 440px; height: 250px; border-radius: 10px; overflow: hidden; background: {{c.term}}; box-shadow: {{c.shadow}};">
+    <div style="height: 28px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: {{c.winBar}}; border-bottom: 1px solid {{c.hair}}; font-size: 12px; color: {{c.text2}};">
+      <span style="width: 12px; height: 12px; border-radius: 6px; background: #FF5F57;"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #FEBC2E;"></span><span style="width: 12px; height: 12px; border-radius: 6px; background: #28C840;"></span>
+      <span style="flex-grow: 1; text-align: center;">bower — zsh — 80×24</span>
+    </div>
+    <div style="padding: 10px 12px; font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-size: 12px; line-height: 18px; white-space: pre; color: {{c.termText}};"><span style="color: {{c.prompt}};">~/bower $</span> swift build -c release
+Building for production...
+[42/42] Linking Bower
+Build complete! (18.4s)
+<span style="color: {{c.prompt}};">~/bower $</span> git status -s
+ M Sources/Wheel/WheelView.swift
+ M Sources/Wheel/WheelGeometry.swift
+?? Sources/Overlay/SnapPreview.swift
+<span style="color: {{c.prompt}};">~/bower $</span> ▌</div>
+  </div>
+
+  <div style="position: absolute; left: 720px; top: 326px; width: 440px; height: 330px; border-radius: 10px; overflow: hidden; background: {{c.win}}; box-shadow: {{c.shadow}}; display: flex;">
+    <div style="width: 130px; flex: none; background: {{c.chatSide}}; color: {{c.chatSideText}}; padding: 38px 0 0; font-size: 12px; line-height: 24px;">
+      <div style="padding: 0 12px; font-weight: 700;">Bower</div>
+      <div style="padding: 0 12px; opacity: 0.8;"># general</div>
+      <div style="padding: 0 12px; background: rgba(255,255,255,0.18); font-weight: 600;"># design</div>
+      <div style="padding: 0 12px; opacity: 0.8;"># releases</div>
+      <div style="padding: 0 12px; opacity: 0.8;"># triage</div>
+    </div>
+    <div style="flex-grow: 1; display: flex; flex-direction: column; padding: 12px 14px; gap: 14px; font-size: 12px; line-height: 17px;">
+      <div style="font-weight: 700; padding-bottom: 8px; border-bottom: 1px solid {{c.hair}};"># design</div>
+      <div style="display: flex; gap: 8px;"><span style="width: 28px; height: 28px; flex: none; border-radius: 6px; background: #E08A3C; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;">MP</span><div><b>Mina Park</b> <span style="color: {{c.text2}};">9:32</span><br>Wheel geometry holds up at 2×. Pushing the tokens file now.</div></div>
+      <div style="display: flex; gap: 8px;"><span style="width: 28px; height: 28px; flex: none; border-radius: 6px; background: #3A8F6B; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;">SO</span><div><b>Sam Ortiz</b> <span style="color: {{c.text2}};">9:36</span><br>Can the ghost frame wait ~40 ms before it fades in? It flickers when I flick across wedges.</div></div>
+      <div style="display: flex; gap: 8px;"><span style="width: 28px; height: 28px; flex: none; border-radius: 6px; background: #5B6BD8; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center;">JL</span><div><b>Jo Lin</b> <span style="color: {{c.text2}};">9:40</span><br>Agreed. Also checking contrast on bright wallpapers.</div></div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 340px; bottom: 8px; width: 520px; height: 62px; border-radius: 18px; background: {{c.dock}}; backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%); box-shadow: 0 0 0 0.5px {{c.hair}}; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'SF Mono', ui-monospace, Menlo, monospace; font-weight: 700; font-size: 15px; color: #fff;">
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #5AA2F0; display: flex; align-items: center; justify-content: center;">▤</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #1E88E5; display: flex; align-items: center; justify-content: center;">◎</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #3A86FF; display: flex; align-items: center; justify-content: center;">@</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #D1394B; display: flex; align-items: center; justify-content: center;">#</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #2F6FEB; display: flex; align-items: center; justify-content: center;">{}</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #262626; color: #7CF29A; display: flex; align-items: center; justify-content: center;">&gt;_</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #EF6C35; display: flex; align-items: center; justify-content: center;">◆</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #F2C230; color: #3A2A00; display: flex; align-items: center; justify-content: center;">≡</span>
+    <span style="width: 46px; height: 46px; border-radius: 11px; background: #F2545B; display: flex; align-items: center; justify-content: center;">♪</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark"},"$preview":{"width":1200,"height":750}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dark = (this.props.theme ?? 'dark') !== 'light';
+    const c = dark ? {
+      sky: 'linear-gradient(180deg, #1b2440 0%, #5a3b5c 36%, #d0744a 58%, #f0a35e 66%)', sun: '#ffd59a', m1: '#3b2f4f', m2: '#22263d', m3: '#13172a', lake: 'rgba(240,163,94,0.45)',
+      bar: 'rgba(20,20,24,0.50)', barText: '#F5F5F7', win: '#1E1E1E', winBar: '#2A2A2C', side: '#252526', sel: 'rgba(255,255,255,0.10)', field: 'rgba(255,255,255,0.08)',
+      text: '#E6E6E6', text2: '#9DA0A6', hair: 'rgba(255,255,255,0.10)', shadow: '0 22px 70px rgba(0,0,0,0.55), 0 0 0 0.5px rgba(0,0,0,0.9)',
+      kw: '#FF7AB2', ty: '#6BDFFF', fn: '#67B7A4', nu: '#D9C97C', cm: '#7F8C98',
+      term: '#151515', termText: '#D8D8D8', prompt: '#7CF29A', page: '#232325', pageHero: '#3A5F8A',
+      chatSide: '#3B1F33', chatSideText: '#F1E6EE', dock: 'rgba(40,40,44,0.45)'
+    } : {
+      sky: 'linear-gradient(180deg, #8fc3e8 0%, #cfe3ef 42%, #f6dcb8 62%, #f3c58e 68%)', sun: '#fff3d6', m1: '#8aa7b8', m2: '#5f8197', m3: '#3f5d70', lake: 'rgba(255,255,255,0.5)',
+      bar: 'rgba(255,255,255,0.45)', barText: '#1D1D1F', win: '#FFFFFF', winBar: '#F3F3F3', side: '#F6F6F6', sel: 'rgba(0,0,0,0.07)', field: 'rgba(0,0,0,0.06)',
+      text: '#1F1F1F', text2: '#6B6B70', hair: 'rgba(0,0,0,0.10)', shadow: '0 22px 70px rgba(0,0,0,0.25), 0 0 0 0.5px rgba(0,0,0,0.2)',
+      kw: '#9B2393', ty: '#0B4F79', fn: '#326D74', nu: '#1C00CF', cm: '#5D6C79',
+      term: '#FFFFFF', termText: '#1F1F1F', prompt: '#1E7F3C', page: '#FFFFFF', pageHero: '#9CC3E6',
+      chatSide: '#4A2A42', chatSideText: '#F6EEF3', dock: 'rgba(255,255,255,0.4)'
+    };
+    return { c };
+  }
+}
+</script>
+</body>
+</html>

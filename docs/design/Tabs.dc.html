@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tabs Mode tab strip</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.16);--strip:#151517;--win:#262628;--accent:#3FD3C2;color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.10);--strip:#DCDCDF;--win:#FFFFFF;--accent:#0B7A72;color:var(--label)}
+.sec{border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.dark.sec{background:#0F1012}.light.sec{background:#ECECEF}
+.pane{border-radius:10px;overflow:hidden;box-shadow:0 0 0 .5px var(--hair),0 10px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;background:var(--win)}
+.strip{height:30px;display:flex;background:var(--strip);border-bottom:1px solid var(--hair);flex:none}
+.tab{flex:1 1 0;min-width:0;position:relative;display:flex;align-items:center;gap:6px;padding:0 6px 0 10px;font-size:12px;color:var(--label2);border:none;background:transparent;font-family:inherit;box-shadow:inset -1px 0 0 var(--hair);text-align:left}
+.tab .t{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab.active{background:var(--win);color:var(--label);box-shadow:none}
+.tab.hover{background:var(--fill)}
+.tab.focus::after{content:"";position:absolute;left:8px;right:8px;bottom:0;height:2px;border-radius:1px;background:var(--accent)}
+.x{width:16px;height:16px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex:none;color:var(--label2);visibility:hidden}
+.tab.hover .x,.tab.active .x{visibility:visible}
+.x.press{background:var(--fill2);color:var(--label)}
+.ai{width:16px;height:16px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font:700 8px/1 "SF Mono",ui-monospace,Menlo,monospace;flex:none}
+.a-code{background:#2F6FEB}.a-term{background:#262626;color:#7CF29A}.a-chat{background:#D1394B}.a-fig{background:#EF6C35}.a-web{background:#1E88E5}.a-notes{background:#F2C230;color:#3a2a00}.a-mail{background:#3A86FF}
+.body{flex:1;padding:16px;display:flex;flex-direction:column;gap:8px}
+.ln{height:8px;border-radius:4px;background:var(--fill2)}
+.cap{font-size:12px;color:var(--label2)}
+</style>
+</helmet>
+<div class="sf" style="width: 1440px; min-height: 1180px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Tabs Mode</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">Windows from any app share one pane and a thin strip drawn above it. 30 pt strip, tabs share the width equally (min 120 pt, then scroll). The accent underline marks the active tab of the focused group only.</p>
+  </header>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px;">
+    <sc-for list="{{themes}}" as="th" hint-placeholder-count="2">
+      <section class="sec {{th.cls}}">
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--label2);">{{th.name}} · one tab group</div>
+        <div class="pane" style="height: 230px;">
+          <div class="strip" role="tablist" aria-label="Main display tabs">
+            <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+              <button type="button" role="tab" class="tab {{t.cls}}" aria-selected="{{t.sel}}"><span class="ai {{t.app}}">{{t.g}}</span><span class="t">{{t.title}}</span><span class="x {{t.x}}" aria-label="Close tab"><svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><path d="M1 1l6 6M7 1 1 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span></button>
+            </sc-for>
+          </div>
+          <div class="body"><div class="ln" style="width: 40%;"></div><div class="ln" style="width: 72%;"></div><div class="ln" style="width: 64%;"></div><div class="ln" style="width: 80%;"></div><div class="ln" style="width: 30%;"></div></div>
+        </div>
+        <div class="cap">Code is active and focused (underline). Terminal is hovered: its close button appears. Close press shows a 16 pt filled square.</div>
+
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--label2); margin-top: 6px;">Tab states</div>
+        <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;">
+          <sc-for list="{{states}}" as="s" hint-placeholder-count="4">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div class="strip" style="border-radius: 6px; overflow: hidden; border: none; box-shadow: 0 0 0 .5px var(--hair);">
+                <button type="button" class="tab {{s.cls}}" style="box-shadow: none;"><span class="ai a-web">◎</span><span class="t">Release notes</span><span class="x {{s.x}}"><svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><path d="M1 1l6 6M7 1 1 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span></button>
+              </div>
+              <span class="cap">{{s.name}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--label2); margin-top: 6px;">Split into two groups</div>
+        <div style="display: flex; gap: 0; height: 220px; border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 .5px var(--hair), 0 10px 30px rgba(0,0,0,.25);">
+          <div class="pane" style="flex: 1 1 0; border-radius: 0; box-shadow: none; border-right: 1px solid var(--hair);">
+            <div class="strip">
+              <button type="button" class="tab active focus"><span class="ai a-code">{}</span><span class="t">WheelView.swift</span><span class="x"><svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><path d="M1 1l6 6M7 1 1 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span></button>
+              <button type="button" class="tab"><span class="ai a-term">&gt;_</span><span class="t">zsh</span></button>
+            </div>
+            <div class="body"><div class="ln" style="width: 60%;"></div><div class="ln" style="width: 80%;"></div><div class="ln" style="width: 45%;"></div></div>
+          </div>
+          <div class="pane" style="flex: 1 1 0; border-radius: 0; box-shadow: none;">
+            <div class="strip">
+              <button type="button" class="tab active"><span class="ai a-chat">#</span><span class="t"># design</span><span class="x"><svg aria-hidden="true" width="8" height="8" viewBox="0 0 8 8"><path d="M1 1l6 6M7 1 1 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path></svg></span></button>
+              <button type="button" class="tab"><span class="ai a-mail">@</span><span class="t">Inbox</span></button>
+              <button type="button" class="tab"><span class="ai a-notes">≡</span><span class="t">Notes</span></button>
+            </div>
+            <div class="body"><div class="ln" style="width: 50%;"></div><div class="ln" style="width: 75%;"></div><div class="ln" style="width: 66%;"></div></div>
+          </div>
+        </div>
+        <div class="cap">Left group has focus. Drag a tab across the 1 pt divider to move it; drop on a pane edge to split. ⌃Tab cycles within the focused group.</div>
+      </section>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      tabs: [
+        { app: 'a-code', g: '{}', title: 'WheelView.swift — bower', cls: 'active focus', sel: 'true', x: '' },
+        { app: 'a-term', g: '>_', title: 'bower — zsh', cls: 'hover', sel: 'false', x: '' },
+        { app: 'a-web', g: '◎', title: 'Bower 1.4 release notes', cls: '', sel: 'false', x: '' },
+        { app: 'a-chat', g: '#', title: '# design', cls: '', sel: 'false', x: '' }
+      ],
+      states: [
+        { name: 'Active · focused group', cls: 'active focus', x: '' },
+        { name: 'Inactive', cls: '', x: '' },
+        { name: 'Hover · close shown', cls: 'hover', x: '' },
+        { name: 'Close pressed', cls: 'hover', x: 'press' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

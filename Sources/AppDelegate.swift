@@ -1,0 +1,462 @@
+import AppKit
+import Carbon.HIToolbox
+import SwiftUI
+
+final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
+    private let store = Store()
+    private lazy var engine = Engine(store: store)
+    private let preview = SnapPreview()
+    private let toast = Toast()
+    private lazy var wheel = WheelController(engine: engine, preview: preview)
+    private let middle = MiddleClickTap()
+    private let watcher = WindowWatcher()
+    private let shortcutCenter = ShortcutCenter()
+    private lazy var tabs = TabsController(engine: engine)
+    private let keyTap = KeyTap()
+    private var statusItem: NSStatusItem!
+    private var keySnap: (win: Win, action: SnapAction)?
+    private var signalSource: DispatchSourceSignal?
+    private lazy var bar = LayoutsBar(engine: engine)
+    private let firstRun = FirstRunModel()
+    private var firstRunWindow: HostedWindow?
+    private var settingsWindow: HostedWindow?
+    private var saveWindow: HostedWindow?
+    private var workspacesWindow: HostedWindow?
+
+    @objc private func showSaveWorkspace() {
+        saveWindow?.close()
+        let st = store.state
+        let w = HostedWindow(title: String(localized: "Save Workspace"), size: CGSize(width: 640, height: 190), bareTitlebar: true, hideButtons: true) {
+            SaveWorkspaceView(summary: engine.workspaceSummary(),
+                              save: { [weak self] name in self?.engine.saveWorkspace(named: name); self?.saveWindow?.close() },
+                              cancel: { [weak self] in self?.saveWindow?.close() },
+                              name: st.currentWorkspace ?? String(localized: "Workspace \(st.workspaces.count + 1)"))
+        }
+        saveWindow = w
+        w.show()
+    }
+
+    private var recipeWindow: HostedWindow?
+
+    @objc private func newRecipe() { showRecipe(nil) }
+
+    @objc private func openRecipe(_ sender: NSMenuItem) { showRecipe(sender.representedObject as? String) }
+
+    /// Recipe.dc.html's sheet, as its own window since Bower has no main window to attach it to.
+    private func showRecipe(_ name: String?) {
+        recipeWindow?.close()
+        let model = RecipeModel(name: name, engine: engine)
+        let w = HostedWindow(title: String(localized: "Recipe"), size: CGSize(width: 1020, height: 604), bareTitlebar: true, hideButtons: true) {
+            RecipeEditorView(model: model) { [weak self] in self?.recipeWindow?.close() }
+        }
+        recipeWindow = w
+        w.show()
+    }
+
+    @objc private func loadWorkspace(_ sender: NSMenuItem) {
+        if let name = sender.representedObject as? String { engine.loadWorkspace(named: name) }
+    }
+
+    @objc private func showWorkspaces() {
+        if workspacesWindow == nil {
+            workspacesWindow = HostedWindow(title: String(localized: "Workspaces"), size: CGSize(width: 640, height: 280)) {
+                WorkspaceListView(store: store,
+                                  load: { [weak self] in self?.engine.loadWorkspace(named: $0) },
+                                  update: { [weak self] in self?.engine.saveWorkspace(named: $0) },
+                                  deleteAction: { [weak self] in self?.engine.deleteWorkspace(named: $0) })
+                    .frame(maxHeight: .infinity, alignment: .top)
+            }
+        }
+        workspacesWindow?.show()
+    }
+    private static let onboardedKey = "onboarded"
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem.button?.image = Self.glyph
+        statusItem.button?.imagePosition = .imageLeading
+        statusItem.button?.font = .monospacedDigitSystemFont(ofSize: 13, weight: .medium)
+        statusItem.menu = NSMenu()
+        statusItem.menu?.delegate = self
+
+        engine.onChange = { [weak self] in self?.refreshStatus() }
+        engine.onRetile = { [weak self] n, s in
+            self?.toast.show(n == 1 ? String(localized: "Retiled · 1 window on \(s.localizedName)")
+                                       : String(localized: "Retiled · \(n) windows on \(s.localizedName)"), on: s)
+        }
+        refreshStatus()
+        registerHotkeys()
+        engine.onShortcutsChanged = { [weak self] in self?.registerHotkeys() }
+        shortcutCenter.suspend = { Hotkeys.shared.removeAll() }
+        shortcutCenter.resume = { [weak self] in self?.registerHotkeys() }
+        wheel.onOpen = { [weak self] in self?.firstRun.wheelOpened = true }
+        wheel.onSettings = { [weak self] in self?.openSettings() }
+        wheel.onRecipe = { [weak self] in self?.showRecipe(nil) }
+
+        middle.enabled = { [weak self] in self?.store.state.middleClickWheel ?? true }
+        middle.onDown = { [weak self] in
+            guard let self, !self.wheel.isOpen else { return }
+            self.wheel.open(sticky: false)
+        }
+        middle.onDrag = { [weak self] in self?.wheel.hover(global: $0) }
+        middle.onUp = { [weak self] in
+            guard let self, self.wheel.isOpen else { return }
+            self.wheel.hover(global: NSEvent.mouseLocation)
+            self.wheel.release()
+        }
+
+        // `pkill` sends SIGTERM, which skips applicationWillTerminate; route it through terminate so windows unpark.
+        signal(SIGTERM, SIG_IGN)
+        signalSource = DispatchSource.makeSignalSource(signal: SIGTERM, queue: .main)
+        signalSource?.setEventHandler { NSApp.terminate(nil) }
+        signalSource?.resume()
+
+        if AX.trusted { start() } else { waitForAccess() }
+        if !AX.trusted || !UserDefaults.standard.bool(forKey: Self.onboardedKey) { showFirstRun() }
+    }
+
+    private func showFirstRun() {
+        let w = HostedWindow(title: String(localized: "Welcome to Bower"), size: CGSize(width: 640, height: 500), bareTitlebar: true) {
+            FirstRunView(model: firstRun) { [weak self] in
+                UserDefaults.standard.set(true, forKey: Self.onboardedKey)
+                self?.firstRunWindow?.close()
+            }
+        }
+        firstRunWindow = w
+        w.show()
+    }
+
+    @objc private func openSettings() {
+        if settingsWindow == nil {
+            settingsWindow = HostedWindow(title: String(localized: "Bower Settings"), size: CGSize(width: 760, height: 560), bareTitlebar: true) {
+                SettingsView(store: store, engine: engine, shortcuts: shortcutCenter)
+            }
+        }
+        settingsWindow?.show()
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        tabs.hideAll()
+        if AX.trusted { engine.unparkAll() }
+        store.flush()
+    }
+
+    /// FirstRun.dc.html: Bower polls the permission once a second and moves on by itself.
+    private func waitForAccess() {
+        // A first launch gets the welcome window's own button; a returning user who lost access gets the system prompt.
+        if UserDefaults.standard.bool(forKey: Self.onboardedKey) { AX.promptForAccess() }
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] t in
+            guard AX.trusted else { return }
+            t.invalidate()
+            self?.start()
+        }
+    }
+
+    private func start() {
+        firstRun.trusted = true
+        engine.recover()
+        middle.start()
+        engine.keepParked = { [weak self] in self?.tabs.isInactiveTab($0) ?? false }
+        engine.onWindowsChanged = { [weak self] in self?.tabs.applyAll() }
+        keyTap.combo = { [weak self] in self?.store.state.combo(.nextTab) }
+        keyTap.handle = { [weak self] in self?.tabs.cycleFocusedGroup() ?? false }
+        keyTap.start()
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.tabs.focusChanged()
+        }
+        TrackpadTap.shared.enabled = { [weak self] in self?.store.state.trackpadTapOn ?? false }
+        TrackpadTap.shared.onTap = { [weak self] in
+            guard let self, !self.wheel.isOpen else { return }
+            self.wheel.open(sticky: true)
+        }
+        TrackpadTap.shared.start()
+        watcher.onChange = { [weak self] in self?.engine.windowsChanged() }
+        watcher.start()
+        engine.windowsChanged()  // windows that came back after a restart find their layouts
+        // Display recovery: remember what's on each display, and react when one connects or disconnects.
+        engine.snapshotDisplays()
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in self?.engine.snapshotDisplays() }
+        NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.engine.displaysChanged()
+        }
+        refreshStatus()
+    }
+
+    // MARK: Hotkeys
+
+    /// Registers every shortcut row from Settings › Shortcuts. Two rows on one combination, or a combination
+    /// another app owns, are reported as conflicts instead.
+    private func registerHotkeys() {
+        Hotkeys.shared.removeAll()
+        let st = store.state
+        var owner: [Combo: ShortcutID] = [:]
+        var conflicts: [ShortcutID: String] = [:]
+        for id in ShortcutID.allCases where id != .nextTab {  // ⌃Tab goes through the key tap, so it can pass through
+            for (i, c) in st.bindings(id).enumerated() {
+                if let other = owner[c], other != id {
+                    conflicts[id] = String(localized: "Also used by \(other.title)")
+                    conflicts[other] = conflicts[other] ?? String(localized: "Also used by \(id.title)")
+                    continue
+                }
+                owner[c] = id
+                if register(id, i, c) == OSStatus(eventHotKeyExistsErr) { conflicts[id] = String(localized: "Already used by another app") }
+            }
+        }
+        shortcutCenter.conflicts = conflicts
+    }
+
+    private func register(_ id: ShortcutID, _ i: Int, _ c: Combo) -> OSStatus {
+        let hk = Hotkeys.shared
+        func snap(_ actions: [SnapAction]) -> OSStatus {
+            let a = actions[i]
+            return hk.add(c.key, c.mods, down: { [weak self] in self?.snapDown(a) }, up: { [weak self] in self?.snapUp(a) })
+        }
+        switch id {
+        case .wheel:
+            return hk.add(c.key, c.mods) { [weak self] in
+                guard let self else { return }
+                self.wheel.isOpen ? self.wheel.close() : self.wheel.open(sticky: true)
+            }
+        case .layoutsBar: return hk.add(c.key, c.mods) { [weak self] in self?.bar.toggle() }
+        case .switchLayout:
+            return hk.add(c.key, c.mods) { [weak self] in
+                guard let self else { return }
+                self.engine.switchTo(i)
+                self.firstRun.pressed.insert(i)
+                self.firstRun.lastSwitch = "\(i + 1) · \(self.store.state.layouts[i].name)"
+            }
+        case .sendLayout: return hk.add(c.key, c.mods) { [weak self] in self?.engine.sendFocused(to: i) }
+        case .saveWorkspace: return hk.add(c.key, c.mods) { [weak self] in self?.showSaveWorkspace() }
+        case .cycleLayouts: return hk.add(c.key, c.mods) { [weak self] in self?.engine.cycle() }
+        case .emptyLayout: return hk.add(c.key, c.mods) { [weak self] in self?.engine.switchToEmptyLayout() }
+        case .focus:
+            let dir: [Engine.Direction] = [.left, .right, .up, .down]
+            return hk.add(c.key, c.mods) { [weak self] in self?.engine.focusNeighbour(dir[i]) }
+        case .retile:
+            return hk.add(c.key, c.mods) { [weak self] in
+                guard let self else { return }
+                let s = AX.focusedWindow().flatMap { $0.frame }.flatMap { NSScreen.containing(ax: $0) } ?? NSScreen.underMouse
+                if let s { self.engine.retile(s) }
+            }
+        case .maximize: return snap([.maximize])
+        case .halvesLR: return snap([.leftHalf, .rightHalf])
+        case .halvesTB: return snap([.topHalf, .bottomHalf])
+        case .quarters: return snap([.topLeft, .topRight, .bottomLeft, .bottomRight])
+        case .thirds: return snap([.firstThird, .centerThird, .lastThird])
+        case .twoThirds: return snap([.firstTwoThirds, .lastTwoThirds])
+        case .nextTab: return noErr
+        }
+    }
+
+    /// The preview fades in on key-down; the window lands on key-up.
+    private func snapDown(_ action: SnapAction) {
+        guard keySnap?.action != action, let w = AX.focusedWindow(), let t = engine.target(action, for: w) else { return }
+        keySnap = (w, action)
+        preview.show(t.frame)
+    }
+
+    private func snapUp(_ action: SnapAction) {
+        guard let s = keySnap, s.action == action else { return }
+        keySnap = nil
+        engine.snap(s.win, action)
+        preview.hide()
+    }
+
+    // MARK: Status item
+
+    /// AppIcon.dc.html's 18 pt template glyph: "M3 15.5V9a6 6 0 0 1 12 0v6.5" over two posts.
+    private static let glyph: NSImage = {
+        let img = NSImage(size: NSSize(width: 18, height: 18), flipped: true) { _ in
+            let p = NSBezierPath()
+            p.move(to: NSPoint(x: 3, y: 15.5))
+            p.line(to: NSPoint(x: 3, y: 9))
+            p.appendArc(withCenter: NSPoint(x: 9, y: 9), radius: 6, startAngle: 180, endAngle: 360, clockwise: false)
+            p.line(to: NSPoint(x: 15, y: 15.5))
+            p.lineWidth = 1.6
+            p.lineCapStyle = .round
+            NSColor.black.setStroke()
+            p.stroke()
+            NSColor.black.setFill()
+            NSBezierPath(roundedRect: NSRect(x: 6, y: 10.5, width: 2.6, height: 5), xRadius: 0.6, yRadius: 0.6).fill()
+            NSBezierPath(roundedRect: NSRect(x: 9.4, y: 10.5, width: 2.6, height: 5), xRadius: 0.6, yRadius: 0.6).fill()
+            return true
+        }
+        img.isTemplate = true
+        img.accessibilityDescription = "Bower"
+        return img
+    }()
+
+    private func refreshStatus() {
+        let st = store.state
+        let n = st.current + 1
+        let title: String
+        switch st.statusStyle {
+        case .numberAndName: title = "\(n) · \(st.layouts[st.current].name)"
+        case .iconOnly: title = ""
+        case .numberOnly: title = "\(n)"
+        case .windowCount:
+            let c = AX.trusted ? engine.windowCount(in: st.current) : 0
+            title = c == 1 ? String(localized: "1 window") : String(localized: "\(c) windows")
+        }
+        statusItem.button?.title = title
+        statusItem.button?.setAccessibilityLabel(String(localized: "Bower, layout \(n), \(st.layouts[st.current].name)"))
+    }
+
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.removeAllItems()
+        let st = store.state
+
+        menu.addItem(.sectionHeader(title: String(localized: "Layouts")))
+        for (i, l) in st.layouts.enumerated() {
+            let item = NSMenuItem(title: "\(i + 1)  \(l.name)", action: #selector(switchLayout(_:)), keyEquivalent: "\(i + 1)")
+            item.keyEquivalentModifierMask = .option
+            item.target = self
+            item.tag = i
+            item.state = i == st.current ? .on : .off
+            if i != st.current, l.isUntitled {
+                item.attributedTitle = NSAttributedString(string: item.title, attributes: [.foregroundColor: NSColor.tertiaryLabelColor])
+            }
+            menu.addItem(item)
+        }
+        menu.addItem(.separator())
+
+        let screen = NSScreen.underMouse
+        let modeItem = NSMenuItem(title: String(localized: "Mode for This Display"), action: nil, keyEquivalent: "")
+        modeItem.submenu = modeMenu(for: screen)
+        menu.addItem(modeItem)
+
+        let workspaces = NSMenuItem(title: String(localized: "Workspaces"), action: nil, keyEquivalent: "")
+        let wsMenu = NSMenu()
+        let saveItem = NSMenuItem(title: String(localized: "Save Current Workspace…"), action: #selector(showSaveWorkspace), keyEquivalent: "s")
+        saveItem.keyEquivalentModifierMask = [.control, .option]
+        saveItem.target = self
+        wsMenu.addItem(saveItem)
+        if !store.state.workspaces.isEmpty {
+            wsMenu.addItem(.separator())
+            for ws in store.state.workspaces {
+                let it = NSMenuItem(title: ws.name, action: #selector(loadWorkspace(_:)), keyEquivalent: "")
+                it.target = self
+                it.representedObject = ws.name
+                it.state = ws.name == store.state.currentWorkspace ? .on : .off
+                wsMenu.addItem(it)
+            }
+        }
+        wsMenu.addItem(.separator())
+        let all = NSMenuItem(title: String(localized: "Show All Workspaces…"), action: #selector(showWorkspaces), keyEquivalent: "")
+        all.target = self
+        wsMenu.addItem(all)
+        workspaces.submenu = wsMenu
+        menu.addItem(workspaces)
+
+        let app = NSWorkspace.shared.frontmostApplication
+        if let app, let id = app.bundleIdentifier, app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
+            let route = NSMenuItem(title: String(localized: "Route “\(app.localizedName ?? id)” to Layout"), action: nil, keyEquivalent: "")
+            let sub = NSMenu()
+            for (i, l) in st.layouts.enumerated() {
+                let it = NSMenuItem(title: "\(i + 1)  \(l.name)", action: #selector(routeApp(_:)), keyEquivalent: "")
+                it.target = self
+                it.tag = i
+                it.representedObject = id
+                it.state = st.routes[id] == i ? .on : .off
+                sub.addItem(it)
+            }
+            route.submenu = sub
+            menu.addItem(route)
+        }
+
+        let pin = NSMenuItem(title: String(localized: "Pin This Display"), action: #selector(togglePin(_:)), keyEquivalent: "")
+        pin.target = self
+        pin.state = screen.map { st.pinned.contains($0.uuid) } == true ? .on : .off
+        pin.representedObject = screen
+        menu.addItem(pin)
+
+        let recipes = NSMenuItem(title: String(localized: "Recipes"), action: nil, keyEquivalent: "")
+        let rMenu = NSMenu()
+        let new = NSMenuItem(title: String(localized: "New Recipe…"), action: #selector(newRecipe), keyEquivalent: "")
+        new.target = self
+        rMenu.addItem(new)
+        let names = RecipeFiles.names()
+        if !names.isEmpty { rMenu.addItem(.separator()) }
+        for n in names {
+            let it = NSMenuItem(title: n, action: #selector(openRecipe(_:)), keyEquivalent: "")
+            it.target = self
+            it.representedObject = n
+            rMenu.addItem(it)
+        }
+        recipes.submenu = rMenu
+        menu.addItem(recipes)
+        menu.addItem(.separator())
+
+        let settings = NSMenuItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",")
+        settings.target = self
+        menu.addItem(settings)
+        let about = NSMenuItem(title: String(localized: "About Bower"), action: #selector(about), keyEquivalent: "")
+        about.target = self
+        menu.addItem(about)
+        menu.addItem(NSMenuItem(title: String(localized: "Quit Bower"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+    }
+
+    private func modeMenu(for screen: NSScreen?) -> NSMenu {
+        let sub = NSMenu()
+        sub.autoenablesItems = false
+        guard let screen else { return sub }
+        sub.addItem(.sectionHeader(title: screen.localizedName))
+        let current = engine.mode(of: screen)
+        for m in WindowMode.allCases {
+            let it = NSMenuItem(title: m.title, action: #selector(setMode(_:)), keyEquivalent: "")
+            it.target = self
+            it.representedObject = (m, screen)
+            it.state = m == current ? .on : .off
+            sub.addItem(it)
+        }
+        sub.addItem(.separator())
+        let all = NSMenuItem(title: String(localized: "Same for All Displays"), action: #selector(sameForAll(_:)), keyEquivalent: "")
+        all.target = self
+        all.representedObject = current
+        all.isEnabled = NSScreen.screens.contains { engine.mode(of: $0) != current }
+        sub.addItem(all)
+        return sub
+    }
+
+    @objc private func switchLayout(_ sender: NSMenuItem) { engine.switchTo(sender.tag) }
+
+    @objc private func routeApp(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? String else { return }
+        // Choosing the checked layout again removes the route.
+        engine.route(bundleID: id, to: store.state.routes[id] == sender.tag ? nil : sender.tag)
+    }
+
+    @objc private func togglePin(_ sender: NSMenuItem) {
+        if let s = sender.representedObject as? NSScreen { engine.togglePin(s) }
+    }
+
+    @objc private func setMode(_ sender: NSMenuItem) {
+        if let (m, s) = sender.representedObject as? (WindowMode, NSScreen) { engine.setMode(m, for: s) }
+    }
+
+    @objc private func sameForAll(_ sender: NSMenuItem) {
+        if let m = sender.representedObject as? WindowMode { engine.setModeForAllDisplays(m) }
+    }
+
+    private var aboutWindow: NSWindow?
+
+    /// The same About window as Magpie's: icon, version, who made it, GitHub and website.
+    @objc private func about() {
+        if aboutWindow == nil {
+            let window = NSWindow(contentViewController: NSHostingController(rootView: AboutView()))
+            window.styleMask = [.titled, .closable, .fullSizeContentView]
+            window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
+            window.title = String(localized: "About Bower")
+            window.isMovableByWindowBackground = true
+            window.isReleasedWhenClosed = false
+            window.collectionBehavior = [.moveToActiveSpace]
+            [.miniaturizeButton, .zoomButton].forEach { window.standardWindowButton($0)?.isHidden = true }
+            window.center()
+            aboutWindow = window
+        }
+        NSApp.activate()
+        aboutWindow?.makeKeyAndOrderFront(nil)
+        aboutWindow?.orderFrontRegardless()
+    }
+}

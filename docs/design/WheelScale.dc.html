@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Snap Wheel scale and accessibility</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--hud:rgba(36,36,40,.72);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--hud:rgba(250,250,252,.78);color:var(--label)}
+.mat{backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%)}
+.wall.dark{background:radial-gradient(55% 45% at 15% 20%,#c35f2c,rgba(195,95,44,0) 70%),radial-gradient(45% 55% at 85% 25%,#1d7380,rgba(29,115,128,0) 70%),radial-gradient(70% 60% at 55% 100%,#2c3561,rgba(44,53,97,0) 72%),repeating-linear-gradient(125deg,rgba(255,255,255,.06) 0 2px,rgba(255,255,255,0) 2px 16px),#14161b}
+.wall.light{background:radial-gradient(55% 45% at 15% 20%,#f3a76d,rgba(243,167,109,0) 70%),radial-gradient(45% 55% at 85% 25%,#86cfd1,rgba(134,207,209,0) 70%),radial-gradient(70% 60% at 55% 100%,#b9c4ef,rgba(185,196,239,0) 72%),repeating-linear-gradient(125deg,rgba(0,0,0,.05) 0 2px,rgba(0,0,0,0) 2px 16px),#efe9df}
+.cell{border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;padding:5px 10px;border-radius:8px;background:var(--hud)}
+</style>
+</helmet>
+<div class="sf" style="width: 1960px; min-height: 2200px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 36px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Scale, contrast, keyboard and motion</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">Geometry is defined in points, so 2× is the same drawing at Retina density. Inner wedges are 48 pt deep and at least 29 pt wide at their narrowest point (the inner edge); outer slots are 52 pt deep and 70 pt wide or more. Both clear the 28 pt minimum.</p>
+  </header>
+
+  <div style="display: flex; gap: 24px; align-items: flex-start;">
+    <div class="cell wall dark"><span class="tag mat">1× · 300 pt</span><dc-import name="Wheel" theme="dark" state="inner" hint-size="420px,460px"></dc-import></div>
+    <div class="cell wall dark"><span class="tag mat">2× · 600 px backing store</span><dc-import name="Wheel" theme="dark" state="inner" scale="{{two}}" hint-size="840px,920px"></dc-import></div>
+    <div class="cell wall light"><span class="tag mat">1× · light</span><dc-import name="Wheel" theme="light" state="inner" hint-size="420px,460px"></dc-import></div>
+  </div>
+
+  <div style="display: flex; gap: 24px; align-items: flex-start;">
+    <div class="cell wall dark"><span class="tag mat">Increase Contrast · dark</span><dc-import name="Wheel" theme="dark" state="inner" contrast="{{yes}}" hint-size="420px,460px"></dc-import></div>
+    <div class="cell wall light"><span class="tag mat">Increase Contrast · light</span><dc-import name="Wheel" theme="light" state="inner" contrast="{{yes}}" hint-size="420px,460px"></dc-import></div>
+    <div class="cell wall dark"><span class="tag mat">Keyboard focus · dark</span><dc-import name="Wheel" theme="dark" state="focus" hint-size="420px,460px"></dc-import></div>
+    <div class="cell wall light"><span class="tag mat">Keyboard focus · light</span><dc-import name="Wheel" theme="light" state="focus" hint-size="420px,460px"></dc-import></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; font-size: 13px; line-height: 19px; color: rgba(235,235,245,.72);">
+    <p style="margin: 0;"><b style="color: #F5F5F7;">Increase Contrast</b> swaps the HUD material for an opaque fill (97%), outlines every wedge with a 1 pt stroke at 72% label colour, and draws glyph frames in the primary label colour instead of secondary.</p>
+    <p style="margin: 0;"><b style="color: #F5F5F7;">Keyboard</b>: ⌃⌥Space opens with focus on the wedge under the cursor. Arrow keys step through the inner ring, Tab moves to the outer ring, → opens a ▸ arc, Return runs, Esc cancels. Focus is a 2 pt accent ring plus an accent tint; hover is a solid accent fill, so the two never look alike.</p>
+  </div>
+
+  <section style="display: flex; flex-direction: column; gap: 16px;">
+    <h3 style="margin: 0; font-size: 18px; font-weight: 600;">Reduce Motion: open sequence</h3>
+    <sc-for list="{{tracks}}" as="tr" hint-placeholder-count="2">
+      <div class="wall dark" style="border-radius: 16px; padding: 16px; display: flex; gap: 20px; align-items: center;">
+        <div class="mat" style="width: 240px; flex: none; padding: 10px 12px; border-radius: 10px; background: rgba(36,36,40,.72); display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 14px; font-weight: 600;">{{tr.name}}</span>
+          <span style="font-size: 12px; line-height: 17px; color: rgba(235,235,245,.66);">{{tr.desc}}</span>
+        </div>
+        <sc-for list="{{tr.frames}}" as="f" hint-placeholder-count="5">
+          <div style="width: 200px; display: flex; flex-direction: column; align-items: center; gap: 6px;">
+            <div style="width: 168px; height: 184px; opacity: {{f.op}}; transform: scale({{f.sc}}); transform-origin: 50% 45%;">
+              <dc-import name="Wheel" theme="dark" state="idle" scale="{{small}}" hint-size="168px,184px"></dc-import>
+            </div>
+            <span class="mat" style="font-size: 12px; font-weight: 500; padding: 3px 8px; border-radius: 6px; background: rgba(36,36,40,.72); font-variant-numeric: tabular-nums;">{{f.t}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-for>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1960,"height":2200}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const std = [0, 30, 60, 90, 120].map((t) => { const k = t / 120; const e = 1 - Math.pow(1 - k, 3); return { t: t + ' ms', op: e.toFixed(2), sc: (0.92 + 0.08 * e).toFixed(3) }; });
+    const red = [0, 20, 40, 60, 80].map((t) => ({ t: t + ' ms', op: (t / 80).toFixed(2), sc: 1 }));
+    return {
+      yes: true, two: 2, small: 0.4,
+      tracks: [
+        { name: 'Standard · 120 ms', desc: 'Opacity 0→1 and scale 0.92→1 from the cursor, ease-out cubic. Close: 80 ms fade.', frames: std },
+        { name: 'Reduce Motion · 80 ms', desc: 'Opacity only, linear. No scale on open, no arc growth on ▸; arcs and ghost frames appear in place.', frames: red }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

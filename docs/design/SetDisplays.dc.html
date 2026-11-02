@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings · Displays</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.14);--win:#1E1E20;--chrome:#2A2A2D;--group:rgba(255,255,255,.05);--control:#3A3A3E;--accent:#3FD3C2;--accentFill:rgba(63,211,194,.20);--onAccent:#04231F;--screen:#2E3A52;--stage:rgba(0,0,0,.25);--shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(0,0,0,.9);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.09);--win:#F2F2F4;--chrome:#E6E6E9;--group:#FFFFFF;--control:#FFFFFF;--accent:#0B7A72;--accentFill:rgba(11,122,114,.14);--onAccent:#FFFFFF;--screen:#A9C1DA;--stage:rgba(0,0,0,.05);--shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.2);color:var(--label)}
+.win{width:760px;height:560px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:var(--shadow);display:flex;flex-direction:column;font-size:13px;position:relative}
+.chrome{background:var(--chrome);border-bottom:1px solid var(--hair);flex:none;position:relative}
+.tl{position:absolute;left:14px;top:9px;display:flex;gap:8px}.tl span{width:12px;height:12px;border-radius:6px}
+.ttl{height:30px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.tools{display:flex;justify-content:center;gap:2px;padding:0 0 6px}
+.tool{width:78px;height:48px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:11px;color:var(--label2);border:none;background:transparent}
+.tool.sel{background:var(--fill2);color:var(--label)}.tool.sel svg{color:var(--accent)}
+.content{flex:1;min-height:0;padding:16px 24px;display:flex;flex-direction:column;gap:10px}
+.group{background:var(--group);border-radius:9px;box-shadow:0 0 0 .5px var(--hair)}
+.row{min-height:38px;box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:5px 12px;border-top:1px solid var(--hair)}.row:first-child{border-top:none}
+.grow{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}
+.sub{font-size:11px;line-height:14px;color:var(--label2)}
+.gh{font-size:12px;font-weight:600;color:var(--label2);padding:0 4px}
+.toggle{width:34px;height:20px;border-radius:10px;background:var(--fill2);position:relative;flex:none;border:none;padding:0}
+.toggle::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:8px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.toggle.on{background:var(--accent)}.toggle.on::after{left:16px}
+.pop{height:26px;padding:0 8px 0 10px;border-radius:6px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 1.5px rgba(0,0,0,.14);display:inline-flex;align-items:center;gap:10px;font:inherit;color:var(--label);border:none;white-space:nowrap}
+.pop::after{content:"\2304";font-size:11px;color:var(--label2);transform:translateY(-3px)}
+.disp{position:absolute;border-radius:5px;background:var(--screen);box-shadow:0 0 0 1px var(--hair);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4);border:none;font-family:inherit}
+.disp.sel{box-shadow:0 0 0 2.5px var(--accent)}
+.mb{position:absolute;left:0;right:0;top:0;height:6px;border-radius:5px 5px 0 0;background:rgba(255,255,255,.55)}
+.badge{position:absolute;right:6px;top:10px;width:18px;height:18px;border-radius:9px;background:var(--accent);color:var(--onAccent);display:flex;align-items:center;justify-content:center}
+.off{width:44px;height:28px;border-radius:4px;border:1.5px dashed var(--label3);box-sizing:border-box;flex:none}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+</style>
+</helmet>
+<div class="sf" style="width: 1680px; min-height: 720px; box-sizing: border-box; padding: 40px 48px; background: #0B0C0E; display: flex; gap: 64px;">
+  <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      <span class="lbl">{{t.name}}</span>
+      <div class="win {{t.cls}}">
+        <div class="chrome">
+          <div class="tl"><span style="background: #FF5F57;"></span><span style="background: #FEBC2E;"></span><span style="background: #28C840;"></span></div>
+          <div class="ttl">Displays</div>
+          <div class="tools" role="tablist">
+            <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="6">
+              <button type="button" role="tab" class="tool {{tb.cls}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 20 20"><path d="{{tb.d}}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{tb.name}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div class="content">
+          <div style="position: relative; height: 136px; border-radius: 9px; background: var(--stage); box-shadow: inset 0 0 0 .5px var(--hair);">
+            <button type="button" class="disp sel" style="left: 210px; top: 22px; width: 160px; height: 90px;" aria-label="Studio Display, main, selected"><span class="mb"></span>Studio Display<span style="font-weight: 500; opacity: .85;">Main · 3 · Dev</span></button>
+            <button type="button" class="disp" style="left: 378px; top: 14px; width: 60px; height: 106px;" aria-label="LG UltraFine, pinned">LG<span style="font-weight: 500; opacity: .85;">4 · Comms</span><span class="badge"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 16 16"><path d="M10.5 1.5 14.5 5.5 12 6.5 9.5 9l.5 3.5-1 1-3-3-3.5 3.5M5.5 10.5l-3-3 1-1L7 7l2.5-2.5 1-2.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"></path></svg></span></button>
+            <span class="sub" style="position: absolute; left: 12px; bottom: 8px;">Arrangement follows System Settings. Click a display to edit it.</span>
+          </div>
+          <div class="gh">Studio Display</div>
+          <div class="group">
+            <div class="row"><div class="grow"><span>Window mode</span></div><span class="pop">Tabs</span></div>
+            <div class="row"><div class="grow"><span>Pin this display</span><span class="sub">A pinned display keeps its windows when you switch layouts elsewhere.</span></div><button type="button" class="toggle" role="switch" aria-checked="false" aria-label="Pin Studio Display"></button></div>
+          </div>
+          <div class="gh">Offline shelf</div>
+          <div class="group">
+            <sc-for list="{{shelf}}" as="s" hint-placeholder-count="2">
+              <div class="row"><span class="off"></span><div class="grow"><span>{{s.name}}</span><span class="sub">{{s.meta}}</span></div><span class="pop">Move to…</span></div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sel = 2;
+    const T = [['General', 'M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4M10 6.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'], ['Layouts', 'M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z'], ['Displays', 'M2.5 3.5h15v10h-15zM7 17h6M10 13.5V17'], ['Shortcuts', 'M2 5.5h16v9H2zM5 8.5h1M8 8.5h1M11 8.5h1M14 8.5h1M6 11.5h8'], ['Snap Wheel', 'M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15zM10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM10 2.5V7M10 13v4.5M2.5 10H7M13 10h4.5'], ['AI', 'M5 2.5h7l3 3v12H5zM12 2.5v3h3M7.5 9.5h5M7.5 12h5M7.5 14.5h3']];
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      tabs: T.map((x, i) => ({ name: x[0], d: x[1], cls: i === sel ? 'sel' : '' })),
+      shelf: [
+        { name: 'Dell U2720Q', meta: 'Last seen Oct 28 · 3 layouts, 7 windows saved · Bento Box' },
+        { name: 'Sidecar (iPad)', meta: 'Last seen Sep 30 · 1 layout, 2 windows saved · Native' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>First run</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.14);--win:#1E1E20;--group:rgba(255,255,255,.05);--control:#3A3A3E;--accent:#3FD3C2;--accentFill:rgba(63,211,194,.18);--onAccent:#04231F;--ok:#4CD97B;--shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(0,0,0,.9);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.09);--win:#F4F4F6;--group:#FFFFFF;--control:#FFFFFF;--accent:#0B7A72;--accentFill:rgba(11,122,114,.12);--onAccent:#FFFFFF;--ok:#1E7F3C;--shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.2);color:var(--label)}
+.win{width:640px;height:500px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:var(--shadow);display:flex;flex-direction:column;font-size:13px;position:relative}
+.tl{position:absolute;left:14px;top:12px;display:flex;gap:8px}.tl span{width:12px;height:12px;border-radius:6px}
+.step{display:flex;gap:14px;padding:14px;border-radius:10px;align-items:flex-start}
+.step.active{background:var(--group);box-shadow:0 0 0 .5px var(--hair),0 0 0 2px var(--accentFill)}
+.step.todo{opacity:.55}
+.ind{width:26px;height:26px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;background:var(--fill2)}
+.step.active .ind{background:var(--accent);color:var(--onAccent)}
+.step.done .ind{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ok);color:var(--ok)}
+.sub{font-size:12px;line-height:17px;color:var(--label2)}
+.btn{height:28px;padding:0 14px;border-radius:7px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 1.5px rgba(0,0,0,.14);border:none;font:inherit;color:var(--label);white-space:nowrap}
+.btn.primary{background:var(--accent);color:var(--onAccent);font-weight:500}
+.btn[disabled]{opacity:.45}
+.kc{min-width:26px;height:26px;padding:0 6px;box-sizing:border-box;border-radius:6px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1.5px 0 var(--hair);font-size:12px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.kc.hit{background:var(--accent);color:var(--onAccent)}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+</style>
+</helmet>
+<div class="sf" style="width: 1440px; min-height: 1240px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">First run</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">Three steps, each unlocked by the one before. Bower polls the Accessibility permission once a second, so the window moves on by itself when access is granted.</p>
+  </header>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 64px;">
+    <sc-for list="{{frames}}" as="f" hint-placeholder-count="4">
+      <div class="{{f.cls}}" style="display: flex; flex-direction: column; gap: 14px;">
+        <span class="lbl">{{f.name}}</span>
+        <div class="win">
+          <div class="tl"><span style="background: #FF5F57;"></span><span style="background: var(--fill2);"></span><span style="background: var(--fill2);"></span></div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 30px 0 14px;">
+            <svg role="img" aria-label="Bower icon" width="64" height="64" viewBox="100 100 824 824"><rect x="100" y="100" width="824" height="824" rx="185" fill="#0F3F3C"></rect><rect x="300" y="540" width="200" height="120" rx="22" fill="#3FD3C2"></rect><rect x="524" y="540" width="200" height="120" rx="22" fill="#F3E6C8"></rect><rect x="300" y="684" width="200" height="120" rx="22" fill="#4C7BE8"></rect><rect x="524" y="684" width="200" height="120" rx="22" fill="#9FE8DD"></rect><path d="M234 830C234 400 360 226 512 226S790 400 790 830" fill="none" stroke="#F0D9A3" stroke-width="22" stroke-linecap="round"></path><path d="M266 830C266 430 380 266 512 266S758 430 758 830" fill="none" stroke="#D9B66E" stroke-width="22" stroke-linecap="round"></path></svg>
+            <span style="font-size: 20px; font-weight: 700;">Welcome to Bower</span>
+            <span class="sub">Name a layout for each project and switch the whole desk with ⌥1–9.</span>
+          </div>
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; padding: 0 24px;">
+            <sc-for list="{{f.steps}}" as="s" hint-placeholder-count="3">
+              <div class="step {{s.cls}}">
+                <span class="ind">{{s.ind}}</span>
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-weight: 600;">{{s.title}}</span>
+                  <span class="sub">{{s.desc}}</span>
+                  <sc-if value="{{s.grant}}" hint-placeholder-val="{{false}}">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-top: 6px;">
+                      <button type="button" class="btn primary">Open System Settings</button>
+                      <span role="status" class="sub" style="display: inline-flex; align-items: center; gap: 6px;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="var(--fill2)" stroke-width="2"></circle><path d="M8 2a6 6 0 0 1 6 6" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"></path></svg>Waiting for permission…</span>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{s.keys}}" hint-placeholder-val="{{false}}">
+                    <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px;">
+                      <span class="kc hit">⌥</span><span class="kc hit">1</span><span class="sub" style="margin: 0 6px;">then</span><span class="kc">⌥</span><span class="kc">2</span>
+                      <span role="status" style="margin-left: 10px; font-size: 12px; color: var(--ok); font-weight: 600;">✓ Switched to 1 · Mail</span>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 24px; border-top: 1px solid var(--hair);">
+            <button type="button" class="btn" style="background: transparent; box-shadow: none; color: var(--label2);">Skip Setup</button>
+            <button type="button" class="btn primary" disabled="{{f.locked}}">Continue</button>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const waiting = [
+      { ind: '1', cls: 'active', title: 'Grant Accessibility access', desc: 'macOS requires it to move and resize other apps’ windows. Turn on Bower in Privacy & Security › Accessibility.', grant: true, keys: false },
+      { ind: '2', cls: 'todo', title: 'Try ⌥1 and ⌥2', desc: 'Switch between two starter layouts. No animation: the desk just changes.', grant: false, keys: false },
+      { ind: '3', cls: 'todo', title: 'Open the Snap Wheel', desc: 'Middle-click anywhere, or press ⌃⌥Space.', grant: false, keys: false }
+    ];
+    const trying = [
+      { ind: '✓', cls: 'done', title: 'Accessibility granted', desc: 'You can revoke it any time in System Settings.', grant: false, keys: false },
+      { ind: '2', cls: 'active', title: 'Try ⌥1 and ⌥2', desc: 'Switch between two starter layouts. No animation: the desk just changes.', grant: false, keys: true },
+      { ind: '3', cls: 'todo', title: 'Open the Snap Wheel', desc: 'Middle-click anywhere, or press ⌃⌥Space.', grant: false, keys: false }
+    ];
+    return {
+      frames: [
+        { cls: 'dark', name: 'Dark · waiting for permission', steps: waiting, locked: true },
+        { cls: 'dark', name: 'Dark · step 2 in progress', steps: trying, locked: true },
+        { cls: 'light', name: 'Light · waiting for permission', steps: waiting, locked: true },
+        { cls: 'light', name: 'Light · step 2 in progress', steps: trying, locked: true }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Settings · AI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.10);--fill:rgba(255,255,255,.07);--fill2:rgba(255,255,255,.14);--win:#1E1E20;--chrome:#2A2A2D;--group:rgba(255,255,255,.05);--control:#3A3A3E;--field:rgba(255,255,255,.06);--accent:#3FD3C2;--accentFill:rgba(63,211,194,.20);--onAccent:#04231F;--ok:#4CD97B;--danger:#FF7066;--shadow:0 24px 70px rgba(0,0,0,.6),0 0 0 .5px rgba(0,0,0,.9);color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill:rgba(0,0,0,.045);--fill2:rgba(0,0,0,.09);--win:#F2F2F4;--chrome:#E6E6E9;--group:#FFFFFF;--control:#FFFFFF;--field:#F7F7F8;--accent:#0B7A72;--accentFill:rgba(11,122,114,.14);--onAccent:#FFFFFF;--ok:#1E7F3C;--danger:#C9302C;--shadow:0 24px 70px rgba(0,0,0,.22),0 0 0 .5px rgba(0,0,0,.2);color:var(--label)}
+.win{width:760px;height:560px;border-radius:12px;overflow:hidden;background:var(--win);box-shadow:var(--shadow);display:flex;flex-direction:column;font-size:13px;position:relative}
+.chrome{background:var(--chrome);border-bottom:1px solid var(--hair);flex:none;position:relative}
+.tl{position:absolute;left:14px;top:9px;display:flex;gap:8px}.tl span{width:12px;height:12px;border-radius:6px}
+.ttl{height:30px;display:flex;align-items:center;justify-content:center;font-weight:600}
+.tools{display:flex;justify-content:center;gap:2px;padding:0 0 6px}
+.tool{width:78px;height:48px;border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:inherit;font-size:11px;color:var(--label2);border:none;background:transparent}
+.tool.sel{background:var(--fill2);color:var(--label)}.tool.sel svg{color:var(--accent)}
+.content{flex:1;min-height:0;padding:18px 28px;display:flex;flex-direction:column;gap:12px}
+.group{background:var(--group);border-radius:9px;box-shadow:0 0 0 .5px var(--hair)}
+.row{min-height:44px;box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:6px 12px;border-top:1px solid var(--hair)}.row:first-child{border-top:none}
+.k{width:110px;flex:none}
+.sub{font-size:11px;line-height:15px;color:var(--label2)}
+.seg{display:inline-flex;padding:2px;border-radius:8px;background:var(--fill)}
+.seg button{height:24px;padding:0 12px;border:none;border-radius:6px;background:transparent;font:inherit;font-size:12px;color:var(--label)}
+.seg .on{background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 2px rgba(0,0,0,.15);font-weight:500}
+.field{flex:1;min-width:0;height:28px;box-sizing:border-box;border-radius:6px;background:var(--field);box-shadow:inset 0 0 0 .5px var(--hair);border:none;padding:0 9px;font:inherit;color:var(--label)}
+.field.mono{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12px}
+.pop{height:28px;padding:0 8px 0 10px;border-radius:6px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 1.5px rgba(0,0,0,.14);display:inline-flex;align-items:center;justify-content:space-between;gap:10px;font:inherit;color:var(--label);border:none;white-space:nowrap;box-sizing:border-box}
+.pop::after{content:"\2304";font-size:11px;color:var(--label2);transform:translateY(-3px)}
+.btn{height:28px;padding:0 14px;border-radius:7px;background:var(--control);box-shadow:0 0 0 .5px var(--hair),0 1px 1.5px rgba(0,0,0,.14);border:none;font:inherit;color:var(--label);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.btn.icon{width:28px;padding:0;justify-content:center}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;line-height:16px}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+.pill{height:30px;box-sizing:border-box;padding:0 12px;border-radius:8px;background:var(--win);box-shadow:0 0 0 .5px var(--hair);display:inline-flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap}
+</style>
+</helmet>
+<div class="sf" style="width: 1680px; min-height: 860px; box-sizing: border-box; padding: 40px 48px; background: #0B0C0E; display: flex; gap: 64px;">
+  <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+    <div class="{{t.cls}}" style="display: flex; flex-direction: column; gap: 14px; width: 760px;">
+      <span class="lbl">{{t.name}}</span>
+      <div class="win">
+        <div class="chrome">
+          <div class="tl"><span style="background: #FF5F57;"></span><span style="background: #FEBC2E;"></span><span style="background: #28C840;"></span></div>
+          <div class="ttl">AI</div>
+          <div class="tools" role="tablist">
+            <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="6">
+              <button type="button" role="tab" class="tool {{tb.cls}}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 20 20"><path d="{{tb.d}}" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{tb.name}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div class="content">
+          <div class="group">
+            <div class="row"><span class="k">Preset</span><div class="seg" role="radiogroup" aria-label="Endpoint preset"><sc-for list="{{t.presets}}" as="p" hint-placeholder-count="3"><button type="button" class="{{p.cls}}" role="radio" aria-checked="{{p.on}}">{{p.name}}</button></sc-for></div></div>
+            <div class="row"><label class="k" for="url-{{t.cls}}">Endpoint URL</label><input id="url-{{t.cls}}" class="field mono" value="{{t.url}}"></div>
+            <div class="row"><span class="k">Model</span><span class="pop" style="flex: 1;">{{t.model}}</span><button type="button" class="btn icon" aria-label="Refresh model list"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16"><path d="M13.25 8A5.25 5.25 0 1 1 11.7 4.3M13.25 2.25V5.5H10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+            <div class="row"><label class="k" for="key-{{t.cls}}">API key</label><div style="flex: 1; display: flex; flex-direction: column; gap: 4px;"><input id="key-{{t.cls}}" class="field" type="password" value="{{t.key}}" placeholder="Not needed for local endpoints"><span class="sub" style="display: flex; align-items: center; gap: 4px;"><svg aria-hidden="true" width="11" height="11" viewBox="0 0 12 12"><path d="M3 5.5V4a3 3 0 0 1 6 0v1.5M2.5 5.5h7v5h-7z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"></path></svg>Stored in your login Keychain, never in Bower's settings file.</span></div></div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="btn">Test Connection</button>
+            <span class="status" role="status" style="color: {{t.statusColor}};"><span style="font-weight: 700;">{{t.statusIcon}}</span>{{t.status}}</span>
+          </div>
+          <p class="sub" style="margin: 0;">Recipes are sent only to this endpoint. With Ollama or LM Studio nothing leaves your Mac.</p>
+        </div>
+      </div>
+      <span class="lbl" style="margin-top: 8px;">Test states</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <span class="pill" style="color: var(--label2);">Not tested</span>
+        <span class="pill"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="var(--fill2)" stroke-width="2"></circle><path d="M8 2a6 6 0 0 1 6 6" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"></path></svg>Testing…</span>
+        <span class="pill" style="color: var(--ok);"><b>✓</b>Connected · 4 models · 142 ms</span>
+        <span class="pill" style="color: var(--danger);"><b>✕</b>401 Unauthorized · check the API key</span>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1680,"height":860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const sel = 5;
+    const T = [['General', 'M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4M10 6.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z'], ['Layouts', 'M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z'], ['Displays', 'M2.5 3.5h15v10h-15zM7 17h6M10 13.5V17'], ['Shortcuts', 'M2 5.5h16v9H2zM5 8.5h1M8 8.5h1M11 8.5h1M14 8.5h1M6 11.5h8'], ['Snap Wheel', 'M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15zM10 7a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM10 2.5V7M10 13v4.5M2.5 10H7M13 10h4.5'], ['AI', 'M5 2.5h7l3 3v12H5zM12 2.5v3h3M7.5 9.5h5M7.5 12h5M7.5 14.5h3']];
+    const presets = (on) => ['Ollama', 'LM Studio', 'OpenAI-compatible'].map((name, i) => ({ name, cls: i === on ? 'on' : '', on: i === on ? 'true' : 'false' }));
+    return {
+      tabs: T.map((x, i) => ({ name: x[0], d: x[1], cls: i === sel ? 'sel' : '' })),
+      themes: [
+        { cls: 'dark', name: 'Dark · success', presets: presets(0), url: 'http://localhost:11434/v1', model: 'llama3.1:8b', key: '', statusIcon: '✓', status: 'Connected · 4 models · 142 ms', statusColor: 'var(--ok)' },
+        { cls: 'light', name: 'Light · error', presets: presets(2), url: 'https://api.example.com/v1', model: 'Choose a model', key: 'sk-xxxxxxxxxxxxxxxx', statusIcon: '✕', status: '401 Unauthorized · check the API key', statusColor: 'var(--danger)' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

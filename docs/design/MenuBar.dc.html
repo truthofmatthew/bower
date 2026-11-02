@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Menu bar item and menu</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--label3:rgba(235,235,245,.38);--hair:rgba(255,255,255,.12);--fill2:rgba(255,255,255,.18);--bar:rgba(20,20,24,.5);--menu:rgba(40,40,44,.78);--sys:#0A64D8;--accent:#3FD3C2;color:var(--label)}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--label3:rgba(60,60,67,.40);--hair:rgba(0,0,0,.10);--fill2:rgba(0,0,0,.12);--bar:rgba(255,255,255,.5);--menu:rgba(246,246,248,.80);--sys:#0064E1;--accent:#0B7A72;color:var(--label)}
+.mat{backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%)}
+.wall.dark{background:radial-gradient(55% 45% at 15% 20%,#c35f2c,rgba(195,95,44,0) 70%),radial-gradient(45% 55% at 85% 25%,#1d7380,rgba(29,115,128,0) 70%),radial-gradient(70% 60% at 55% 100%,#2c3561,rgba(44,53,97,0) 72%),repeating-linear-gradient(125deg,rgba(255,255,255,.06) 0 2px,rgba(255,255,255,0) 2px 16px),#14161b}
+.wall.light{background:radial-gradient(55% 45% at 15% 20%,#f3a76d,rgba(243,167,109,0) 70%),radial-gradient(45% 55% at 85% 25%,#86cfd1,rgba(134,207,209,0) 70%),radial-gradient(70% 60% at 55% 100%,#b9c4ef,rgba(185,196,239,0) 72%),repeating-linear-gradient(125deg,rgba(0,0,0,.05) 0 2px,rgba(0,0,0,0) 2px 16px),#efe9df}
+.strip{height:24px;display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:0 12px;background:var(--bar);font-size:13px}
+.item{display:flex;align-items:center;gap:5px;height:22px;padding:0 7px;border-radius:5px}
+.item.open{background:var(--fill2)}
+.menu{position:absolute;width:264px;padding:5px;border-radius:10px;background:var(--menu);box-shadow:0 0 0 .5px var(--hair),0 12px 36px rgba(0,0,0,.35);display:flex;flex-direction:column;font-size:13px}
+.row{height:22px;display:flex;align-items:center;gap:6px;padding:0 8px 0 4px;border-radius:5px;white-space:nowrap}
+.row.hi{background:var(--sys);color:#fff}
+.row.hi .k{color:rgba(255,255,255,.8)}
+.row.dim{color:var(--label3)}
+.ck{width:14px;text-align:center;flex:none}
+.k{margin-left:auto;color:var(--label2);font-variant-numeric:tabular-nums}
+.sep{height:1px;background:var(--hair);margin:5px 8px}
+.hd{font-size:11px;font-weight:600;color:var(--label2);padding:4px 8px 2px 22px}
+</style>
+</helmet>
+<div class="sf" style="width: 1440px; min-height: 1100px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Menu bar item &amp; menu</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">A standard NSStatusItem with a template glyph. The menu is a real NSMenu, so its selection uses the system accent (blue here) rather than Bower Teal; the ✓ marks the current layout.</p>
+  </header>
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px;">
+    <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+      <section class="wall {{t.cls}}" style="position: relative; height: 900px; border-radius: 16px; overflow: hidden;">
+        <div class="strip mat" style="position: absolute; left: 0; right: 0; top: 0;">
+          <span class="item open">
+            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 18 18"><path d="M3 15V9a6 6 0 0 1 12 0v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><rect x="6" y="10.5" width="2.6" height="4.5" rx="0.6" fill="currentColor"></rect><rect x="9.4" y="10.5" width="2.6" height="4.5" rx="0.6" fill="currentColor"></rect></svg>
+            <span style="font-weight: 500;">3 · Dev</span>
+          </span>
+          <span>Mon Nov 2&nbsp;&nbsp;9:41</span>
+        </div>
+
+        <div class="menu mat" style="left: 140px; top: 28px;">
+          <div class="hd">Layouts</div>
+          <sc-for list="{{layouts}}" as="l" hint-placeholder-count="9">
+            <div class="row {{l.cls}}"><span class="ck">{{l.ck}}</span><span>{{l.n}}&nbsp;&nbsp;{{l.name}}</span><span class="k">⌥{{l.n}}</span></div>
+          </sc-for>
+          <div class="sep"></div>
+          <div class="row hi"><span class="ck"></span><span>Mode for This Display</span><span class="k">▸</span></div>
+          <div class="row"><span class="ck"></span><span>Workspaces</span><span class="k">▸</span></div>
+          <div class="row"><span class="ck"></span><span>Route “Slack” to Layout</span><span class="k">▸</span></div>
+          <div class="row"><span class="ck"></span><span>Pin This Display</span></div>
+          <div class="row"><span class="ck"></span><span>Recipes</span><span class="k">▸</span></div>
+          <div class="sep"></div>
+          <div class="row"><span class="ck"></span><span>Settings…</span><span class="k">⌘,</span></div>
+          <div class="row"><span class="ck"></span><span>About Bower</span></div>
+          <div class="row"><span class="ck"></span><span>Quit Bower</span><span class="k">⌘Q</span></div>
+        </div>
+
+        <div class="menu mat" style="left: 400px; top: 270px; width: 196px;">
+          <div class="hd">Studio Display</div>
+          <div class="row"><span class="ck"></span><span>Native</span></div>
+          <div class="row"><span class="ck"></span><span>Bento Box</span></div>
+          <div class="row hi"><span class="ck">✓</span><span>Tabs</span></div>
+          <div class="sep"></div>
+          <div class="row dim"><span class="ck"></span><span>Same for All Displays</span></div>
+        </div>
+
+        <div style="position: absolute; left: 24px; right: 24px; top: 640px; display: flex; flex-direction: column; gap: 12px;">
+          <div class="mat" style="align-self: flex-start; font-size: 12px; font-weight: 600; padding: 5px 10px; border-radius: 8px; background: var(--menu);">Status item variants · {{t.name}}</div>
+          <sc-for list="{{variants}}" as="v" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="strip mat" style="width: 300px; border-radius: 6px; justify-content: center;">
+                <span class="item">
+                  <svg aria-hidden="true" width="15" height="15" viewBox="0 0 18 18"><path d="M3 15V9a6 6 0 0 1 12 0v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path><rect x="6" y="10.5" width="2.6" height="4.5" rx="0.6" fill="currentColor"></rect><rect x="9.4" y="10.5" width="2.6" height="4.5" rx="0.6" fill="currentColor"></rect></svg>
+                  <span style="font-weight: 500; font-variant-numeric: tabular-nums;">{{v.text}}</span>
+                </span>
+              </div>
+              <span class="mat" style="font-size: 12px; padding: 3px 8px; border-radius: 6px; background: var(--menu); color: var(--label2);">{{v.name}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const names = ['Mail', 'Design', 'Dev', 'Comms', 'Research', 'Music', 'Untitled', 'Untitled', 'Untitled'];
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      layouts: names.map((name, i) => ({ n: i + 1, name, ck: i === 2 ? '✓' : '', cls: i > 5 ? 'dim' : '' })),
+      variants: [
+        { text: '3 · Dev', name: 'Number & name (default)' },
+        { text: '', name: 'Icon only · 18 pt template glyph' },
+        { text: '3', name: 'Number only' },
+        { text: '5 windows', name: 'Window count in this layout' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

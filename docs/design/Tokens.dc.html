@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bower component sheet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,monospace}
+.card{background:#17181B;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px;box-shadow:0 0 0 .5px rgba(255,255,255,.08)}
+h3{margin:0;font-size:18px;line-height:24px;font-weight:600}
+.lbl{font-size:12px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:rgba(235,235,245,.6)}
+.note{margin:0;font-size:13px;line-height:19px;color:rgba(235,235,245,.72)}
+.tbl{display:flex;flex-direction:column}
+.tr{display:grid;gap:12px;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.08);font-size:12px;line-height:16px}
+.tr.h{border-top:none;font-size:11px;font-weight:600;color:rgba(235,235,245,.6);text-transform:uppercase;letter-spacing:.5px}
+.sw{display:flex;align-items:center;gap:8px}
+.chip{width:28px;height:28px;border-radius:7px;flex:none;position:relative;overflow:hidden}
+.chip span{position:absolute;inset:0}
+.v{color:rgba(235,235,245,.66)}
+</style>
+</helmet>
+<div class="sf" style="width: 1800px; min-height: 2600px; box-sizing: border-box; padding: 56px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 28px;">
+  <header style="display: flex; flex-direction: column; gap: 8px;">
+    <h2 style="margin: 0; font-size: 32px; line-height: 38px; font-weight: 700;">Component sheet</h2>
+    <p class="note" style="max-width: 1100px;">Every number below is in points. Names map 1:1 to an asset-catalog colour set or a Swift constant (e.g. <span class="mono">Color.bower.accent</span>, <span class="mono">Wheel.innerRadius</span>).</p>
+  </header>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start;">
+    <section class="card">
+      <span class="lbl">Accent proposal</span>
+      <h3>Bower Teal</h3>
+      <div style="display: flex; gap: 16px;">
+        <div style="flex: 1; border-radius: 12px; background: #1E1E20; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="height: 64px; border-radius: 10px; background: #3FD3C2; color: #04231F; display: flex; align-items: center; padding: 0 14px; font-weight: 600;">#3FD3C2 · Aa</div>
+          <span style="font-size: 12px; color: #3FD3C2;">Accent as text on window: 9.6 : 1</span>
+          <span style="font-size: 12px; color: rgba(235,235,245,.66);">Dark. On-accent #04231F: 10.9 : 1</span>
+        </div>
+        <div style="flex: 1; border-radius: 12px; background: #F2F2F4; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="height: 64px; border-radius: 10px; background: #0B7A72; color: #FFFFFF; display: flex; align-items: center; padding: 0 14px; font-weight: 600;">#0B7A72 · Aa</div>
+          <span style="font-size: 12px; color: #0B7A72;">Accent as text on window: 4.8 : 1</span>
+          <span style="font-size: 12px; color: rgba(60,60,67,.8);">Light. White on accent: 5.2 : 1</span>
+        </div>
+      </div>
+      <p class="note">A bowerbird’s green-teal. It reads as “selected / here” without colliding with the system blue that NSMenu, focus rings in standard controls and links already use, and it is clearly not purple. Bower uses it only for state: the current layout, a hovered or focused wedge, toggles that are on, the snap preview and the primary button. Plain decoration stays neutral.</p>
+    </section>
+
+    <section class="card">
+      <span class="lbl">Wheel geometry</span>
+      <div style="display: flex; gap: 20px; align-items: center;">
+        <svg role="img" aria-label="Wheel geometry diagram" width="300" height="300" viewBox="0 0 300 300" style="flex: none;">
+          <circle cx="150" cy="150" r="150" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.2)"></circle>
+          <circle cx="150" cy="150" r="146" fill="none" stroke="#3FD3C2" stroke-dasharray="3 3"></circle>
+          <circle cx="150" cy="150" r="94" fill="none" stroke="#3FD3C2"></circle>
+          <circle cx="150" cy="150" r="88" fill="none" stroke="#3FD3C2"></circle>
+          <circle cx="150" cy="150" r="40" fill="none" stroke="#3FD3C2"></circle>
+          <circle cx="150" cy="150" r="32" fill="rgba(255,255,255,.08)" stroke="rgba(255,255,255,.4)"></circle>
+          <path d="M150 150 L150 0 M150 150 L256 44 M150 150 L300 150 M150 150 L256 256 M150 150 L150 300 M150 150 L44 256 M150 150 L0 150 M150 150 L44 44" stroke="rgba(255,255,255,.12)"></path>
+          <path d="M150 150 L150 4" stroke="#F5F5F7" stroke-width="1"></path>
+          <text x="156" y="122" font-size="10" fill="#F5F5F7">32</text>
+          <text x="156" y="114" font-size="10" fill="#3FD3C2" dy="-0">40</text>
+          <text x="156" y="66" font-size="10" fill="#3FD3C2">88 · 94</text>
+          <text x="156" y="12" font-size="10" fill="#3FD3C2">146 · 150</text>
+        </svg>
+        <div class="tbl" style="flex: 1;">
+          <sc-for list="{{geo}}" as="g" hint-placeholder-count="10">
+            <div class="tr" style="grid-template-columns: 150px minmax(0, 1fr);"><span>{{g.k}}</span><span class="v mono">{{g.v}}</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card">
+    <span class="lbl">Colour tokens</span>
+    <div class="tbl">
+      <div class="tr h" style="grid-template-columns: 200px 290px 290px minmax(0, 1fr);"><span>Token</span><span>Dark</span><span>Light</span><span>Used for</span></div>
+      <sc-for list="{{colors}}" as="c" hint-placeholder-count="18">
+        <div class="tr" style="grid-template-columns: 200px 290px 290px minmax(0, 1fr);">
+          <span class="mono">{{c.name}}</span>
+          <span class="sw"><span class="chip" style="background: #1E1E20; box-shadow: 0 0 0 .5px rgba(255,255,255,.2);"><span style="background: {{c.d}};"></span></span><span class="mono v">{{c.d}}</span></span>
+          <span class="sw"><span class="chip" style="background: #F2F2F4;"><span style="background: {{c.l}};"></span></span><span class="mono v">{{c.l}}</span></span>
+          <span class="v">{{c.use}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start;">
+    <section class="card">
+      <span class="lbl">Type scale · SF Pro (Text below 20 pt, Display at 20 pt and up)</span>
+      <div class="tbl">
+        <sc-for list="{{type}}" as="t" hint-placeholder-count="8">
+          <div class="tr" style="grid-template-columns: minmax(0, 1fr) 150px 220px;"><span style="font-size: {{t.size}}px; line-height: {{t.lh}}px; font-weight: {{t.w}}; font-family: {{t.fam}};">{{t.name}}</span><span class="mono v">{{t.spec}}</span><span class="v">{{t.use}}</span></div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section class="card">
+      <span class="lbl">Spacing</span>
+      <div style="display: flex; gap: 14px; align-items: flex-end;">
+        <sc-for list="{{space}}" as="s" hint-placeholder-count="9">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 6px;"><span style="width: {{s}}px; height: {{s}}px; background: #3FD3C2; border-radius: 2px;"></span><span class="mono v" style="font-size: 12px;">{{s}}</span></div>
+        </sc-for>
+      </div>
+      <p class="note">Window content inset 20–28. Group rows 36–44 tall, 12 horizontal padding. HUD inner padding 6. Every control and row is at least 28 tall.</p>
+      <span class="lbl" style="margin-top: 6px;">Radii</span>
+      <div class="tbl">
+        <sc-for list="{{radii}}" as="r" hint-placeholder-count="10">
+          <div class="tr" style="grid-template-columns: 56px 60px minmax(0, 1fr);"><span style="width: 40px; height: 28px; border: 1.5px solid #3FD3C2; border-radius: {{r.v}}px; box-sizing: border-box;"></span><span class="mono">{{r.v}}</span><span class="v">{{r.use}}</span></div>
+        </sc-for>
+      </div>
+    </section>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start;">
+    <section class="card">
+      <span class="lbl">Materials</span>
+      <div class="tbl">
+        <div class="tr h" style="grid-template-columns: 150px 210px minmax(0, 1fr);"><span>Surface</span><span>NSVisualEffectView</span><span>Fallback (blur · tint)</span></div>
+        <sc-for list="{{materials}}" as="m" hint-placeholder-count="6">
+          <div class="tr" style="grid-template-columns: 150px 210px minmax(0, 1fr);"><span>{{m.k}}</span><span class="mono v">{{m.ns}}</span><span class="v">{{m.fb}}</span></div>
+        </sc-for>
+      </div>
+      <p class="note">Increase Contrast: every HUD switches to its opaque tint (97–98%) and gains a 1 pt hairline at 72% label colour. Reduce Transparency: same opaque tints, no blur.</p>
+    </section>
+
+    <section class="card">
+      <span class="lbl">Interaction timing</span>
+      <div class="tbl">
+        <div class="tr h" style="grid-template-columns: 170px 210px minmax(0, 1fr);"><span>Event</span><span>Standard</span><span>Reduce Motion</span></div>
+        <sc-for list="{{timing}}" as="t" hint-placeholder-count="11">
+          <div class="tr" style="grid-template-columns: 170px 210px minmax(0, 1fr);"><span>{{t.k}}</span><span class="mono v">{{t.std}}</span><span class="mono v">{{t.rm}}</span></div>
+        </sc-for>
+      </div>
+      <p class="note">Ease-out = cubic-bezier(0.33, 1, 0.68, 1). Ease-in-out = (0.65, 0, 0.35, 1). An action fires on mouse-up at t = 0; fades never delay it.</p>
+    </section>
+  </div>
+
+  <section class="card">
+    <span class="lbl">Icon set · 16 pt grid, 1.5 pt stroke, round caps and joins (SF Symbols equivalent in brackets)</span>
+    <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px;">
+      <sc-for list="{{icons}}" as="i" hint-placeholder-count="16">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 6px; border-radius: 10px; background: rgba(255,255,255,.04);">
+          <svg aria-hidden="true" width="32" height="32" viewBox="0 0 16 16"><path d="{{i.d}}" fill="none" stroke="#F5F5F7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" style="stroke-width: 2.4px;"></path></svg>
+          <span style="font-size: 12px; text-align: center;">{{i.name}}</span>
+          <span class="mono v" style="font-size: 10px; text-align: center;">{{i.sf}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1800,"height":2600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      geo: [
+        { k: 'Diameter', v: '300 (r 150) · HUD disc' },
+        { k: 'Cancel centre', v: 'r 0–32' },
+        { k: 'Inner ring', v: 'r 40–88 · 8 × 45° · first centred at −90°' },
+        { k: 'Ring gap', v: '6 (88 → 94)' },
+        { k: 'Outer ring', v: 'r 94–146 · 8 × 45° · 4 pad to edge' },
+        { k: 'Wedge gap', v: '2 constant · inset 1/r rad per side' },
+        { k: 'Glyph centres', v: 'inner r 64 (18×12 screen) · outer r 120 (16 icon)' },
+        { k: '▸ marker', v: 'r 137.5–143 · 6 base' },
+        { k: 'Third arc', v: 'r 154–196 · 15°/item (Layouts), r 154–206 · 30°/item (Mode)' },
+        { k: 'Caption pill', v: '28 tall · top at 62 below disc' },
+        { k: 'Min hit size', v: 'inner 29 × 48 · outer 70 × 52' }
+      ],
+      colors: [
+        { name: 'accent', d: '#3FD3C2', l: '#0B7A72', use: 'Current layout, hovered wedge, focus ring, on-toggles, primary button' },
+        { name: 'accent.fill', d: 'rgba(63,211,194,.20)', l: 'rgba(11,122,114,.14)', use: 'Current chip, tinted ▸ parent, focused wedge fill' },
+        { name: 'accent.on', d: '#04231F', l: '#FFFFFF', use: 'Text and glyphs on solid accent' },
+        { name: 'label', d: 'rgba(255,255,255,.92)', l: 'rgba(0,0,0,.88)', use: 'Primary text and icons' },
+        { name: 'label.secondary', d: 'rgba(235,235,245,.64)', l: 'rgba(60,60,67,.74)', use: 'Sub-labels, shortcuts, glyph frames' },
+        { name: 'label.tertiary', d: 'rgba(235,235,245,.38)', l: 'rgba(60,60,67,.40)', use: 'Disabled only (never body text)' },
+        { name: 'hairline', d: 'rgba(255,255,255,.12)', l: 'rgba(0,0,0,.10)', use: '1 px separators, HUD edge' },
+        { name: 'fill', d: 'rgba(255,255,255,.08)', l: 'rgba(0,0,0,.05)', use: 'Wedge at rest, chip hover' },
+        { name: 'fill.strong', d: 'rgba(255,255,255,.16)', l: 'rgba(0,0,0,.10)', use: 'Pressed, disabled-hover, number badge' },
+        { name: 'hud', d: 'rgba(38,38,42,.70)', l: 'rgba(250,250,252,.72)', use: 'Wheel disc, Layouts Bar, captions (over blur)' },
+        { name: 'hud.contrast', d: 'rgba(20,20,22,.97)', l: 'rgba(255,255,255,.98)', use: 'Increase Contrast / Reduce Transparency' },
+        { name: 'snap.fill', d: 'rgba(63,211,194,.18)', l: 'rgba(11,122,114,.14)', use: 'Snap preview body' },
+        { name: 'snap.stroke', d: 'rgba(63,211,194,.92)', l: 'rgba(11,122,114,.88)', use: 'Snap preview 1.5 pt edge' },
+        { name: 'snap.keyline', d: 'rgba(0,0,0,.35)', l: 'rgba(255,255,255,.60)', use: 'Outer 1 pt keyline for busy wallpaper' },
+        { name: 'window', d: '#1E1E20', l: '#F2F2F4', use: 'Settings, sheets, welcome window' },
+        { name: 'success', d: '#4CD97B', l: '#1E7F3C', use: 'Connection OK, step done' },
+        { name: 'warning', d: '#FFC94D', l: '#8A5800', use: 'Recipe validation, shortcut conflict' },
+        { name: 'danger', d: '#FF7066', l: '#C9302C', use: 'Connection error' }
+      ],
+      type: [
+        { name: 'Large Title', spec: '26 / 32 Bold', use: 'Unused in-app; docs only', size: 26, lh: 32, w: 700, fam: 'inherit' },
+        { name: 'Title', spec: '20 / 25 Bold', use: 'Welcome window', size: 20, lh: 25, w: 700, fam: 'inherit' },
+        { name: 'Headline', spec: '15 / 20 Semibold', use: 'Sheet titles', size: 15, lh: 20, w: 600, fam: 'inherit' },
+        { name: 'Body', spec: '13 / 18 Regular', use: 'Rows, controls, menus', size: 13, lh: 18, w: 400, fam: 'inherit' },
+        { name: 'Body Emphasis', spec: '13 / 18 Semibold', use: 'Window title, group heads', size: 13, lh: 18, w: 600, fam: 'inherit' },
+        { name: 'Callout', spec: '12 / 16 Medium', use: 'Wheel caption, chip names', size: 12, lh: 16, w: 500, fam: 'inherit' },
+        { name: 'Caption', spec: '11 / 14 Regular', use: 'Sub-labels, toolbar labels', size: 11, lh: 14, w: 400, fam: 'inherit' },
+        { name: 'Mono', spec: '13 / 24 SF Mono', use: 'Recipe editor', size: 13, lh: 24, w: 400, fam: '"SF Mono", ui-monospace, Menlo, monospace' }
+      ],
+      space: [2, 4, 6, 8, 12, 16, 20, 24, 32],
+      radii: [
+        { v: 4, use: 'Keycaps, tiny app glyph' }, { v: 5, use: 'Menu rows, tab close button' }, { v: 6, use: 'Text fields, pop-up buttons' }, { v: 7, use: 'Push buttons, toolbar tab highlight' },
+        { v: 9, use: 'Grouped form boxes' }, { v: 10, use: 'Layout chips, snap preview, menus' }, { v: 12, use: 'Windows and sheets' }, { v: 14, use: 'Wheel caption pill' }, { v: 16, use: 'Layouts Bar' }, { v: 18, use: 'Retile toast' }
+      ],
+      materials: [
+        { k: 'Wheel disc', ns: '.hudWindow · behindWindow', fb: 'blur 28 · sat 180% · hud' },
+        { k: 'Layouts Bar', ns: '.hudWindow · behindWindow', fb: 'blur 30 · sat 180% · hud' },
+        { k: 'Third arc segments', ns: 'none (drawn in-layer)', fb: 'opaque 94–96% tint, 0.5 pt hairline' },
+        { k: 'Menus', ns: 'system NSMenu', fb: 'n/a' },
+        { k: '@ popover', ns: '.popover', fb: 'blur 30 · 92% tint' },
+        { k: 'Snap preview', ns: 'none', fb: 'blur 6 · snap.fill · snap.stroke' },
+        { k: 'Settings / sheets', ns: '.windowBackground / .sheet', fb: 'solid window colour' }
+      ],
+      timing: [
+        { k: 'Wheel open', std: '120 ms ease-out · α 0→1 · scale .92→1', rm: '80 ms linear · α only' },
+        { k: 'Wheel cancel', std: '80 ms ease-in · α 1→0', rm: '80 ms · α' },
+        { k: 'Wheel run', std: 'action at t=0 · 60 ms fade', rm: 'same' },
+        { k: 'Wedge hover', std: 'in 0 ms · out 60 ms', rm: 'same' },
+        { k: '▸ third arc', std: '150 ms dwell · 100 ms α + r 146→154', rm: '150 ms dwell · 80 ms α' },
+        { k: 'Ghost / snap preview', std: '40 ms dwell · in 120 · move 90 · out 100', rm: 'crossfade 80 · no move' },
+        { k: 'Keyboard snap preview', std: 'in 120 on key-down · window lands on key-up', rm: 'in 80' },
+        { k: 'Layouts Bar', std: '140 ms α + 8 pt slide down', rm: '80 ms α' },
+        { k: 'Retile toast', std: 'in 150 · hold 1400 · out 200', rm: 'same, no slide' },
+        { k: 'Bento retile', std: '0 ms', rm: '0 ms' },
+        { k: 'Layout switch ⌥1–9', std: '0 ms · all frames in one pass', rm: '0 ms' }
+      ],
+      icons: [
+        { name: 'Maximize', sf: 'arrow.up.left.and.arrow.down.right', d: 'M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10' },
+        { name: 'Thirds', sf: 'rectangle.split.3x1', d: 'M1.75 3.25h12.5v9.5H1.75zM5.9 3.25v9.5M10.1 3.25v9.5' },
+        { name: 'Window Mode', sf: 'macwindow.on.rectangle', d: 'M2 5h9v8.5H2zM5 5V2.5h9V11h-3' },
+        { name: 'Layouts', sf: 'square.grid.2x2', d: 'M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z' },
+        { name: 'Send to Layout', sf: 'arrow.right.to.line', d: 'M1.5 8h8.5M7 5l3 3-3 3M13.5 2.5v11' },
+        { name: 'Retile', sf: 'arrow.clockwise', d: 'M13.25 8A5.25 5.25 0 1 1 11.7 4.3M13.25 2.25V5.5H10' },
+        { name: 'AI Recipe', sf: 'doc.text', d: 'M3.5 1.75h6l3 3v9.5h-9zM9.5 1.75v3h3M5.75 8h4.5M5.75 10.5h4.5M5.75 13h2.5' },
+        { name: 'Settings', sf: 'slider.horizontal.3', d: 'M2 4.5h7.5M12.5 4.5H14M2 11.5h1.5M6.5 11.5H14M11 3v3M5 10v3' },
+        { name: 'Cancel', sf: 'xmark', d: 'M4 4l8 8M12 4l-8 8' },
+        { name: 'Pin', sf: 'pin', d: 'M10.5 1.5 14.5 5.5 12 6.5 9.5 9l.5 3.5-1 1-3-3-3.5 3.5M5.5 10.5l-3-3 1-1L7 7l2.5-2.5 1-2.5' },
+        { name: 'Unassigned', sf: 'tray', d: 'M1.5 9.5h3l1 2h5l1-2h3M1.5 9.5 3.5 3h9l2 6.5v4h-13z' },
+        { name: 'Display', sf: 'display', d: 'M1.5 2.5h13v8.5h-13zM5.5 14h5M8 11v3' },
+        { name: 'Center', sf: 'rectangle.center.inset.filled', d: 'M2 3h12v10H2zM5.5 6h5v4h-5z' },
+        { name: 'Hidden slot', sf: 'eye.slash', d: 'M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8s-2.4 4.5-6.5 4.5S1.5 8 1.5 8zM2.5 13.5l11-11' },
+        { name: 'Keychain', sf: 'lock', d: 'M4.5 7V5a3.5 3.5 0 0 1 7 0v2M3 7h10v7H3z' },
+        { name: 'Bower glyph', sf: 'custom template', d: 'M2.75 14V8a5.25 5.25 0 0 1 10.5 0v6M5.75 10v3.5M10.25 10v3.5' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+import Carbon.HIToolbox
+import SwiftUI
+
+/// A key and Carbon modifier flags. `key == -1` is a modifier-only combo for a row that covers several keys.
+struct Combo: Codable, Equatable, Hashable {
+    var key: Int
+    var mods: Int
+}
+
+/// One row of Settings › Shortcuts (SetShortcuts.dc.html). Grouped rows ("Left / Right Half", "Switch to
+/// layout ⌥1…9") keep their keys; rebinding them changes the modifiers they share.
+enum ShortcutID: String, CaseIterable, Codable {
+    case wheel, layoutsBar
+    case switchLayout, sendLayout, saveWorkspace, cycleLayouts, emptyLayout
+    case focus, nextTab
+    case halvesLR, halvesTB, quarters, thirds, twoThirds, maximize, retile
+
+    var title: String {
+        switch self {
+        case .wheel: String(localized: "Snap Wheel")
+        case .layoutsBar: String(localized: "Layouts Bar")
+        case .switchLayout: String(localized: "Switch to layout")
+        case .sendLayout: String(localized: "Send window to layout")
+        case .saveWorkspace: String(localized: "Save workspace")
+        case .cycleLayouts: String(localized: "Next layout")
+        case .emptyLayout: String(localized: "Next empty layout")
+        case .focus: String(localized: "Focus window left / right / up / down")
+        case .nextTab: String(localized: "Next tab in group")
+        case .halvesLR: String(localized: "Left / Right Half")
+        case .halvesTB: String(localized: "Top / Bottom Half")
+        case .quarters: String(localized: "Quarters")
+        case .thirds: String(localized: "Thirds")
+        case .twoThirds: String(localized: "First / Last Two Thirds")
+        case .maximize: String(localized: "Maximize")
+        case .retile: String(localized: "Retile display")
+        }
+    }
+
+    var group: String {
+        switch self {
+        case .wheel, .layoutsBar: "Overlays"
+        case .switchLayout, .sendLayout, .saveWorkspace, .cycleLayouts, .emptyLayout: "Layouts"
+        case .focus, .nextTab: "Windows"
+        default: "Snapping"
+        }
+    }
+
+    /// The group's heading, translated; `group` stays the English key the Shortcuts tab sorts by.
+    var groupTitle: String {
+        switch group {
+        case "Overlays": String(localized: "Overlays")
+        case "Layouts": String(localized: "Layouts")
+        case "Windows": String(localized: "Windows")
+        default: String(localized: "Snapping")
+        }
+    }
+
+    var sub: String? {
+        switch self {
+        case .nextTab: String(localized: "Tabs Mode, within the focused group")
+        default: nil
+        }
+    }
+
+    /// The keys a grouped row covers, in order; nil for a single-key row.
+    func keys(iso: Bool) -> [Int]? {
+        switch self {
+        case .switchLayout, .sendLayout: Hotkeys.digitKeys
+        case .halvesLR: [kVK_LeftArrow, kVK_RightArrow]
+        case .halvesTB: [kVK_UpArrow, kVK_DownArrow]
+        case .quarters: [kVK_ANSI_U, kVK_ANSI_I, kVK_ANSI_J, kVK_ANSI_K]
+        // ISO keyboards use the < key (left of Z) for Center Third.
+        case .thirds: [kVK_ANSI_D, iso ? kVK_ANSI_Grave : kVK_ANSI_F, kVK_ANSI_G]
+        case .twoThirds: [kVK_ANSI_E, kVK_ANSI_T]
+        // Order: left, right, up, down.
+        case .focus: [kVK_LeftArrow, kVK_RightArrow, kVK_UpArrow, kVK_DownArrow]
+        default: nil
+        }
+    }
+
+    var defaultCombo: Combo {
+        let co = controlKey | optionKey
+        switch self {
+        case .wheel: return Combo(key: kVK_Space, mods: co)
+        case .layoutsBar: return Combo(key: kVK_UpArrow, mods: optionKey)
+        case .switchLayout: return Combo(key: -1, mods: optionKey)
+        case .sendLayout: return Combo(key: -1, mods: optionKey | shiftKey)
+        case .saveWorkspace: return Combo(key: kVK_ANSI_S, mods: co)
+        case .cycleLayouts: return Combo(key: kVK_Tab, mods: optionKey)
+        case .emptyLayout: return Combo(key: kVK_ANSI_N, mods: optionKey)
+        // ⌃⌥⌘ + arrows: ⌘⌥I and ⌘⌥J would take over browsers' developer tools.
+        case .focus: return Combo(key: -1, mods: controlKey | optionKey | cmdKey)
+        case .nextTab: return Combo(key: kVK_Tab, mods: controlKey)
+        case .maximize: return Combo(key: kVK_Return, mods: co)
+        case .retile: return Combo(key: kVK_ANSI_R, mods: co)
+        default: return Combo(key: -1, mods: co)
+        }
+    }
+
+    var isGroup: Bool { defaultCombo.key == -1 }
+}
+
+extension DeskState {
+    /// The combo in effect for a row, or nil if it was cleared.
+    func combo(_ id: ShortcutID) -> Combo? {
+        clearedShortcuts.contains(id.rawValue) ? nil : shortcuts[id.rawValue] ?? id.defaultCombo
+    }
+
+    /// Every (key, modifiers) a row registers.
+    func bindings(_ id: ShortcutID) -> [Combo] {
+        guard let c = combo(id) else { return [] }
+        return id.keys(iso: isoKeyboard).map { $0.map { Combo(key: $0, mods: c.mods) } } ?? [c]
+    }
+}
+
+// MARK: - Names
+
+enum KeyNames {
+    static func modifiers(_ m: Int) -> [String] {
+        var out: [String] = []
+        if m & controlKey != 0 { out.append("⌃") }
+        if m & optionKey != 0 { out.append("⌥") }
+        if m & shiftKey != 0 { out.append("⇧") }
+        if m & cmdKey != 0 { out.append("⌘") }
+        return out
+    }
+
+    private static let special: [Int: String] = [
+        kVK_LeftArrow: "←", kVK_RightArrow: "→", kVK_UpArrow: "↑", kVK_DownArrow: "↓", kVK_Return: "↩", kVK_Space: String(localized: "Space"),
+        kVK_Tab: "Tab", kVK_Escape: "esc", kVK_Delete: "⌫", kVK_ForwardDelete: "⌦", kVK_Home: "↖", kVK_End: "↘",
+        kVK_PageUp: "⇞", kVK_PageDown: "⇟", kVK_ANSI_Grave: "`", kVK_ISO_Section: "§",
+        kVK_F1: "F1", kVK_F2: "F2", kVK_F3: "F3", kVK_F4: "F4", kVK_F5: "F5", kVK_F6: "F6",
+        kVK_F7: "F7", kVK_F8: "F8", kVK_F9: "F9", kVK_F10: "F10", kVK_F11: "F11", kVK_F12: "F12"
+    ]
+
+    /// The character the current keyboard layout puts on a key (so an AZERTY A shows as A), else a symbol.
+    static func key(_ code: Int, iso: Bool = false) -> String {
+        if code == kVK_ANSI_Grave, iso { return "<" }
+        if let s = special[code] { return s }
+        guard let source = TISCopyCurrentKeyboardLayoutInputSource()?.takeRetainedValue(),
+              let ptr = TISGetInputSourceProperty(source, kTISPropertyUnicodeKeyLayoutData) else { return "?" }
+        let data = Unmanaged<CFData>.fromOpaque(ptr).takeUnretainedValue() as Data
+        var dead: UInt32 = 0, length = 0
+        var chars = [UniChar](repeating: 0, count: 4)
+        let status = data.withUnsafeBytes { raw in
+            UCKeyTranslate(raw.bindMemory(to: UCKeyboardLayout.self).baseAddress!, UInt16(code), UInt16(kUCKeyActionDisplay), 0,
+                           UInt32(LMGetKbdType()), OptionBits(kUCKeyTranslateNoDeadKeysBit), &dead, chars.count, &length, &chars)
+        }
+        guard status == noErr, length > 0 else { return "?" }
+        return String(utf16CodeUnits: chars, count: length).uppercased()
+    }
+
+    /// Keycaps for a row, the way the design draws them: one per modifier, then the key or keys.
+    static func caps(_ id: ShortcutID, _ c: Combo, iso: Bool) -> [String] {
+        let keys: String
+        if let ks = id.keys(iso: iso) {
+            keys = id == .switchLayout || id == .sendLayout ? "1…9" : ks.map { key($0, iso: iso) }.joined(separator: " ")
+        } else {
+            keys = key(c.key, iso: iso)
+        }
+        // U+2066…U+2069 isolate each cap left to right, so "1…9" and "← →" don't flip in right-to-left languages.
+        return (modifiers(c.mods) + [keys]).map { "\u{2066}\($0)\u{2069}" }
+    }
+
+    static func carbon(_ flags: NSEvent.ModifierFlags) -> Int {
+        var m = 0
+        if flags.contains(.control) { m |= controlKey }
+        if flags.contains(.option) { m |= optionKey }
+        if flags.contains(.shift) { m |= shiftKey }
+        if flags.contains(.command) { m |= cmdKey }
+        return m
+    }
+}
+
+// MARK: - Recording and conflicts
+
+/// Shared by Settings and AppDelegate: which row is recording, and which rows clash.
+final class ShortcutCenter: ObservableObject {
+    @Published var recording: ShortcutID?
+    /// Row → "Also used by Quarters" or "Already used by another app".
+    @Published var conflicts: [ShortcutID: String] = [:]
+    var suspend: () -> Void = {}
+    var resume: () -> Void = {}
+    private var monitor: Any?
+
+    func record(_ id: ShortcutID, store: Store, engine: Engine) {
+        stop()
+        recording = id
+        suspend()  // Bower's own hotkeys would swallow the keys being recorded
+        monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] e in
+            guard let self, let id = self.recording else { return e }
+            let mods = KeyNames.carbon(e.modifierFlags)
+            switch Int(e.keyCode) {
+            case kVK_Escape: self.stop()
+            case kVK_Delete: engine.setShortcut(id, nil); self.stop()
+            default:
+                // A combo needs a modifier, so plain typing is never taken over.
+                guard mods != 0 else { NSSound.beep(); return nil }
+                engine.setShortcut(id, Combo(key: id.isGroup ? -1 : Int(e.keyCode), mods: mods))
+                self.stop()
+            }
+            return nil
+        }
+    }
+
+    func stop() {
+        if let monitor { NSEvent.removeMonitor(monitor) }
+        monitor = nil
+        if recording != nil { recording = nil; resume() }
+    }
+}
+
+extension Engine {
+    /// nil clears the row.
+    func setShortcut(_ id: ShortcutID, _ c: Combo?) {
+        store.update { st in
+            if let c {
+                st.clearedShortcuts.remove(id.rawValue)
+                st.shortcuts[id.rawValue] = c == id.defaultCombo ? nil : c
+            } else {
+                st.clearedShortcuts.insert(id.rawValue)
+            }
+        }
+        onShortcutsChanged()
+    }
+
+    func resetShortcuts() {
+        store.update { $0.shortcuts = [:]; $0.clearedShortcuts = [] }
+        onShortcutsChanged()
+    }
+
+    func setISO(_ iso: Bool) {
+        store.update { $0.isoKeyboard = iso }
+        onShortcutsChanged()
+    }
+}

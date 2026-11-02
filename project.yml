@@ -1,0 +1,56 @@
+name: Bower
+options:
+  bundleIdPrefix: com.truthofmatthew
+  developmentLanguage: en
+  deploymentTarget:
+    macOS: "14.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+    DEVELOPMENT_TEAM: 3GHX277DW6
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: Apple Development
+targets:
+  Bower:
+    type: application
+    platform: macOS
+    sources: [Sources]
+    info:
+      path: Sources/Info.plist
+      properties:
+        LSUIElement: true
+        # Ollama and LM Studio serve plain http on localhost.
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        CFBundleDisplayName: Bower
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSHumanReadableCopyright: ""
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.truthofmatthew.Bower
+        ENABLE_HARDENED_RUNTIME: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+  BowerTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: [Tests]
+    dependencies:
+      - target: Bower
+    settings:
+      base:
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Bower.app/Contents/MacOS/Bower
+        BUNDLE_LOADER: $(TEST_HOST)
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Bower:
+    build:
+      targets:
+        Bower: all
+        BowerTests: [test]
+    test:
+      targets: [BowerTests]

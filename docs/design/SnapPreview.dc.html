@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Snap preview overlay</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.sf{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.dark{--label:rgba(255,255,255,.92);--label2:rgba(235,235,245,.64);--hud:rgba(36,36,40,.72);--hair:rgba(255,255,255,.14);--accent:#3FD3C2}
+.light{--label:rgba(0,0,0,.88);--label2:rgba(60,60,67,.74);--hud:rgba(250,250,252,.78);--hair:rgba(0,0,0,.12);--accent:#0B7A72}
+.ghost{position:absolute;border-radius:10px;box-sizing:border-box;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.dark .ghost{background:rgba(63,211,194,.18);border:1.5px solid rgba(63,211,194,.92);box-shadow:0 0 0 1px rgba(0,0,0,.35),inset 0 0 0 1px rgba(0,0,0,.25)}
+.light .ghost{background:rgba(11,122,114,.14);border:1.5px solid rgba(11,122,114,.88);box-shadow:0 0 0 1px rgba(255,255,255,.6),inset 0 0 0 1px rgba(255,255,255,.4)}
+.ghost.mini{border-width:4px;border-radius:14px}
+.sec{border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:18px}
+.dark.sec{background:#17181B}
+.light.sec{background:#E4E4E8}
+</style>
+</helmet>
+<div class="sf" style="width: 1600px; min-height: 1860px; box-sizing: border-box; padding: 48px 40px; background: #0B0C0E; color: #F5F5F7; display: flex; flex-direction: column; gap: 32px;">
+  <header style="display: flex; flex-direction: column; gap: 6px;">
+    <h2 style="margin: 0; font-size: 24px; line-height: 30px; font-weight: 700;">Snap preview overlay</h2>
+    <p style="margin: 0; font-size: 14px; line-height: 20px; color: rgba(235,235,245,.66);">One overlay for both the wheel and keyboard snapping. Thumbnails at 30%; their stroke is drawn heavier so it survives the reduction.</p>
+  </header>
+  <sc-for list="{{themes}}" as="t" hint-placeholder-count="2">
+    <section class="sec {{t.cls}}">
+      <div style="font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: var(--label2);">{{t.name}}</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 20px;">
+        <sc-for list="{{targets}}" as="g" hint-placeholder-count="8">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="width: 360px; height: 225px; border-radius: 8px; overflow: hidden;">
+              <div style="zoom: 0.3; position: relative; width: 1200px; height: 750px;">
+                <dc-import name="Desktop" theme="{{t.cls}}" hint-size="1200px,750px"></dc-import>
+                <div class="ghost mini" style="left: {{g.l}}px; top: {{g.t}}px; width: {{g.w}}px; height: {{g.h}}px;"></div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px;"><span style="font-weight: 600; color: var(--label);">{{g.name}}</span><span style="color: var(--label2); font-variant-numeric: tabular-nums;">{{g.key}}</span></div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </sc-for>
+
+  <section class="sec dark" style="flex-direction: row; gap: 32px; align-items: flex-start;">
+    <div style="width: 900px; height: 562px; border-radius: 10px; overflow: hidden; flex: none;">
+      <div style="zoom: 0.75; position: relative; width: 1200px; height: 750px;">
+        <dc-import name="Desktop" theme="dark" hint-size="1200px,750px"></dc-import>
+        <div class="ghost" style="left: 606px; top: 32px; width: 588px; height: 636px;"></div>
+        <div style="position: absolute; left: 600px; top: 26px; width: 600px; height: 648px; box-sizing: border-box; border: 1px dashed rgba(255,255,255,.55);"></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 14px; font-size: 13px; line-height: 19px; color: var(--label2);">
+      <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--label);">Anatomy · Right Half</h3>
+      <p style="margin: 0;"><b style="color: var(--label);">Target frame</b> (dashed): the visible frame of the display, minus menu bar and Dock, split by the action.</p>
+      <p style="margin: 0;"><b style="color: var(--label);">Inset</b> 6 pt on every side, so adjacent previews never touch and the wallpaper shows between them.</p>
+      <p style="margin: 0;"><b style="color: var(--label);">Fill</b> accent at 18% (dark) / 14% (light) over a 6 pt backdrop blur. The window behind stays legible.</p>
+      <p style="margin: 0;"><b style="color: var(--label);">Stroke</b> 1.5 pt accent at 92% / 88%, plus a 1 pt outer keyline (black 35% in dark, white 60% in light) so the edge holds on both bright sky and dark rock.</p>
+      <p style="margin: 0;"><b style="color: var(--label);">Radius</b> 10 pt, matching macOS 14 window corners.</p>
+      <p style="margin: 0;"><b style="color: var(--label);">Timing</b> fade in 120 ms ease-out after a 40 ms dwell; moves between targets in 90 ms ease-in-out; fades out 100 ms. Reduce Motion: no move animation, crossfade 80 ms.</p>
+      <p style="margin: 0;"><b style="color: var(--label);">Increase Contrast</b> fill 28%, stroke 2 pt at 100%.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1600,"height":1860}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      themes: [{ cls: 'dark', name: 'Dark' }, { cls: 'light', name: 'Light' }],
+      targets: [
+        { name: 'Left Half', key: '⌃⌥←', l: 6, t: 32, w: 588, h: 636 },
+        { name: 'Right Half', key: '⌃⌥→', l: 606, t: 32, w: 588, h: 636 },
+        { name: 'First Third', key: '⌃⌥D', l: 6, t: 32, w: 388, h: 636 },
+        { name: 'Center Third', key: '⌃⌥F', l: 406, t: 32, w: 388, h: 636 },
+        { name: 'Last Two Thirds', key: '⌃⌥T', l: 406, t: 32, w: 788, h: 636 },
+        { name: 'Top Left', key: '⌃⌥U', l: 6, t: 32, w: 588, h: 312 },
+        { name: 'Bottom Right', key: '⌃⌥K', l: 606, t: 356, w: 588, h: 312 },
+        { name: 'Maximize', key: '⌃⌥↩', l: 6, t: 32, w: 1188, h: 636 }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
