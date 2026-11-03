@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private lazy var wheel = WheelController(engine: engine, preview: preview)
     private let middle = MiddleClickTap()
     private let watcher = WindowWatcher()
+    private var lastSpaceChange = Date.distantPast
     private let shortcutCenter = ShortcutCenter()
     private lazy var tabs = TabsController(engine: engine)
     private let keyTap = KeyTap()
@@ -174,14 +175,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         TrackpadTap.shared.start()
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil,
                                                           queue: .main) { [weak self] _ in
+            self?.lastSpaceChange = Date()
             // Entering full screen lands on a new desktop; give the animation a moment before reading the window.
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self?.engine.catchFullScreen() }
+            // Browsers put their parked windows back on screen a little after a desktop change; park them again.
+            for t in [1.2, 3.0] { DispatchQueue.main.asyncAfter(deadline: .now() + t) { self?.engine.reparkStrays() } }
         }
         watcher.onChange = { [weak self] in self?.engine.windowsChanged() }
         watcher.start()
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil,
                                                           queue: .main) { [weak self] n in
             guard let self, Date().timeIntervalSince(self.watcher.lastClosed) > 1,
+                  Date().timeIntervalSince(self.lastSpaceChange) > 1.5,  // macOS activates apps during a desktop change
                   let app = n.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
                   // A launcher-script app arrives with pid -1; its bundle ID still finds the real process.
                   let pid = app.processIdentifier > 0 ? app.processIdentifier

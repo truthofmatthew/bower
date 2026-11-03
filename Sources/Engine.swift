@@ -52,6 +52,17 @@ final class Engine {
         w.move(to: p)
     }
 
+    /// Some apps (Edge, Chrome) pull their off-screen windows back onto the screen after a desktop change, such as
+    /// another of their windows leaving full screen. Windows that belong to another layout go back to being parked,
+    /// keeping the frame saved for them: that jump wasn't the user's doing.
+    func reparkStrays() {
+        guard state.hideOtherLayouts else { return }
+        for w in AX.windows() {
+            guard let f = w.frame, !isParked(f), !isPinned(f), let n = state.assignment[w.key], n != state.current else { continue }
+            park(w, frame: state.saved[w.key] ?? f)
+        }
+    }
+
     private func unpark(_ w: Win) {
         if let f = state.saved[w.key] {
             w.setFrame(f)
