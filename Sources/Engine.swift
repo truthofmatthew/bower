@@ -198,7 +198,7 @@ final class Engine {
     private func prune() {
         let info = CGWindowListCopyWindowInfo([.optionAll], kCGNullWindowID) as? [[String: Any]] ?? []
         let keys = Set(info.compactMap { ($0[kCGWindowNumber as String] as? CGWindowID).map(String.init) })
-        let livePIDs = Set(NSWorkspace.shared.runningApplications.map(\.processIdentifier))
+        let livePIDs = Set(AX.apps().map(\.processIdentifier))
         store.update { st in
             let gone = st.records.filter { !keys.contains($0.key) }
             for (key, r) in gone {

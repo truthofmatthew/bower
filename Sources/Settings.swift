@@ -345,8 +345,11 @@ private struct NameField: View {
     }
 
     private func save() {
+        // An empty name sets the layout back to Untitled: unused, and left out of the menu bar list.
         let t = text.trimmingCharacters(in: .whitespaces)
-        if t.isEmpty { text = name } else if t != name { commit(t) }
+        let n = t.isEmpty ? Layout.untitled : t
+        text = n
+        if n != name { commit(n) }
     }
 }
 

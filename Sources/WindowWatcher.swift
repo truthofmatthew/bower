@@ -8,12 +8,12 @@ final class WindowWatcher {
     private var pending: DispatchWorkItem?
 
     func start() {
-        for app in NSWorkspace.shared.runningApplications where app.activationPolicy == .regular { observe(app) }
+        AX.apps().forEach(observe)
         let nc = NSWorkspace.shared.notificationCenter
-        nc.addObserver(forName: NSWorkspace.didLaunchApplicationNotification, object: nil, queue: .main) { [weak self] n in
-            guard let app = n.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }
+        nc.addObserver(forName: NSWorkspace.didLaunchApplicationNotification, object: nil, queue: .main) { [weak self] _ in
             // An app's AX interface isn't ready the instant it launches.
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self?.observe(app); self?.changed() }
+            // A launcher-script app is announced with pid -1, so look the apps up again rather than trusting this one.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { AX.apps().forEach { self?.observe($0) }; self?.changed() }
         }
         nc.addObserver(forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main) { [weak self] n in
             guard let app = n.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication else { return }

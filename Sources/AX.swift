@@ -85,8 +85,8 @@ enum AX {
     /// Every standard, non-minimized, non-fullscreen window of every regular app that isn't hidden.
     static func windows() -> [Win] {
         let me = ProcessInfo.processInfo.processIdentifier
-        return NSWorkspace.shared.runningApplications
-            .filter { $0.activationPolicy == .regular && !$0.isHidden && $0.processIdentifier != me }
+        return apps()
+            .filter { !$0.isHidden && $0.processIdentifier != me }
             .flatMap { app -> [Win] in
                 let el = AXUIElementCreateApplication(app.processIdentifier)
                 let list: [AXUIElement] = value(el, kAXWindowsAttribute) ?? []
@@ -94,8 +94,31 @@ enum AX {
             }
     }
 
+    /// Regular apps with a usable process ID. An app started by a launcher script (an exec'ing shell script as its
+    /// executable) is listed with pid -1, so the owners of on-screen-layer windows fill in the real process.
+    static func apps() -> [NSRunningApplication] {
+        var byPID: [pid_t: NSRunningApplication] = [:]
+        for a in NSWorkspace.shared.runningApplications where a.processIdentifier > 0 { byPID[a.processIdentifier] = a }
+        let info = CGWindowListCopyWindowInfo([.optionAll, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+        for w in info where (w[kCGWindowLayer as String] as? Int) == 0 {
+            guard let pid = w[kCGWindowOwnerPID as String] as? pid_t, byPID[pid] == nil,
+                  let a = NSRunningApplication(processIdentifier: pid) else { continue }
+            byPID[pid] = a
+        }
+        return byPID.values.filter { $0.activationPolicy == .regular }
+    }
+
+    /// The app with keyboard focus, asked of Accessibility since `frontmostApplication` can carry pid -1 (see `apps`).
+    static func frontApp() -> NSRunningApplication? {
+        var raw: CFTypeRef?
+        var pid: pid_t = 0
+        guard AXUIElementCopyAttributeValue(AXUIElementCreateSystemWide(), kAXFocusedApplicationAttribute as CFString, &raw) == .success,
+              let el = raw, AXUIElementGetPid(el as! AXUIElement, &pid) == .success else { return NSWorkspace.shared.frontmostApplication }
+        return NSRunningApplication(processIdentifier: pid)
+    }
+
     static func focusedWindow() -> Win? {
-        guard let app = NSWorkspace.shared.frontmostApplication,
+        guard let app = frontApp(),
               app.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return nil }
         let el = AXUIElementCreateApplication(app.processIdentifier)
         guard let w: AXUIElement = value(el, kAXFocusedWindowAttribute) else { return nil }

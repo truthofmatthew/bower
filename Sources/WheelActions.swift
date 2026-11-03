@@ -131,9 +131,8 @@ extension Engine {
         case .minimize:
             if let w { AXUIElementSetAttributeValue(w.el, kAXMinimizedAttribute as CFString, kCFBooleanTrue) }
         case .hideOthers:
-            let keep = w?.pid ?? NSWorkspace.shared.frontmostApplication?.processIdentifier
-            for app in NSWorkspace.shared.runningApplications where app.activationPolicy == .regular
-                && app.processIdentifier != keep && app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
+            let keep = w?.pid ?? AX.frontApp()?.processIdentifier
+            for app in AX.apps() where app.processIdentifier != keep && app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
                 app.hide()
             }
         case .split, .fourCorners, .focusStack:

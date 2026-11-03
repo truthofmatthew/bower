@@ -29,17 +29,22 @@ struct WheelEditorTab: View {
                 .background(Palette.stage, in: RoundedRectangle(cornerRadius: 10))
                 .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Palette.hair, lineWidth: 0.5))
 
-            VStack(alignment: .leading, spacing: 8) {
-                GroupHeading(text: "Actions · drag onto an outer slot")
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
-                    ForEach(WheelAction.allCases, id: \.self) { a in action(a) }
+            // Scrolls: fifteen actions plus a selected slot's card are taller than the wheel beside them.
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    GroupHeading(text: "Actions · drag onto an outer slot")
+                    // Fixed columns: inside a ScrollView, flexible ones get measured too wide.
+                    LazyVGrid(columns: [GridItem(.fixed(137), spacing: 6), GridItem(.fixed(137), spacing: 6)], spacing: 6) {
+                        ForEach(WheelAction.allCases, id: \.self) { a in action(a) }
+                    }
+                    Text("Greyed actions are already on the wheel. The inner ring always holds the eight snap targets. Drop onto the centre to cancel a drag.")
+                        .font(.system(size: 11)).foregroundStyle(Palette.label2).fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 2).padding(.top, 2)
+                    slotCard.padding(.top, 4)
                 }
-                Text("Greyed actions are already on the wheel. The inner ring always holds the eight snap targets. Drop onto the centre to cancel a drag.")
-                    .font(.system(size: 11)).foregroundStyle(Palette.label2).fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 2).padding(.top, 2)
-                Spacer(minLength: 0)
-                slotCard
+                .frame(width: 280, alignment: .leading)
             }
+            .scrollIndicators(.automatic)
         }
         .frame(height: 448)
     }
