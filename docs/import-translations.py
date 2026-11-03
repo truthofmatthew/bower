@@ -23,6 +23,27 @@ def specs(s):
     return Counter(SPEC.findall(s))
 
 
+RTL = {"fa", "ar", "he", "ur"}
+LATIN_START = re.compile(r'\s*(%(\d+\$)?(@|lld)|[A-Za-z@⌃⌥⇧⌘])')
+
+
+def bidi(value):
+    """Right-to-left fixes, applied on import so a re-translation can't lose them:
+    @mentions stay left to right, inserted names are isolated so punctuation stays put, and a
+    right-to-left mark leads any string that would otherwise start with Latin text or a placeholder."""
+    if value in ("%@%@%@%@",) or not re.search(r'[֐-ࣿ]', value):
+        return value
+    v = re.sub(r'[‏⁦-⁩]', '', value)
+    latin_start = LATIN_START.match(v)  # decided before the isolates are added in front
+    v = re.sub(r'@(%(\d+\$)?@)', '⁦@\\1⁩', v)
+    v = re.sub(r'(?<![⁦@])(%(\d+\$)?@)(?!⁩)', '⁨\\1⁩', v)
+    # Key combinations (⌥1, ⌃⌥Space, ⌥1–9) read left to right.
+    v = re.sub(r'([⌃⌥⇧⌘]+[A-Za-z0-9↩←→↑↓⌫<]*(?:[–…][0-9])?)', '⁦\\1⁩', v)
+    if latin_start:
+        v = '‏' + v
+    return v
+
+
 failed = False
 for lang in sys.argv[1:]:
     tr = json.load(open(f"build/loc/{lang}.json"))
@@ -38,7 +59,8 @@ for lang in sys.argv[1:]:
         if k in ("CFBundleDisplayName", "CFBundleName"):
             continue  # Info.plist names stay "Bower"
         entry = strings.setdefault(k, {})
-        entry.setdefault("localizations", {})[lang] = {"stringUnit": {"state": "translated", "value": tr[k]}}
+        value = bidi(tr[k]) if lang in RTL else tr[k]
+        entry.setdefault("localizations", {})[lang] = {"stringUnit": {"state": "translated", "value": value}}
     print(f"{lang}: {len(keys)} keys imported")
 
 json.dump(catalog, open(catalog_path, "w"), ensure_ascii=False, indent=2, sort_keys=True)
