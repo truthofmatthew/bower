@@ -22,12 +22,14 @@ final class WheelController {
 
     private let engine: Engine
     private let preview: SnapPreview
+    private let layoutGhost = LayoutGhost()
     private let panel: WheelPanel
     private let view = WheelView()
     private var target: Win?
     private var screen: NSScreen?
     private var sticky = false
     private var openedAt = Date()
+    private var openedMouse = NSPoint.zero
     private var arcDwell: DispatchWorkItem?
     private var arcAnim: Timer?
 
@@ -66,10 +68,18 @@ final class WheelController {
         view.model.disabled = Set((0..<8).filter(disabled))
         refreshCaption()
 
+        preview.hide()
+        layoutGhost.hide()
         let m = NSEvent.mouseLocation
-        let c = WheelGeometry.center
-        panel.setFrame(NSRect(x: m.x - c.x, y: m.y - (WheelGeometry.panelSize.height - c.y),
-                              width: WheelGeometry.panelSize.width, height: WheelGeometry.panelSize.height), display: false)
+        openedMouse = m
+        let c = WheelGeometry.center, size = WheelGeometry.panelSize
+        var f = NSRect(x: m.x - c.x, y: m.y - (size.height - c.y), width: size.width, height: size.height)
+        // Near a screen edge the wheel moves inward rather than getting cut off.
+        if let v = (NSScreen.screens.first { NSMouseInRect(m, $0.frame, false) } ?? NSScreen.main)?.visibleFrame {
+            f.origin.x = min(max(f.minX, v.minX), v.maxX - f.width)
+            f.origin.y = min(max(f.minY, v.minY), v.maxY - f.height)
+        }
+        panel.setFrame(f, display: false)
         panel.prepareAppearance()
         panel.alphaValue = 0
         panel.makeKeyAndOrderFront(nil)
@@ -77,10 +87,17 @@ final class WheelController {
         onOpen()
     }
 
+    /// The shortcut again: closes the wheel, or, when the pointer has moved since it opened, brings it to the pointer.
+    func toggle() {
+        let m = NSEvent.mouseLocation
+        if isOpen, hypot(m.x - openedMouse.x, m.y - openedMouse.y) < 40 { close() } else { open(sticky: true) }
+    }
+
     func close() {
         arcDwell?.cancel()
         arcAnim?.invalidate()
         preview.hide()
+        layoutGhost.hide()
         guard panel.isVisible else { return }
         NSAnimationContext.runAnimationGroup({ ctx in
             ctx.duration = 0.08
@@ -270,6 +287,14 @@ final class WheelController {
     }
 
     private func refreshGhost() {
+        // Pointing at a layout in the Layouts or Send arc shows what that layout holds.
+        if case .arc(let i) = view.model.focus ?? view.model.hover,
+           let parent = view.model.arc.flatMap({ slot($0.parent) }), parent == .layouts || parent == .send,
+           let s = screen ?? NSScreen.main {
+            preview.hide()
+            return layoutGhost.show(i, windows: engine.windows(in: i, on: s), on: s)
+        }
+        layoutGhost.hide()
         guard let w = target, let a = snapAction(view.model.focus ?? view.model.hover),
               let t = engine.target(a, for: w) else { return preview.hide() }
         let scale = t.screen.backingScaleFactor

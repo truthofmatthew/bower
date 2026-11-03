@@ -133,6 +133,13 @@ private struct GeneralTab: View {
                         .toggleStyle(BowerToggle())
                         .accessibilityLabel("Hide windows not in layout")
                 }
+                FormRow {
+                    RowText(title: "Full screen stays in its layout",
+                            sub: "The green button fills the screen instead of opening a new desktop, which no layout can hold.")
+                    Toggle("", isOn: Binding(get: { store.state.keepFullScreenHere }, set: engine.setKeepFullScreenHere))
+                        .toggleStyle(BowerToggle())
+                        .accessibilityLabel("Full screen stays in its layout")
+                }
             }
             GroupHeading(text: "Menu bar item")
             FormGroup {
@@ -592,6 +599,22 @@ private struct ShortcutsTab: View {
                         .toggleStyle(BowerToggle())
                         .disabled(!TrackpadTap.shared.available)
                         .accessibilityLabel("Three-finger tap opens the Snap Wheel")
+                }
+                FormRow {
+                    RowText(title: "Three-finger swipe changes layout",
+                            sub: !TrackpadTap.shared.available ? "No trackpad found."
+                                : TrackpadTap.systemUsesThreeFingerSwipe ? "macOS also switches desktops with this swipe. In Trackpad settings › More Gestures, set Swipe between full-screen applications to four fingers."
+                                : "Swipe left for the next layout, right for the previous one.")
+                    if TrackpadTap.shared.available, TrackpadTap.systemUsesThreeFingerSwipe {
+                        Button("Open Trackpad Settings") {
+                            NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Trackpad-Settings.extension")!)
+                        }
+                        .buttonStyle(BowerButton())
+                    }
+                    Toggle("", isOn: Binding(get: { store.state.swipeLayouts }, set: engine.setSwipeLayouts))
+                        .toggleStyle(BowerToggle())
+                        .disabled(!TrackpadTap.shared.available)
+                        .accessibilityLabel("Three-finger swipe changes layout")
                 }
                 FormRow {
                     RowText(title: "Middle-click opens the Snap Wheel", sub: "Off: the middle button goes to apps as usual.")

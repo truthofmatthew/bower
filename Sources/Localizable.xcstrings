@@ -4374,6 +4374,52 @@
         }
       }
     },
+    "Full screen stays in its layout": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vollbild bleibt in seinem Layout"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La pantalla completa se queda en su disposición"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تمام‌صفحه توی چیدمان خودش می‌مونه"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le plein écran reste dans sa disposition"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tutto schermo resta nel suo layout"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フルスクリーンをレイアウト内にとどめる"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A tela cheia fica no seu layout"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "de": {
@@ -5244,6 +5290,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir o Bower ao iniciar sessão"
+          }
+        }
+      }
+    },
+    "Layout %lld has no windows on this display": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layout %lld hat auf diesem Bildschirm keine Fenster"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La disposición %lld no tiene ventanas en esta pantalla"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیدمان %lld توی این صفحه پنجره‌ای نداره"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La disposition %lld n’a aucune fenêtre sur cet écran"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il layout %lld non ha finestre su questo schermo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウト%lldにはこのディスプレイのウインドウがありません"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O layout %lld não tem janelas nesta tela"
           }
         }
       }
@@ -7522,6 +7614,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abrir Ajustes do Sistema"
+          }
+        }
+      }
+    },
+    "Open Trackpad Settings": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trackpad-Einstellungen öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir ajustes del trackpad"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن تنظیمات ترک‌پد"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir les réglages du trackpad"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri impostazioni trackpad"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トラックパッド設定を開く"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Ajustes do Trackpad"
           }
         }
       }
@@ -10816,6 +10954,52 @@
         }
       }
     },
+    "Swipe left for the next layout, right for the previous one.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach links wischen für das nächste Layout, nach rechts für das vorige."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desliza a la izquierda para la siguiente disposición y a la derecha para la anterior."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به چپ بکش برای چیدمان بعدی، به راست برای قبلی."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balayez vers la gauche pour la disposition suivante, vers la droite pour la précédente."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorri a sinistra per il layout successivo, a destra per il precedente."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "左へスワイプで次のレイアウト、右へで前のレイアウトに移ります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deslize para a esquerda para o próximo layout e para a direita para o anterior."
+          }
+        }
+      }
+    },
     "Switch between two starter layouts. No animation: the desk just changes.": {
       "localizations": {
         "de": {
@@ -11230,6 +11414,52 @@
         }
       }
     },
+    "The green button fills the screen instead of opening a new desktop, which no layout can hold.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der grüne Knopf füllt den Bildschirm, statt einen neuen Schreibtisch zu öffnen, den kein Layout halten kann."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El botón verde llena la pantalla en lugar de abrir un escritorio nuevo, que ninguna disposición puede contener."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دکمه‌ی سبز صفحه رو پر می‌کنه، به‌جای اینکه یه دسکتاپ جدید باز کنه که هیچ چیدمانی نمی‌تونه نگهش داره."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le bouton vert remplit l’écran au lieu d’ouvrir un nouveau bureau, qu’aucune disposition ne peut contenir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il pulsante verde riempie lo schermo invece di aprire una nuova scrivania, che nessun layout può contenere."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "緑のボタンで、レイアウトに収められない新しいデスクトップを開く代わりに画面いっぱいに広げます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O botão verde ocupa a tela em vez de abrir uma mesa nova, que nenhum layout consegue guardar."
+          }
+        }
+      }
+    },
     "The model's reply wasn't a plan": {
       "localizations": {
         "de": {
@@ -11410,6 +11640,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terços"
+          }
+        }
+      }
+    },
+    "Three-finger swipe changes layout": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit drei Fingern wischen wechselt das Layout"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deslizar con tres dedos cambia de disposición"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کشیدن سه انگشتی چیدمان رو عوض می‌کنه"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balayer à trois doigts change de disposition"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorrere con tre dita cambia layout"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3本指スワイプでレイアウトを切り替える"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deslizar com três dedos muda de layout"
           }
         }
       }
@@ -13112,6 +13388,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "https://api.example.com/v1"
+          }
+        }
+      }
+    },
+    "macOS also switches desktops with this swipe. In Trackpad settings › More Gestures, set Swipe between full-screen applications to four fingers.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS wechselt mit dieser Geste auch Schreibtische. Stell in den Trackpad-Einstellungen › Weitere Gesten „Zwischen Vollbild-Apps wechseln“ auf vier Finger."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS también cambia de escritorio con este gesto. En Ajustes del trackpad › Más gestos, pon «Deslizar entre apps a pantalla completa» en cuatro dedos."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "‏macOS هم با همین کشیدن بین دسکتاپ‌ها جابه‌جا می‌شه. توی تنظیمات ترک‌پد › حرکت‌های بیشتر، «جابه‌جایی بین برنامه‌های تمام‌صفحه» رو بذار روی چهار انگشت."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS change aussi de bureau avec ce geste. Dans les réglages du trackpad › Autres gestes, réglez « Balayer entre les apps en plein écran » sur quatre doigts."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anche macOS cambia scrivania con questo gesto. In Impostazioni trackpad › Altri gesti, imposta «Scorri tra le app a tutto schermo» su quattro dita."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOSもこのスワイプでデスクトップを切り替えます。トラックパッド設定 › その他のジェスチャで「フルスクリーンアプリ間をスワイプ」を4本指にしてください。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O macOS também troca de mesa com esse gesto. Em Ajustes do trackpad › Mais gestos, ponha “Deslizar entre apps em tela cheia” em quatro dedos."
           }
         }
       }

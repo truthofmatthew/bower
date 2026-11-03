@@ -53,6 +53,10 @@ struct DeskState: Codable {
     var middleClickWheel = true
     /// Three-finger tap opens the Snap Wheel. nil: on, unless macOS uses that tap for Look Up.
     var trackpadTapWheel: Bool?
+    /// A three-finger swipe left or right moves to the next or previous layout.
+    var swipeLayouts = false
+    /// The green button fills the screen in the window's layout instead of giving it a full-screen desktop of its own.
+    var keepFullScreenHere = true
     /// The last known app, title, layout and frame of each open window, so it can be found again after a restart.
     var records: [String: WindowRecord] = [:]
     /// Windows whose app quit (or whose Mac restarted). A matching window that opens later goes back to its place.
@@ -109,6 +113,7 @@ extension DeskState {
         try read(.statusStyle, &statusStyle); try read(.hideOtherLayouts, &hideOtherLayouts)
         try read(.workspaces, &workspaces); try read(.shelf, &shelf); try read(.ai, &ai); try read(.middleClickWheel, &middleClickWheel)
         trackpadTapWheel = try c.decodeIfPresent(Bool.self, forKey: .trackpadTapWheel)
+        try read(.swipeLayouts, &swipeLayouts); try read(.keepFullScreenHere, &keepFullScreenHere)
         try read(.records, &records); try read(.orphans, &orphans); try read(.keepEmptySpace, &keepEmptySpace)
         try read(.wheelSlots, &wheelSlots); try read(.shortcuts, &shortcuts)
         try read(.clearedShortcuts, &clearedShortcuts); try read(.isoKeyboard, &isoKeyboard)

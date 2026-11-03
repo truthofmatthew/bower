@@ -169,7 +169,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             guard let self, !self.wheel.isOpen else { return }
             self.wheel.open(sticky: true)
         }
+        TrackpadTap.shared.swipeEnabled = { [weak self] in self?.store.state.swipeLayouts ?? false }
+        TrackpadTap.shared.onSwipe = { [weak self] d in
+            guard let self, !self.wheel.isOpen else { return }
+            self.engine.step(d)
+        }
         TrackpadTap.shared.start()
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil,
+                                                          queue: .main) { [weak self] _ in
+            // Entering full screen lands on a new desktop; give the animation a moment before reading the window.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { self?.engine.catchFullScreen() }
+        }
         watcher.onChange = { [weak self] in self?.engine.windowsChanged() }
         watcher.start()
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil,
@@ -181,6 +191,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                       : AX.apps().first(where: { $0.app.bundleIdentifier == app.bundleIdentifier })?.pid,
                   pid != ProcessInfo.processInfo.processIdentifier else { return }
             self.engine.follow(pid: pid)
+            self.tabs.reveal(pid: pid)
         }
         engine.windowsChanged()  // windows that came back after a restart find their layouts
         // Display recovery: remember what's on each display, and react when one connects or disconnects.
@@ -223,10 +234,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         switch id {
         case .wheel:
-            return hk.add(c.key, c.mods) { [weak self] in
-                guard let self else { return }
-                self.wheel.isOpen ? self.wheel.close() : self.wheel.open(sticky: true)
-            }
+            return hk.add(c.key, c.mods) { [weak self] in self?.wheel.toggle() }
         case .layoutsBar: return hk.add(c.key, c.mods) { [weak self] in self?.bar.toggle() }
         case .switchLayout:
             return hk.add(c.key, c.mods) { [weak self] in

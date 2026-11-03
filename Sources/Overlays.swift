@@ -188,3 +188,95 @@ final class Toast {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15 + 1.4, execute: work)
     }
 }
+
+// MARK: - Layout preview
+
+/// What a layout holds, drawn over the real screen while the Snap Wheel points at it: the display dims, and each of
+/// the layout's windows appears where it rests, with its app's icon and name and the window's title.
+final class LayoutGhost {
+    // Just under the wheel, so the wheel stays readable on top.
+    private let panel = OverlayPanel(level: NSWindow.Level(rawValue: NSWindow.Level.popUpMenu.rawValue - 1))
+    private let view = LayoutGhostView()
+    private var shown: Int?
+
+    init() { panel.contentView = view }
+
+    func show(_ n: Int, windows: [(win: Win, frame: CGRect)], on s: NSScreen) {
+        guard shown != n else { return }
+        shown = n
+        view.items = windows.map { w in
+            let r = NSScreen.appKit(w.frame)
+            return .init(rect: r.offsetBy(dx: -s.frame.minX, dy: -s.frame.minY), icon: w.win.icon, app: w.win.appName, title: w.win.title)
+        }
+        view.empty = String(localized: "Layout \(n + 1) has no windows on this display")
+        panel.setFrame(s.frame, display: false)
+        view.needsDisplay = true
+        guard !panel.isVisible else { return }
+        panel.alphaValue = 0
+        panel.orderFrontRegardless()
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = Theme.reduceMotion ? 0.08 : 0.14
+            ctx.timingFunction = Theme.reduceMotion ? nil : Theme.easeOut
+            panel.animator().alphaValue = 1
+        }
+    }
+
+    func hide() {
+        guard shown != nil else { return }
+        shown = nil
+        NSAnimationContext.runAnimationGroup({ ctx in
+            ctx.duration = 0.1
+            panel.animator().alphaValue = 0
+        }, completionHandler: { [self] in if shown == nil { panel.orderOut(nil) } })
+    }
+}
+
+private final class LayoutGhostView: NSView {
+    struct Item { let rect: CGRect; let icon: NSImage?; let app: String; let title: String }
+    var items: [Item] = []
+    var empty = ""
+
+    override func draw(_ dirtyRect: NSRect) {
+        let p = SnapPalette.current(effectiveAppearance)
+        let dark = Theme.isDark(effectiveAppearance)
+        NSColor.black.withAlphaComponent(0.5).setFill()
+        bounds.fill()
+        guard !items.isEmpty else { return drawPill(empty, at: CGPoint(x: bounds.midX, y: bounds.midY), p) }
+        for it in items {
+            let r = it.rect.insetBy(dx: 6, dy: 6)
+            let body = NSBezierPath(roundedRect: r, xRadius: 10, yRadius: 10)
+            // Solid, so the windows of the layout on screen now don't show through.
+            NSColor(white: dark ? 0.15 : 0.97, alpha: 1).setFill()
+            body.fill()
+            (Theme.highContrast ? p.stroke.withAlphaComponent(1) : p.stroke).setStroke()
+            body.lineWidth = 1.5
+            body.stroke()
+            // Icon, app name and title near the top, clear of the wheel (which opens mid-screen, at the pointer);
+            // the title drops out when the window is too small for it.
+            let icon: CGFloat = min(56, r.height * 0.35, r.width * 0.35)
+            let name = NSAttributedString(string: it.app, attributes: [.font: NSFont.systemFont(ofSize: 15, weight: .semibold), .foregroundColor: p.label])
+            let title = NSAttributedString(string: it.title == it.app ? "" : it.title,
+                                           attributes: [.font: NSFont.systemFont(ofSize: 12), .foregroundColor: p.label2])
+            let showTitle = !title.string.isEmpty && r.height > icon + 60
+            let h = icon + 8 + name.size().height + (showTitle ? 4 + title.size().height : 0)
+            var y = max(r.midY + h / 2, r.maxY - 36) - icon
+            it.icon?.draw(in: NSRect(x: r.midX - icon / 2, y: y, width: icon, height: icon))
+            y -= 8 + name.size().height
+            draw(name, centeredAt: r.midX, y: y, maxWidth: r.width - 24)
+            if showTitle { draw(title, centeredAt: r.midX, y: y - 4 - title.size().height, maxWidth: r.width - 24) }
+        }
+    }
+
+    private func draw(_ s: NSAttributedString, centeredAt x: CGFloat, y: CGFloat, maxWidth: CGFloat) {
+        let w = min(s.size().width, max(maxWidth, 0))
+        s.draw(with: NSRect(x: x - w / 2, y: y, width: w, height: s.size().height), options: [.usesLineFragmentOrigin, .truncatesLastVisibleLine])
+    }
+
+    private func drawPill(_ text: String, at c: CGPoint, _ p: SnapPalette) {
+        let t = NSAttributedString(string: text, attributes: [.font: NSFont.systemFont(ofSize: 13, weight: .medium), .foregroundColor: p.label])
+        let pill = NSRect(x: c.x - t.size().width / 2 - 14, y: c.y - 15, width: t.size().width + 28, height: 30)
+        p.hud.setFill()
+        NSBezierPath(roundedRect: pill, xRadius: 15, yRadius: 15).fill()
+        t.draw(at: NSPoint(x: pill.minX + 14, y: pill.midY - t.size().height / 2))
+    }
+}

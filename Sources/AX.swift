@@ -128,6 +128,15 @@ enum AX {
         return nil
     }
 
+    /// The focused window when it's in macOS full screen (which `windows()` leaves out), with its window ID.
+    static func focusedFullScreenWindow() -> (AXUIElement, CGWindowID)? {
+        guard let (pid, _) = frontApp(), let w: AXUIElement = value(AXUIElementCreateApplication(pid), kAXFocusedWindowAttribute),
+              (value(w, "AXFullScreen") as Bool?) == true else { return nil }
+        var id: CGWindowID = 0
+        guard _AXUIElementGetWindow(w, &id) == .success, id != 0 else { return nil }
+        return (w, id)
+    }
+
     static func focusedWindow() -> Win? {
         guard let (pid, app) = frontApp(), pid != ProcessInfo.processInfo.processIdentifier else { return nil }
         guard let w: AXUIElement = value(AXUIElementCreateApplication(pid), kAXFocusedWindowAttribute) else { return nil }

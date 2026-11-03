@@ -137,6 +137,19 @@ final class TabsController {
         apply(s, focusActive: true)
     }
 
+    /// A Dock click or ⌘Tab to an app whose window waits behind another tab brings that tab forward.
+    func reveal(pid: pid_t) {
+        let mine = AX.windows().filter { $0.pid == pid }
+        let focused = AX.focusedWindow().flatMap { f in mine.first { $0.key == f.key } }
+        for s in NSScreen.screens where engine.mode(of: s) == .tabs {
+            let tg = state(s)
+            if mine.contains(where: { w in tg.active.contains(w.key) }) { return }  // one of its tabs is already showing
+            let candidates = [focused].compactMap { $0 } + mine
+            guard let w = candidates.first(where: { w in tg.groups.contains { $0.contains(w.key) } }) else { continue }
+            return activate(w.key, on: s)
+        }
+    }
+
     func close(_ windowKey: String) {
         guard let w = AX.windows().first(where: { $0.key == windowKey }),
               let button: AXUIElement = AX.value(w.el, kAXCloseButtonAttribute) else { return }

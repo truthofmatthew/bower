@@ -172,6 +172,46 @@ final class Engine {
         onChange()
     }
 
+    func setSwipeLayouts(_ on: Bool) {
+        store.update { $0.swipeLayouts = on }
+        onChange()
+    }
+
+    func setKeepFullScreenHere(_ on: Bool) {
+        store.update { $0.keepFullScreenHere = on }
+        onChange()
+    }
+
+    /// Three-finger swipe: the next or previous layout in use (named, or holding windows). Stops at the ends, as desktops do.
+    func step(_ d: Int) {
+        let used = Set(state.assignment.values)
+        let list = (0..<9).filter { !state.layouts[$0].isUntitled || used.contains($0) || $0 == state.current }
+        guard let i = list.firstIndex(of: state.current), list.indices.contains(i + d) else { return }
+        switchTo(list[i + d])
+    }
+
+    /// The windows layout `n` holds on screen `s`, at their resting frames: what the wheel's layout preview draws.
+    func windows(in n: Int, on s: NSScreen) -> [(win: Win, frame: CGRect)] {
+        AX.windows().compactMap { w in
+            guard let f = w.frame, (state.assignment[w.key] ?? state.current) == n else { return nil }
+            let r = isParked(f) ? state.saved[w.key] ?? f : f
+            return NSScreen.containing(ax: r) == s ? (w, r) : nil
+        }
+    }
+
+    /// The green button gives a window a full-screen desktop of its own, where no layout can hold it.
+    /// With "keep full screen here" on, the window comes back and fills the screen in its layout instead.
+    func catchFullScreen() {
+        guard state.keepFullScreenHere, let (el, id) = AX.focusedFullScreenWindow() else { return }
+        AXUIElementSetAttributeValue(el, "AXFullScreen" as CFString, kCFBooleanFalse)
+        // The window can't be moved until the exit animation (about 0.7 s) lands.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { [weak self] in
+            guard let self, let w = AX.windows().first(where: { $0.id == id }) else { return }
+            if let n = self.state.assignment[w.key], n != self.state.current { self.switchTo(n) }
+            self.snap(w, .maximize)
+        }
+    }
+
     func setMiddleClickWheel(_ on: Bool) {
         store.update { $0.middleClickWheel = on }
         onChange()
