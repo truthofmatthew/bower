@@ -165,10 +165,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self?.tabs.focusChanged()
         }
         TrackpadTap.shared.enabled = { [weak self] in self?.store.state.trackpadTapOn ?? false }
-        TrackpadTap.shared.onTap = { [weak self] in
-            guard let self, !self.wheel.isOpen else { return }
-            self.wheel.open(sticky: true)
-        }
+        TrackpadTap.shared.onTap = { [weak self] in self?.wheel.toggle() }  // like the shortcut: open, move, or close
         TrackpadTap.shared.swipeEnabled = { [weak self] in self?.store.state.swipeLayouts ?? false }
         TrackpadTap.shared.onSwipe = { [weak self] d in
             guard let self, !self.wheel.isOpen else { return }
