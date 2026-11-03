@@ -124,9 +124,9 @@ final class Engine {
     private(set) var lastSwitch = Date.distantPast
 
     /// Clicking an app in the Dock (or ⌘Tab to it) shows the layout its windows are in, when none are in this one.
-    func follow(_ app: NSRunningApplication) {
+    func follow(pid: pid_t) {
         guard Date().timeIntervalSince(lastSwitch) > 0.6 else { return }
-        let mine = AX.windows().filter { $0.pid == app.processIdentifier && $0.frame.map(isPinned) != true }
+        let mine = AX.windows().filter { $0.pid == pid && $0.frame.map(isPinned) != true }
         guard !mine.contains(where: { layout(of: $0, defaultingTo: state.current) == state.current }) else { return }
         let w = AX.focusedWindow().flatMap { f in mine.first { $0.key == f.key } } ?? mine.first
         guard let w, let n = state.assignment[w.key] else { return }
@@ -220,7 +220,7 @@ final class Engine {
     private func prune() {
         let info = CGWindowListCopyWindowInfo([.optionAll], kCGNullWindowID) as? [[String: Any]] ?? []
         let keys = Set(info.compactMap { ($0[kCGWindowNumber as String] as? CGWindowID).map(String.init) })
-        let livePIDs = Set(AX.apps().map(\.processIdentifier))
+        let livePIDs = Set(AX.apps().map(\.pid))
         store.update { st in
             let gone = st.records.filter { !keys.contains($0.key) }
             for (key, r) in gone {
