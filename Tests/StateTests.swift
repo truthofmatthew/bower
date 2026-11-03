@@ -16,6 +16,17 @@ final class StateTests: XCTestCase {
         XCTAssertTrue(st.shelf.isEmpty)
     }
 
+    /// Edge's profile stays at the end of the title while the page changes; a title without it has no profile.
+    func testProfileSuffix() {
+        let app = "Microsoft Edge"
+        XCTAssertEqual(profileSuffix(of: "Inbox - Work - Microsoft Edge - Marketing", app: app), " - Microsoft Edge - Marketing")
+        XCTAssertNil(profileSuffix(of: "Inbox - Microsoft Edge", app: app))
+        XCTAssertNil(profileSuffix(of: "Microsoft Edge", app: app))
+        let stale = "Old page - Microsoft Edge - Marketing"
+        XCTAssertTrue(stale.hasSuffix(profileSuffix(of: "New page - Microsoft Edge - Marketing", app: app)!))
+        XCTAssertFalse(stale.hasSuffix(profileSuffix(of: "New page - Microsoft Edge - Product", app: app)!))
+    }
+
     func testStateRoundTrips() throws {
         var st = DeskState()
         st.workspaces = [Workspace(name: "Docked", saved: Date(timeIntervalSince1970: 0), layouts: st.layouts, current: 2,

@@ -161,14 +161,26 @@ struct ShelfEntry: Codable {
     var modes: [Int: WindowMode]
 }
 
+/// Edge and Chrome end a window's title with " - <app> - <profile>". That end stays put while the page changes,
+/// so it tells a browser's profile windows apart after the browser reopens.
+func profileSuffix(of title: String, app: String) -> String? {
+    title.range(of: " - \(app) - ", options: .backwards).map { String(title[$0.lowerBound...]) }
+}
+
+/// Same app, and the record's title ends with the window's profile.
+func sameProfile(_ w: Win, _ r: WindowRecord) -> Bool {
+    r.bundleID == w.bundleID && profileSuffix(of: w.title, app: w.appName).map(r.title.hasSuffix) == true
+}
+
 extension Array where Element == WindowRecord {
-    /// Pairs live windows with records: same window ID first, then same app and title, then same app.
+    /// Pairs live windows with records: same window ID first, then same app and title, then same profile, then same app.
     func match(_ wins: [Win]) -> [(Win, WindowRecord)] {
         var left = self
         var out: [(Win, WindowRecord)] = []
         let passes: [(Win, WindowRecord) -> Bool] = [
             { w, r in r.key == w.key },
             { w, r in r.bundleID == w.bundleID && r.title == w.title },
+            sameProfile,
             { w, r in r.bundleID == w.bundleID }
         ]
         var unmatched = wins

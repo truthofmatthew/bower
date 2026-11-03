@@ -247,10 +247,12 @@ final class Engine {
         onChange()
     }
 
-    /// Same app and title first, then the same app.
+    /// Same app and title first, then the same browser profile, then the same app.
     private func orphanIndex(for w: Win) -> Int? {
         guard let b = w.bundleID else { return nil }
-        return state.orphans.lastIndex { $0.bundleID == b && $0.title == w.title } ?? state.orphans.lastIndex { $0.bundleID == b }
+        return state.orphans.lastIndex { $0.bundleID == b && $0.title == w.title }
+            ?? state.orphans.lastIndex { sameProfile(w, $0) }
+            ?? state.orphans.lastIndex { $0.bundleID == b }
     }
 
     /// Remembers each open window's app, title, layout, frame and display.
