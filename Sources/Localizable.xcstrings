@@ -3068,6 +3068,98 @@
         }
       }
     },
+    "Clear layout %lld": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layout %lld leeren"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaciar disposición %lld"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک کردن چیدمان %lld"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vider la disposition %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svuota layout %lld"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウト%lldをクリア"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limpar layout %lld"
+          }
+        }
+      }
+    },
+    "Clear this layout: its name goes back to Untitled and its modes to Native. Its windows stay put.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Layout leeren: Der Name wird wieder „Ohne Titel“, die Modi wieder „Nativ“. Die Fenster bleiben, wo sie sind."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaciar esta disposición: el nombre vuelve a «Sin título» y los modos a «Nativo». Sus ventanas no se mueven."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این چیدمان رو پاک کن: اسمش برمی‌گرده به «بی‌اسم» و حالت‌هاش به «معمولی». پنجره‌هاش جابه‌جا نمی‌شن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vider cette disposition : son nom redevient « Sans titre » et ses modes « Natif ». Ses fenêtres ne bougent pas."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svuota questo layout: il nome torna «Senza titolo» e le modalità «Nativa». Le sue finestre restano dove sono."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このレイアウトをクリアします。名前は「名称未設定」に、モードは「ネイティブ」に戻ります。ウインドウは動きません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limpar este layout: o nome volta a “Sem Título” e os modos a “Nativo”. As janelas ficam onde estão."
+          }
+        }
+      }
+    },
     "Click a slot to hide it, show it, or fill it from the list.": {
       "localizations": {
         "de": {
@@ -4650,6 +4742,52 @@
         }
       }
     },
+    "Hides every other app, so only this one stays.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blendet alle anderen Apps aus, nur diese bleibt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oculta las demás apps; solo queda esta."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بقیه‌ی برنامه‌ها رو پنهان می‌کنه تا فقط همین یکی بمونه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masque toutes les autres apps ; seule celle-ci reste."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nasconde tutte le altre app; resta solo questa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ほかのアプリをすべて隠し、このアプリだけを残します。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oculta todos os outros apps; só este fica."
+          }
+        }
+      }
+    },
     "ISO uses ⌃⌥< (the key left of Z) for Center Third.": {
       "localizations": {
         "de": {
@@ -6146,6 +6284,98 @@
         }
       }
     },
+    "Moves the window to the middle of the screen, same size.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schiebt das Fenster in die Bildschirmmitte, gleiche Größe."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mueve la ventana al centro de la pantalla, con el mismo tamaño."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره رو با همون اندازه می‌بره وسط صفحه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place la fenêtre au milieu de l’écran, même taille."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Porta la finestra al centro dello schermo, stessa dimensione."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サイズはそのままでウインドウを画面中央に移します。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move a janela para o meio da tela, no mesmo tamanho."
+          }
+        }
+      }
+    },
+    "Moves the window to your next display, keeping its place.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schiebt das Fenster auf den nächsten Bildschirm, an dieselbe Stelle."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva la ventana a tu siguiente pantalla, en el mismo sitio."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره رو می‌بره صفحه‌ی بعدی، همون جای قبلی."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envoie la fenêtre sur l’écran suivant, au même endroit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sposta la finestra sullo schermo successivo, nella stessa posizione."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置を保ったまま、ウインドウを次のディスプレイに移します。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leva a janela para a próxima tela, no mesmo lugar."
+          }
+        }
+      }
+    },
     "Music": {
       "localizations": {
         "de": {
@@ -7388,6 +7618,236 @@
         }
       }
     },
+    "Opens Bower Settings.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet die Bower-Einstellungen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre los Ajustes de Bower."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تنظیمات Bower رو باز می‌کنه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre les Réglages de Bower."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre le Impostazioni di Bower."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bowerの設定を開きます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre os Ajustes do Bower."
+          }
+        }
+      }
+    },
+    "Opens an arc of layouts. The window moves there and leaves this one.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet einen Bogen mit Layouts. Das Fenster wechselt dorthin und verlässt dieses."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre un arco de disposiciones. La ventana se va a esa y deja esta."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه کمان از چیدمان‌ها باز می‌کنه. پنجره می‌ره اونجا و از این یکی بیرون می‌ره."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre un arc de dispositions. La fenêtre y part et quitte celle-ci."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre un arco di layout. La finestra si sposta lì e lascia questo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウトの弧を開きます。ウインドウはそちらへ移り、このレイアウトから消えます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre um arco de layouts. A janela vai para lá e sai deste."
+          }
+        }
+      }
+    },
+    "Opens an arc of thirds: left, centre, right, or two thirds.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet einen Bogen mit Dritteln: links, Mitte, rechts oder zwei Drittel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre un arco de tercios: izquierda, centro, derecha o dos tercios."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه کمان از یک‌سوم‌ها باز می‌کنه: چپ، وسط، راست یا دو سوم."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre un arc de tiers : gauche, centre, droite ou deux tiers."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre un arco di terzi: sinistra, centro, destra o due terzi."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3分割の弧を開きます：左、中央、右、または3分の2。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre um arco de terços: esquerda, centro, direita ou dois terços."
+          }
+        }
+      }
+    },
+    "Opens an arc of your layouts. Pick one to swap every window on screen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet einen Bogen mit deinen Layouts. Wähl eins, um alle Fenster auf dem Bildschirm zu tauschen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre un arco con tus disposiciones. Elige una para cambiar todas las ventanas de la pantalla."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه کمان از چیدمان‌هات باز می‌کنه. یکی رو بزن تا همه‌ی پنجره‌های صفحه عوض بشن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre un arc de vos dispositions. Choisissez-en une pour changer toutes les fenêtres à l’écran."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre un arco con i tuoi layout. Scegline uno per cambiare tutte le finestre sullo schermo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウトの弧を開きます。選ぶと画面上のウインドウがすべて入れ替わります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre um arco com seus layouts. Escolha um para trocar todas as janelas da tela."
+          }
+        }
+      }
+    },
+    "Opens an arc to pick how this display arranges windows, such as Bento Box.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet einen Bogen, in dem du wählst, wie dieser Bildschirm Fenster anordnet, etwa Bento Box."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre un arco para elegir cómo esta pantalla ordena las ventanas, como Bento Box."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه کمان باز می‌کنه که انتخاب کنی این صفحه پنجره‌ها رو چطوری بچینه، مثلاً Bento Box."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvre un arc pour choisir comment cet écran range les fenêtres, par exemple Bento Box."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apre un arco per scegliere come questo schermo dispone le finestre, ad esempio Bento Box."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このディスプレイのウインドウの並べ方（Bento Box など）を選ぶ弧を開きます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre um arco para escolher como esta tela organiza as janelas, como Bento Box."
+          }
+        }
+      }
+    },
     "Opens in": {
       "localizations": {
         "de": {
@@ -7848,6 +8308,52 @@
         }
       }
     },
+    "Point at an action to see what it does.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeig auf eine Aktion, um zu sehen, was sie tut."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Señala una acción para ver qué hace."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موس رو ببر روی یه کار تا ببینی چی کار می‌کنه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Survolez une action pour voir ce qu’elle fait."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punta un’azione per vedere cosa fa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アクションにポインタを合わせると動きを確認できます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aponte para uma ação para ver o que ela faz."
+          }
+        }
+      }
+    },
     "Preset": {
       "localizations": {
         "de": {
@@ -7982,6 +8488,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Coloca na posição %lld"
+          }
+        }
+      }
+    },
+    "Puts the window back where it was before Bower last moved it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bringt das Fenster dorthin zurück, wo es war, bevor Bower es zuletzt bewegt hat."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devuelve la ventana a donde estaba antes de que Bower la moviera."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره رو برمی‌گردونه همون جایی که قبل از آخرین جابه‌جایی Bower بود."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remet la fenêtre là où elle était avant que Bower la déplace."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rimette la finestra dov’era prima che Bower la spostasse."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bowerが最後に動かす前の位置にウインドウを戻します。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devolve a janela para onde estava antes do Bower movê-la."
           }
         }
       }
@@ -9050,6 +9602,52 @@
         }
       }
     },
+    "Runs an AI Recipe that arranges your apps the way you wrote it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Führt ein KI-Rezept aus, das deine Apps so anordnet, wie du es geschrieben hast."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ejecuta una receta de IA que ordena tus apps como la escribiste."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه دستور هوش مصنوعی رو اجرا می‌کنه که برنامه‌هات رو همون‌طور که نوشتی بچینه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lance une recette IA qui range vos apps comme vous l’avez écrit."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esegue una ricetta IA che dispone le app come l’hai scritta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "書いたとおりにアプリを並べるAIレシピを実行します。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Executa uma receita de IA que organiza seus apps do jeito que você escreveu."
+          }
+        }
+      }
+    },
     "Same for All Displays": {
       "localizations": {
         "de": {
@@ -9518,6 +10116,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enviar janela para layout"
+          }
+        }
+      }
+    },
+    "Sends the window to the Dock.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt das Fenster im Dock ab."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manda la ventana al Dock."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره رو می‌فرسته توی Dock."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place la fenêtre dans le Dock."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manda la finestra nel Dock."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウをDockにしまいます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manda a janela para o Dock."
           }
         }
       }
@@ -10540,6 +11184,52 @@
         }
       }
     },
+    "The front window takes two thirds; the rest stack in the last third.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das vordere Fenster nimmt zwei Drittel, die anderen stapeln sich im letzten Drittel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ventana de delante ocupa dos tercios; el resto se apila en el último tercio."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌ی جلویی دو سوم رو می‌گیره و بقیه توی یک‌سوم آخر روی هم چیده می‌شن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fenêtre de premier plan prend deux tiers ; les autres s’empilent dans le dernier tiers."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La finestra in primo piano prende due terzi; le altre si impilano nell’ultimo terzo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手前のウインドウが3分の2を使い、残りは最後の3分の1に積み重なります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A janela da frente fica com dois terços; as outras se empilham no último terço."
+          }
+        }
+      }
+    },
     "The model's reply wasn't a plan": {
       "localizations": {
         "de": {
@@ -10582,6 +11272,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "A resposta do modelo não era um plano"
+          }
+        }
+      }
+    },
+    "The window fills the screen with a small margin around it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Fenster füllt den Bildschirm mit einem kleinen Rand."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ventana ocupa la pantalla con un pequeño margen alrededor."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره صفحه رو پر می‌کنه ولی یه کم فاصله دورش می‌مونه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fenêtre remplit l’écran avec une petite marge autour."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La finestra riempie lo schermo con un piccolo margine intorno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "周りに少し余白を残して、ウインドウが画面に広がります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A janela ocupa a tela com uma pequena margem em volta."
+          }
+        }
+      }
+    },
+    "The window fills the screen.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Fenster füllt den Bildschirm."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ventana ocupa toda la pantalla."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره کل صفحه رو پر می‌کنه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fenêtre remplit l’écran."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La finestra riempie lo schermo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウが画面いっぱいに広がります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A janela ocupa a tela inteira."
           }
         }
       }
@@ -10674,6 +11456,52 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toque com três dedos abre a Roda de Encaixe"
+          }
+        }
+      }
+    },
+    "Tiles every window on this display into a grid.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordnet alle Fenster auf diesem Bildschirm in einem Raster an."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coloca todas las ventanas de esta pantalla en una cuadrícula."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه‌ی پنجره‌های این صفحه رو توی یه جدول می‌چینه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Range toutes les fenêtres de cet écran en grille."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dispone tutte le finestre di questo schermo in una griglia."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このディスプレイのウインドウをすべてグリッドに並べます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Organiza todas as janelas desta tela em uma grade."
           }
         }
       }
@@ -11598,6 +12426,144 @@
         }
       }
     },
+    "Windows share one pane, with a tab for each.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenster teilen sich einen Bereich, mit einem Tab pro Fenster."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las ventanas comparten un panel, con una pestaña para cada una."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌ها توی یه قاب با هم‌ان و هر کدوم یه زبانه دارن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les fenêtres partagent un panneau, avec un onglet chacune."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le finestre condividono un pannello, con una scheda per ciascuna."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウが1つの枠を共有し、それぞれにタブが付きます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As janelas dividem um painel, com uma aba para cada."
+          }
+        }
+      }
+    },
+    "Windows stay where you put them.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenster bleiben, wo du sie hinlegst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las ventanas se quedan donde las pones."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌ها همون جایی می‌مونن که خودت گذاشتی."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les fenêtres restent là où vous les mettez."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le finestre restano dove le metti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウは置いた場所にとどまります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As janelas ficam onde você as coloca."
+          }
+        }
+      }
+    },
+    "Windows tile on their own. The one you used last gets the big column.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fenster ordnen sich selbst an. Das zuletzt benutzte bekommt die große Spalte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las ventanas se colocan solas. La última que usaste ocupa la columna grande."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌ها خودشون چیده می‌شن. اونی که آخر باهاش کار کردی ستون بزرگ رو می‌گیره."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les fenêtres se rangent toutes seules. La dernière utilisée prend la grande colonne."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le finestre si dispongono da sole. L’ultima usata prende la colonna grande."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウが自動で並びます。最後に使ったものが大きな列に入ります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As janelas se organizam sozinhas. A última usada fica com a coluna grande."
+          }
+        }
+      }
+    },
     "Workspace %lld": {
       "localizations": {
         "de": {
@@ -11778,6 +12744,98 @@
           "stringUnit": {
             "state": "translated",
             "value": "Você pode revogar a qualquer momento nos Ajustes do Sistema."
+          }
+        }
+      }
+    },
+    "Your four front windows take a corner each.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine vier vorderen Fenster bekommen je eine Ecke."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus cuatro ventanas de delante ocupan una esquina cada una."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چهار تا پنجره‌ی جلویی هر کدوم یه گوشه رو می‌گیرن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos quatre fenêtres de premier plan prennent chacune un coin."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le quattro finestre in primo piano prendono un angolo ciascuna."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手前の4つのウインドウがそれぞれ四隅に収まります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suas quatro janelas da frente ficam cada uma em um canto."
+          }
+        }
+      }
+    },
+    "Your two front windows share the screen, half each.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine beiden vorderen Fenster teilen sich den Bildschirm, je zur Hälfte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus dos ventanas de delante se reparten la pantalla, la mitad cada una."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دو تا پنجره‌ی جلویی صفحه رو نصف نصف می‌کنن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos deux fenêtres de premier plan se partagent l’écran, moitié chacune."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le due finestre in primo piano si dividono lo schermo, metà ciascuna."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "手前の2つのウインドウが画面を半分ずつ使います。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suas duas janelas da frente dividem a tela, metade cada."
           }
         }
       }

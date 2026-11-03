@@ -172,6 +172,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         TrackpadTap.shared.start()
         watcher.onChange = { [weak self] in self?.engine.windowsChanged() }
         watcher.start()
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil,
+                                                          queue: .main) { [weak self] n in
+            guard let self, Date().timeIntervalSince(self.watcher.lastClosed) > 1,
+                  let app = (n.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication)
+                      .flatMap({ $0.processIdentifier > 0 ? $0 : AX.frontApp() }),
+                  app.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
+            self.engine.follow(app)
+        }
         engine.windowsChanged()  // windows that came back after a restart find their layouts
         // Display recovery: remember what's on each display, and react when one connects or disconnects.
         engine.snapshotDisplays()

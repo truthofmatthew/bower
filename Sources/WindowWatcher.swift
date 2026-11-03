@@ -4,6 +4,8 @@ import AppKit
 /// Bursts are coalesced: `onChange` runs once, 150 ms after the last event.
 final class WindowWatcher {
     var onChange: () -> Void = {}
+    /// When a window last closed: macOS then activates some other app on its own, which isn't the user picking it.
+    private(set) var lastClosed = Date.distantPast
     private var observers: [pid_t: AXObserver] = [:]
     private var pending: DispatchWorkItem?
 
@@ -33,6 +35,7 @@ final class WindowWatcher {
             let me = Unmanaged<WindowWatcher>.fromOpaque(refcon!).takeUnretainedValue()
             // A new window gets its own "destroyed" registration so closing it is reported too.
             if note as String == kAXWindowCreatedNotification { me.watchDestroyed(element) }
+            if note as String == kAXUIElementDestroyedNotification { me.lastClosed = Date() }
             me.changed()
         }, &obs) == .success, let obs else { return }
         let el = AXUIElementCreateApplication(pid)

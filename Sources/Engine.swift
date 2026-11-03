@@ -114,10 +114,25 @@ final class Engine {
             NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.finder").first?.activate()
         }
         prune()
+        lastSwitch = Date()
         onChange()
     }
 
     func cycle() { switchTo((state.current + 1) % 9) }
+
+    /// When the last switch ran; the app it focuses activates right after, and that isn't the user picking it.
+    private(set) var lastSwitch = Date.distantPast
+
+    /// Clicking an app in the Dock (or ⌘Tab to it) shows the layout its windows are in, when none are in this one.
+    func follow(_ app: NSRunningApplication) {
+        guard Date().timeIntervalSince(lastSwitch) > 0.6 else { return }
+        let mine = AX.windows().filter { $0.pid == app.processIdentifier && $0.frame.map(isPinned) != true }
+        guard !mine.contains(where: { layout(of: $0, defaultingTo: state.current) == state.current }) else { return }
+        let w = AX.focusedWindow().flatMap { f in mine.first { $0.key == f.key } } ?? mine.first
+        guard let w, let n = state.assignment[w.key] else { return }
+        store.update { $0.layouts[n].lastFocused = w.key }
+        switchTo(n)
+    }
 
     /// ⌥N: the next layout after the current one that has no windows yet.
     func switchToEmptyLayout() {
@@ -183,6 +198,13 @@ final class Engine {
         store.update { st in
             if st.pinned.contains(s.uuid) { st.pinned.remove(s.uuid) } else { st.pinned.insert(s.uuid) }
         }
+        onChange()
+    }
+
+    /// Back to an unused layout: Untitled, Native everywhere. Its windows stay where they are.
+    func clearLayout(_ n: Int) {
+        store.update { $0.layouts[n].name = Layout.untitled; $0.layouts[n].modes = [:] }
+        if n == state.current { onWindowsChanged() }  // Tabs Mode takes its strips down
         onChange()
     }
 

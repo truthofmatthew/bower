@@ -268,6 +268,15 @@ private struct LayoutsTab: View {
                 .frame(width: 18, height: 18)
                 .background(cur ? Palette.accent : Palette.fill2, in: RoundedRectangle(cornerRadius: 5))
             NameField(name: l.name, dim: l.isUntitled) { engine.rename(i, to: $0) }
+            Button { engine.clearLayout(i) } label: {
+                Glyph(d: "M4.5 4.5l7 7M11.5 4.5l-7 7", size: 12, width: 1.75).frame(width: 22, height: 22).contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Palette.label3)
+            .opacity(l.isUntitled && l.modes.isEmpty ? 0 : 1)
+            .disabled(l.isUntitled && l.modes.isEmpty)
+            .help("Clear this layout: its name goes back to Untitled and its modes to Native. Its windows stay put.")
+            .accessibilityLabel("Clear layout \(i + 1)")
             ForEach(NSScreen.screens.prefix(2), id: \.uuid) { s in
                 ModeMenu(mode: l.modes[s.uuid] ?? .native) { engine.setMode($0, display: s.uuid, layout: i) }
                     .frame(width: 96)
@@ -370,16 +379,41 @@ struct PopLabel: View {
     }
 }
 
+/// A popover rather than a menu, so each mode can play a demo of what it does.
 private struct ModeMenu: View {
     let mode: WindowMode
     let set: (WindowMode) -> Void
+    @State private var open = false
+
     var body: some View {
-        Menu {
-            ForEach(WindowMode.allCases, id: \.self) { m in
-                Button(m.title) { set(m) }
+        Button { open = true } label: { PopLabel(text: mode.title) }
+            .buttonStyle(.plain)
+            .popover(isPresented: $open, arrowEdge: .bottom) {
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(WindowMode.allCases, id: \.self) { m in
+                        Button { set(m); open = false } label: { row(m) }.buttonStyle(.plain)
+                    }
+                }
+                .padding(8)
+                .frame(width: 340)
             }
-        } label: { PopLabel(text: mode.title) }
-            .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden)
+    }
+
+    private func row(_ m: WindowMode) -> some View {
+        HStack(spacing: 10) {
+            DemoView(scene: m.demo, key: m.rawValue).frame(width: 88, height: 56)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(m.title).fontWeight(.semibold)
+                Text(m.blurb).font(.system(size: 11)).foregroundStyle(Palette.label2).fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+            if m == mode { Glyph(d: "M3.5 8.5l3 3 6-7", size: 12, width: 2).foregroundStyle(Palette.accent) }
+        }
+        .padding(6)
+        .background(m == mode ? Palette.fill : .clear, in: RoundedRectangle(cornerRadius: 7))
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(m == mode ? [.isButton, .isSelected] : .isButton)
     }
 }
 

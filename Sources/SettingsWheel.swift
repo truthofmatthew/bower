@@ -8,6 +8,7 @@ struct WheelEditorTab: View {
     @State private var selected: Int?
     @State private var dropSlot: Int?
     @State private var dragName: String?
+    @State private var hovered: WheelAction?
 
     private var slots: [WheelAction?] { store.state.wheelSlots }
 
@@ -29,7 +30,9 @@ struct WheelEditorTab: View {
                 .background(Palette.stage, in: RoundedRectangle(cornerRadius: 10))
                 .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Palette.hair, lineWidth: 0.5))
 
-            // Scrolls: fifteen actions plus a selected slot's card are taller than the wheel beside them.
+            VStack(alignment: .leading, spacing: 10) {
+            demoCard
+            // Scrolls: seventeen actions plus a selected slot's card are taller than the wheel beside them.
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     GroupHeading(text: "Actions · drag onto an outer slot")
@@ -45,6 +48,7 @@ struct WheelEditorTab: View {
                 .frame(width: 280, alignment: .leading)
             }
             .scrollIndicators(.automatic)
+            }
         }
         .frame(height: 448)
     }
@@ -67,12 +71,35 @@ struct WheelEditorTab: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityHint(selected == nil ? "Select a slot first" : "Puts it in slot \((selected ?? 0) + 1)")
         .contentShape(Rectangle())
+        .onHover { hovered = $0 ? a : (hovered == a ? nil : hovered) }
         // Click puts the action in the selected slot: the editor also works without dragging (keyboard, VoiceOver).
         .onTapGesture { if let i = selected { put(a, in: i) } }
         .onDrag {
             dragName = a.title
             return NSItemProvider(object: a.rawValue as NSString)
         }
+    }
+
+    /// Plays what the pointed-at action does, or else the selected slot's.
+    @ViewBuilder private var demoCard: some View {
+        let a = hovered ?? selected.flatMap { slots[$0] }
+        HStack(alignment: .top, spacing: 10) {
+            if let a {
+                DemoView(scene: a.demo, key: a.rawValue).frame(width: 104, height: 66)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(a.title).fontWeight(.semibold)
+                    Text(a.blurb).font(.system(size: 11)).foregroundStyle(Palette.label2).fixedSize(horizontal: false, vertical: true)
+                }
+            } else {
+                Text("Point at an action to see what it does.").font(.system(size: 11)).foregroundStyle(Palette.label2)
+                    .frame(maxWidth: .infinity, minHeight: 66, alignment: .center)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(8)
+        .frame(width: 280, height: 98, alignment: .topLeading)
+        .background(Palette.group, in: RoundedRectangle(cornerRadius: 9))
+        .overlay(RoundedRectangle(cornerRadius: 9).strokeBorder(Palette.hair, lineWidth: 0.5))
     }
 
     @ViewBuilder private var slotCard: some View {
