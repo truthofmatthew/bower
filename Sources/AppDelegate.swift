@@ -116,7 +116,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         middle.enabled = { [weak self] in self?.store.state.middleClickWheel ?? true }
         middle.onDown = { [weak self] in
             guard let self, !self.wheel.isOpen else { return }
-            self.wheel.open(sticky: false)
+            self.wheel.open(sticky: false, atPointer: true)
         }
         middle.onDrag = { [weak self] in self?.wheel.hover(global: $0) }
         middle.onUp = { [weak self] in
@@ -209,7 +209,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self?.tabs.focusChanged()
         }
         TrackpadTap.shared.enabled = { [weak self] in self?.store.state.trackpadTapOn ?? false }
-        TrackpadTap.shared.onTap = { [weak self] in self?.wheel.toggle() }  // like the shortcut: open, move, or close
+        TrackpadTap.shared.onTap = { [weak self] in self?.wheel.toggle(atPointer: true) }  // like the shortcut: open, move, or close
         // macOS's own Spaces swipe, taken over when it uses the fingers chosen; otherwise Bower reads the trackpad.
         TrackpadTap.shared.swipeEnabled = { [weak self] in
             guard let self, self.store.state.swipeLayouts else { return false }

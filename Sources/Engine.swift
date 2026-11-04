@@ -385,8 +385,12 @@ final class Engine {
     /// Same identity (AXIdentifier or document) first, then app and title, the same browser profile, then the same app.
     private func orphanIndex(for w: Win) -> Int? {
         guard let b = w.bundleID else { return nil }
-        return state.orphans.lastIndex { sameIdentity(w, $0) }
-            ?? state.orphans.lastIndex { $0.bundleID == b && $0.title == w.title }
+        if let i = state.orphans.lastIndex(where: { sameIdentity(w, $0) }) { return i }
+        // The looser matches only while the app is reopening its windows, just after it (or Bower, at login) starts.
+        // Later, a window with the same app (or the same "Untitled") is a new one, and belongs where the user is.
+        let starts = [w.appLaunched, NSRunningApplication.current.launchDate]
+        if let latest = starts.compactMap({ $0 }).max(), Date().timeIntervalSince(latest) > 30 { return nil }
+        return state.orphans.lastIndex { $0.bundleID == b && $0.title == w.title }
             ?? state.orphans.lastIndex { sameProfile(w, $0) }
             ?? state.orphans.lastIndex { $0.bundleID == b }
     }

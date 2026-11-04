@@ -378,6 +378,7 @@ final class ZoomGestures {
     private unowned let engine: Engine
     private unowned let overview: Overview
     private var pinch: CGFloat = 0
+    private var pinchDone = false
     private var pan = CGSize.zero
     private var marqueeStart: CGPoint?
     /// The ⌘⇧ mouse-down, held until it turns into a drag; a plain ⌘⇧-click is handed back to the app.
@@ -416,11 +417,16 @@ final class ZoomGestures {
     }
 
     private func magnify(_ e: CGEvent) -> Bool {
-        guard let ns = NSEvent(cgEvent: e), allowed(e) else { pinch = 0; return false }
+        guard let ns = NSEvent(cgEvent: e), allowed(e) else { pinch = 0; pinchDone = false; return false }
+        let ending = ns.phase == .ended || ns.phase == .cancelled
+        if ns.phase == .began { pinchDone = false }
+        // One pinch, one step: the rest of a pinch that already acted is only swallowed.
+        if pinchDone { if ending { pinchDone = false }; return true }
         pinch += ns.magnification
-        if ns.phase == .ended || ns.phase == .cancelled || abs(pinch) > 0.35 {
+        if ending || abs(pinch) > 0.35 {
             let amount = pinch
             pinch = 0
+            pinchDone = !ending
             DispatchQueue.main.async {
                 if amount < -0.2 {
                     // Pinch in: see more.

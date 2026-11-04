@@ -67,7 +67,8 @@ final class TabsController {
         for s in NSScreen.screens where !shown.contains(s.uuid) {
             let keys = Set(state(s).groups.joined())
             guard !keys.isEmpty else { continue }
-            for w in AX.windows() where keys.contains(w.key) {
+            // Not those Dock mode keeps out of sight (a tab behind another, zoomed past, too small for its tile).
+            for w in AX.windows() where keys.contains(w.key) && !engine.live.dockHidden.contains(w.key) {
                 if let f = w.frame, engine.isParked(f), let back = engine.state.saved[w.key] { w.setFrame(back) }
             }
             engine.store.update { $0.tabs[self.key(s)] = nil }

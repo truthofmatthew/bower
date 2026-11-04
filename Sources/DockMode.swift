@@ -11,6 +11,7 @@ final class EngineLive {
     var solved: [String: DockNode.Solved] = [:]
     var collapsed: [String: CollapsedIcon] = [:]
     var resizeWork: DispatchWorkItem?
+    var seamWork: DispatchWorkItem?
 }
 
 extension Engine {
@@ -135,6 +136,9 @@ extension Engine {
         live.dockHidden = live.dockHidden.subtracting(wins.map(\.key)).union(hidden)
         Motion.shared.apply(moves, engine: self, animate: animate)
         CollapsedIcon.sync(icons, wins: wins, engine: self)
+        DockChrome.shared.refresh(self)  // gap handles sit on the seams as they are now
+        // Tab strips follow their groups. Not while a gap handle drags (no animation): that would be every mouse move.
+        if animate { onWindowsChanged() }
     }
 
     /// Retile on a Dock display: every row and column shares its space evenly again.
@@ -362,6 +366,11 @@ extension Engine {
         let prefix = dockLayout(s).zoom ?? []
         updateDock(s) { d in d.root.resize(prefix + seam.path, seam: seam.index, by: delta, length: seam.length) }
         place(s, animate: false)
+        // Tab strips catch up once the seam stops moving.
+        live.seamWork?.cancel()
+        let work = DispatchWorkItem { [weak self] in self?.onWindowsChanged() }
+        live.seamWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: work)
     }
 
     /// A docked window resized by its own edge: the seams it touches follow, and its neighbours make room.

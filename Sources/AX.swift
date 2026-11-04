@@ -257,15 +257,22 @@ extension CGRect {
 /// Kept for the session; Dock mode uses it to lay windows out without fighting their app.
 enum AppLimits {
     static var min: [String: CGSize] = [:]
+    /// The last size asked of each window, so a later ask makes an earlier check moot.
+    private static var asks: [CGWindowID: CGSize] = [:]
 
     static func learn(_ w: Win, asked: CGSize) {
         guard let b = w.bundleID else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+        asks[w.id] = asked
+        // A window just opened, or an app that's busy, can take a moment to resize: look a little later.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            guard asks[w.id] == asked else { return }
+            asks[w.id] = nil
             guard let got = w.frame?.size else { return }
             let m = min[b] ?? .zero
             var n = m
-            if got.width > asked.width + 2 { n.width = max(m.width, got.width) }
-            if got.height > asked.height + 2 { n.height = max(m.height, got.height) }
+            // Bigger than asked: that's as small as it goes. As asked: the limit, if any, is no more than that.
+            n.width = got.width > asked.width + 2 ? max(m.width, got.width) : Swift.min(m.width, got.width)
+            n.height = got.height > asked.height + 2 ? max(m.height, got.height) : Swift.min(m.height, got.height)
             if n != m { min[b] = n }
         }
     }

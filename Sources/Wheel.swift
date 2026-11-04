@@ -58,8 +58,11 @@ final class WheelController {
     // MARK: Open and close
 
     /// `sticky`: opened from the keyboard or a click, so it stays open until a click, Return or Esc.
-    func open(sticky: Bool) {
-        target = AX.focusedWindow()
+    /// `atPointer`: opened with the mouse or trackpad, so it acts on the window under the pointer (over the desktop,
+    /// the focused one); from the keyboard, on the focused window.
+    func open(sticky: Bool, atPointer: Bool = false) {
+        let p = CGEvent(source: nil)?.location
+        target = (atPointer ? p.flatMap(AX.hit).flatMap { AX.window(id: $0.id, pid: $0.pid) } : nil) ?? AX.focusedWindow()
         screen = NSScreen.underMouse
         self.sticky = sticky
         openedAt = Date()
@@ -88,9 +91,9 @@ final class WheelController {
     }
 
     /// The shortcut again: closes the wheel, or, when the pointer has moved since it opened, brings it to the pointer.
-    func toggle() {
+    func toggle(atPointer: Bool = false) {
         let m = NSEvent.mouseLocation
-        if isOpen, hypot(m.x - openedMouse.x, m.y - openedMouse.y) < 40 { close() } else { open(sticky: true) }
+        if isOpen, hypot(m.x - openedMouse.x, m.y - openedMouse.y) < 40 { close() } else { open(sticky: true, atPointer: atPointer) }
     }
 
     func close() {

@@ -164,7 +164,8 @@ struct WindowRecord: Codable {
 /// A window and a record are the same one: same app and AXIdentifier, or same open document.
 func sameIdentity(_ w: Win, _ r: WindowRecord) -> Bool {
     guard r.bundleID == w.bundleID else { return false }
-    if let i = r.identifier, i == w.identifier { return true }
+    // AppKit names windows "_NS:31" and the like on its own: the same for every window of a kind, so no identity.
+    if let i = r.identifier, i == w.identifier, !i.hasPrefix("_NS:") { return true }
     if let d = r.document, d == w.document { return true }
     return false
 }
