@@ -15,6 +15,14 @@ struct Win {
     var key: String { String(id) }
     var title: String { (AX.value(el, kAXTitleAttribute) as String?).flatMap { $0.isEmpty ? nil : $0 } ?? appName }
     var icon: NSImage? { NSRunningApplication(processIdentifier: pid)?.icon }
+    /// The open document's file URL, for apps that report one (TextEdit, Pages, Xcode…).
+    var document: String? { (AX.value(el, kAXDocumentAttribute) as String?).flatMap { $0.isEmpty ? nil : $0 } }
+    /// The app's own name for the window, when it sets one; stays the same across launches.
+    var identifier: String? { (AX.value(el, kAXIdentifierAttribute) as String?).flatMap { $0.isEmpty ? nil : $0 } }
+    /// When the window's app started, so a record can tell a relaunch from the same run.
+    var appLaunched: Date? { NSRunningApplication(processIdentifier: pid)?.launchDate }
+    /// The smallest size the window took when asked for less (cached per app by `AppLimits`).
+    var minSize: CGSize? { bundleID.flatMap { AppLimits.min[$0] } }
 
     var frame: CGRect? {
         guard let pos: CGPoint = AX.value(el, kAXPositionAttribute),
@@ -23,13 +31,30 @@ struct Win {
     }
 
     func setFrame(_ r: CGRect) {
+        AX.wrote(key)
         // Position, size, position: a window can't grow past the screen edge before it has moved.
         AX.set(el, kAXPositionAttribute, r.origin)
         AX.set(el, kAXSizeAttribute, r.size)
         AX.set(el, kAXPositionAttribute, r.origin)
+        AppLimits.learn(self, asked: r.size)
     }
 
-    func move(to p: CGPoint) { AX.set(el, kAXPositionAttribute, p) }
+    func move(to p: CGPoint) { AX.wrote(key); AX.set(el, kAXPositionAttribute, p) }
+
+    /// The window's title-bar area (AX coordinates): where a drag moves it and a double-click zooms it.
+    var titleBar: CGRect? {
+        guard let f = frame else { return nil }
+        // Toolbars merged into the title bar make it taller; the standard is 28 pt.
+        let h: CGFloat = (AX.value(el, "AXToolbar") as AXUIElement?) != nil ? 52 : 28
+        return CGRect(x: f.minX, y: f.minY, width: f.width, height: h)
+    }
+
+    /// The frame of one of the red, yellow or green buttons.
+    func button(_ attr: String) -> CGRect? {
+        guard let b: AXUIElement = AX.value(el, attr), let p: CGPoint = AX.value(b, kAXPositionAttribute),
+              let s: CGSize = AX.value(b, kAXSizeAttribute) else { return nil }
+        return CGRect(origin: p, size: s)
+    }
 
     func focus() {
         NSRunningApplication(processIdentifier: pid)?.activate()
@@ -44,6 +69,25 @@ struct Win {
 
 enum AX {
     static var trusted: Bool { AXIsProcessTrusted() }
+
+    /// When Bower last moved or resized each window: the AX notifications that follow are its own, not the user's.
+    private(set) static var writes: [String: Date] = [:]
+    static func wrote(_ key: String) { writes[key] = Date() }
+    static func recentlyWrote(_ key: String, within t: TimeInterval = 1.0) -> Bool {
+        writes[key].map { Date().timeIntervalSince($0) < t } ?? false
+    }
+
+    /// The window under a point (AX coordinates), front to back, from the window server.
+    static func windowID(at p: CGPoint) -> CGWindowID? {
+        let me = ProcessInfo.processInfo.processIdentifier
+        let info = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+        for w in info where (w[kCGWindowLayer as String] as? Int) == 0 {
+            guard (w[kCGWindowOwnerPID as String] as? pid_t) != me, let b = w[kCGWindowBounds as String] as? NSDictionary,
+                  let r = CGRect(dictionaryRepresentation: b), r.contains(p) else { continue }
+            return w[kCGWindowNumber as String] as? CGWindowID
+        }
+        return nil
+    }
 
     static func promptForAccess() {
         let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
@@ -183,4 +227,22 @@ extension NSScreen {
 
 extension CGRect {
     var area: CGFloat { isNull ? 0 : width * height }
+}
+
+/// The smallest size each app lets its windows take, learned when a window comes out bigger than asked.
+/// Kept for the session; Dock mode uses it to lay windows out without fighting their app.
+enum AppLimits {
+    static var min: [String: CGSize] = [:]
+
+    static func learn(_ w: Win, asked: CGSize) {
+        guard let b = w.bundleID else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            guard let got = w.frame?.size else { return }
+            let m = min[b] ?? .zero
+            var n = m
+            if got.width > asked.width + 2 { n.width = max(m.width, got.width) }
+            if got.height > asked.height + 2 { n.height = max(m.height, got.height) }
+            if n != m { min[b] = n }
+        }
+    }
 }

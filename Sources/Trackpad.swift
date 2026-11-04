@@ -13,6 +13,8 @@ final class TrackpadTap {
     /// +1 for a swipe to the left (the next layout, as desktops move), -1 to the right.
     var onSwipe: (Int) -> Void = { _ in }
     var swipeEnabled: () -> Bool = { false }
+    /// Three or four fingers move between layouts (Settings › Gestures).
+    var swipeFingers: () -> Int = { 3 }
     private(set) var available = false
 
     // MultitouchSupport's per-finger record, laid out as in its C headers (96 bytes).
@@ -101,13 +103,14 @@ final class TrackpadTap {
         }
         // All fingers lifted: exactly three, quick, and barely moving is a tap; swipes move, clicks press longer.
         defer { started = nil }
-        guard let t0 = started, maxFingers == 3 else { return }
-        if time - t0 < 0.3, moved < 0.04 {
+        guard let t0 = started, maxFingers == 3 || maxFingers == 4 else { return }
+        if maxFingers == 3, time - t0 < 0.3, moved < 0.04 {
             DispatchQueue.main.async { if self.enabled() { self.onTap() } }
             return
         }
         let travel = origin.compactMap { id, o in last[id].map { ($0.0 - o.0, $0.1 - o.1) } }
         guard time - t0 < 1.2, let d = Self.swipe(travel) else { return }
-        DispatchQueue.main.async { if self.swipeEnabled() { self.onSwipe(d) } }
+        let n = maxFingers
+        DispatchQueue.main.async { if self.swipeEnabled(), n == self.swipeFingers() { self.onSwipe(d) } }
     }
 }

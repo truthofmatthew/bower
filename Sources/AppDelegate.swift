@@ -3,26 +3,36 @@ import Carbon.HIToolbox
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
-    private let store = Store()
-    private lazy var engine = Engine(store: store)
-    private let preview = SnapPreview()
-    private let toast = Toast()
-    private lazy var wheel = WheelController(engine: engine, preview: preview)
+    let store = Store(directory: Diagnostics.storeDirectory)
+    lazy var engine = Engine(store: store)
+    let preview = SnapPreview()
+    let toast = Toast()
+    lazy var wheel = WheelController(engine: engine, preview: preview)
     private let middle = MiddleClickTap()
-    private let watcher = WindowWatcher()
+    let watcher = WindowWatcher()
     private var lastSpaceChange = Date.distantPast
-    private let shortcutCenter = ShortcutCenter()
-    private lazy var tabs = TabsController(engine: engine)
+    let shortcutCenter = ShortcutCenter()
+    lazy var tabs = TabsController(engine: engine)
     private let keyTap = KeyTap()
-    private var statusItem: NSStatusItem!
+    var statusItem: NSStatusItem!
     private var keySnap: (win: Win, action: SnapAction)?
     private var signalSource: DispatchSourceSignal?
-    private lazy var bar = LayoutsBar(engine: engine)
-    private let firstRun = FirstRunModel()
+    lazy var bar = LayoutsBar(engine: engine)
+    let firstRun = FirstRunModel()
     private var firstRunWindow: HostedWindow?
     private var settingsWindow: HostedWindow?
     private var saveWindow: HostedWindow?
     private var workspacesWindow: HostedWindow?
+    lazy var overview = Overview(engine: engine)
+    lazy var dockDrag = DockDrag(engine: engine)
+    lazy var zoomGestures = ZoomGestures(engine: engine, overview: overview)
+    lazy var missionControl = MissionControl(engine: engine, overview: overview)
+    lazy var menuStrip = MenuStrip(app: self)
+    lazy var lessons = Lessons(engine: engine)
+    let updates = Updates()
+    var extraWindows: [String: HostedWindow] = [:]
+    /// The settings that change how windows are laid out or drawn, as last applied.
+    var appliedLook: String?
 
     @objc private func showSaveWorkspace() {
         saveWindow?.close()
@@ -81,6 +91,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         statusItem.menu?.delegate = self
 
         engine.onChange = { [weak self] in self?.refreshStatus() }
+        engine.onHUD = { [weak self] text in
+            guard let s = self?.engine.focusedScreen else { return }
+            self?.toast.show(text, on: s)
+        }
+        engine.onPutBack = { [weak self] n in
+            guard let s = NSScreen.main else { return }
+            self?.toast.show(n == 1 ? String(localized: "1 window put back") : String(localized: "\(n) windows put back"), on: s)
+        }
         engine.onRetile = { [weak self] n, s in
             self?.toast.show(n == 1 ? String(localized: "Retiled · 1 window on \(s.localizedName)")
                                        : String(localized: "Retiled · \(n) windows on \(s.localizedName)"), on: s)
@@ -90,7 +108,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         engine.onShortcutsChanged = { [weak self] in self?.registerHotkeys() }
         shortcutCenter.suspend = { Hotkeys.shared.removeAll() }
         shortcutCenter.resume = { [weak self] in self?.registerHotkeys() }
-        wheel.onOpen = { [weak self] in self?.firstRun.wheelOpened = true }
+        wheel.onOpen = { [weak self] in self?.firstRun.wheelOpened = true; self?.lessons.did("wheel") }
+        engine.onDid = { [weak self] in self?.lessons.did($0) }
         wheel.onSettings = { [weak self] in self?.openSettings() }
         wheel.onRecipe = { [weak self] in self?.showRecipe(nil) }
 
@@ -112,31 +131,47 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         signalSource?.setEventHandler { NSApp.terminate(nil) }
         signalSource?.resume()
 
+        Diagnostics.quitOtherCopies()
+        if Diagnostics.handleLaunchArguments(store: store, engine: engine) { NSApp.terminate(nil); return }
+        Log.info("PERMISSIONS accessibility=\(AX.trusted) screen-recording=\(Capture.allowed)")
         if AX.trusted { start() } else { waitForAccess() }
-        if !AX.trusted || !UserDefaults.standard.bool(forKey: Self.onboardedKey) { showFirstRun() }
+        if !AX.trusted || !UserDefaults.standard.bool(forKey: Self.onboardedKey) { showFirstRun() } else { lessons.offerWhatsNew() }
+        menuStrip.refresh()
+        updates.start(prefs: { [weak self] in self?.store.state.prefs ?? Prefs() }, found: { [weak self] in self?.menuStrip.refresh() })
     }
 
     private func showFirstRun() {
-        let w = HostedWindow(title: String(localized: "Welcome to Bower"), size: CGSize(width: 640, height: 500), bareTitlebar: true) {
-            FirstRunView(model: firstRun) { [weak self] in
+        let w = HostedWindow(title: String(localized: "Welcome to Bower"), size: CGSize(width: 640, height: 680), bareTitlebar: true) {
+            FirstRunView(model: firstRun, close: { [weak self] in
                 UserDefaults.standard.set(true, forKey: Self.onboardedKey)
                 self?.firstRunWindow?.close()
-            }
+                self?.lessons.start(.gettingStarted)
+            }, turnOffConflicts: { [weak self] in
+                guard let self else { return }
+                Conflict.active.forEach { $0.turnOff(self.engine) }
+            })
         }
         firstRunWindow = w
         w.show()
     }
 
-    @objc private func openSettings() {
+    @objc func openSettings() {
         if settingsWindow == nil {
             settingsWindow = HostedWindow(title: String(localized: "Bower Settings"), size: CGSize(width: 760, height: 560), bareTitlebar: true) {
-                SettingsView(store: store, engine: engine, shortcuts: shortcutCenter)
+                SettingsView(store: store, engine: engine, shortcuts: shortcutCenter,
+                             openReport: { [weak self] in self?.menuReport() },
+                             openLessons: { [weak self] in self?.menuGettingStarted() },
+                             setMissionControl: { [weak self] on in
+                                 self?.missionControl.setOn(on)
+                                 self?.registerHotkeys()
+                             })
             }
         }
         settingsWindow?.show()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        missionControl.giveBack()
         tabs.hideAll()
         if AX.trusted { engine.unparkAll() }
         store.flush()
@@ -157,7 +192,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         firstRun.trusted = true
         engine.recover()
         middle.start()
-        engine.keepParked = { [weak self] in self?.tabs.isInactiveTab($0) ?? false }
+        engine.keepParked = { [weak self] k in
+            guard let self else { return false }
+            return self.tabs.isInactiveTab(k) || self.engine.live.dockHidden.contains(k)
+        }
         engine.onWindowsChanged = { [weak self] in self?.tabs.applyAll() }
         keyTap.combo = { [weak self] in self?.store.state.combo(.nextTab) }
         keyTap.handle = { [weak self] in self?.tabs.cycleFocusedGroup() ?? false }
@@ -167,12 +205,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         }
         TrackpadTap.shared.enabled = { [weak self] in self?.store.state.trackpadTapOn ?? false }
         TrackpadTap.shared.onTap = { [weak self] in self?.wheel.toggle() }  // like the shortcut: open, move, or close
-        TrackpadTap.shared.swipeEnabled = { [weak self] in self?.store.state.swipeLayouts ?? false }
-        TrackpadTap.shared.onSwipe = { [weak self] d in
-            guard let self, !self.wheel.isOpen else { return }
-            self.engine.step(d)
+        // macOS's own Spaces swipe, taken over when it uses the fingers chosen; otherwise Bower reads the trackpad.
+        TrackpadTap.shared.swipeEnabled = { [weak self] in
+            guard let self, self.store.state.swipeLayouts else { return false }
+            return !(DockSwipe.shared.running && DockSwipe.system(fingers: self.store.state.prefs.swipeFingers).spaces)
         }
+        TrackpadTap.shared.swipeFingers = { [weak self] in self?.store.state.prefs.swipeFingers ?? 3 }
+        TrackpadTap.shared.onSwipe = { [weak self] d in self?.swiped(d) }
         TrackpadTap.shared.start()
+        DockSwipe.shared.enabled = { [weak self] in
+            guard let self else { return false }
+            return self.store.state.swipeLayouts && !self.wheel.isOpen
+                && DockSwipe.system(fingers: self.store.state.prefs.swipeFingers).spaces
+        }
+        DockSwipe.shared.canStep = { [weak self] d in self?.engine.canStep(d) ?? false }
+        DockSwipe.shared.onStep = { [weak self] d in self?.swiped(d) }
+        DockSwipe.shared.inverted = { [weak self] in self?.store.state.prefs.swipeInvert ?? false }
+        DockSwipe.shared.takesMissionControl = { [weak self] in self?.store.state.prefs.replaceMissionControl ?? false }
+        DockSwipe.shared.onMissionControl = { [weak self] in self?.overview.toggle() }
+        DockSwipe.shared.start()
+        EventTap.shared.start()
+        dockDrag.install()
+        tabs.installGroupButtons()
+        Motion.shared.installInterrupt(engine)
+        zoomGestures.install()
+        SkyLight.allowCursorInBackground()
+        missionControl.start()
+        watcher.onResized = { [weak self] el in
+            guard let self, let w = AX.windows().first(where: { CFEqual($0.el, el) }) else { return }
+            self.engine.userResized(w)
+        }
         NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.activeSpaceDidChangeNotification, object: nil,
                                                           queue: .main) { [weak self] _ in
             self?.lastSpaceChange = Date()
@@ -209,7 +271,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     /// Registers every shortcut row from Settings › Shortcuts. Two rows on one combination, or a combination
     /// another app owns, are reported as conflicts instead.
-    private func registerHotkeys() {
+    func registerHotkeys() {
         Hotkeys.shared.removeAll()
         let st = store.state
         var owner: [Combo: ShortcutID] = [:]
@@ -224,6 +286,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 owner[c] = id
                 if register(id, i, c) == OSStatus(eventHotKeyExistsErr) { conflicts[id] = String(localized: "Already used by another app") }
             }
+        }
+        // "Show Bower's overview instead": Bower answers macOS's Mission Control keys while it holds them.
+        if st.prefs.replaceMissionControl, let c = MissionControl.missionControlKeys() {
+            _ = Hotkeys.shared.add(c.key, c.mods) { [weak self] in self?.overview.toggle() }
         }
         shortcutCenter.conflicts = conflicts
     }
@@ -251,7 +317,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         case .emptyLayout: return hk.add(c.key, c.mods) { [weak self] in self?.engine.switchToEmptyLayout() }
         case .focus:
             let dir: [Engine.Direction] = [.left, .right, .up, .down]
-            return hk.add(c.key, c.mods) { [weak self] in self?.engine.focusNeighbour(dir[i]) }
+            return hk.add(c.key, c.mods) { [weak self] in self?.engine.neighbour(dir[i]); self?.flashMap() }
         case .retile:
             return hk.add(c.key, c.mods) { [weak self] in
                 guard let self else { return }
@@ -265,6 +331,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         case .thirds: return snap([.firstThird, .centerThird, .lastThird])
         case .twoThirds: return snap([.firstTwoThirds, .lastTwoThirds])
         case .nextTab: return noErr
+        case .everything: return hk.add(c.key, c.mods) { [weak self] in self?.overview.toggle(); self?.lessons.did("everything") }
+        case .stepIn: return hk.add(c.key, c.mods) { [weak self] in self?.engine.stepIn(); self?.flashMap() }
+        case .stepOut: return hk.add(c.key, c.mods) { [weak self] in self?.engine.stepOut(); self?.flashMap() }
+        case .frame:
+            return hk.add(c.key, c.mods) { [weak self] in
+                if let w = AX.focusedWindow() { self?.engine.frameToggle(w); self?.lessons.did("frame") }
+            }
+        case .back: return hk.add(c.key, c.mods) { [weak self] in self?.engine.goBack() }
+        case .forward: return hk.add(c.key, c.mods) { [weak self] in self?.engine.goForward() }
+        case .goView: return hk.add(c.key, c.mods) { [weak self] in self?.engine.goToView(i + 1) }
+        case .saveView: return hk.add(c.key, c.mods) { [weak self] in self?.engine.saveView(i + 1); self?.lessons.did("saveView") }
+        case .desktop: return hk.add(c.key, c.mods) { [weak self] in if let s = self?.engine.focusedScreen { self?.engine.toggleDesktop(s) } }
+        case .arrange: return hk.add(c.key, c.mods) { [weak self] in self?.engine.arrangeIntoTiles(everywhere: false) }
+        case .split: return hk.add(c.key, c.mods) { [weak self] in self?.engine.splitWithFinder() }
+        case .float: return hk.add(c.key, c.mods) { [weak self] in if let w = AX.focusedWindow() { self?.engine.toggleFloat(w) } }
         }
     }
 
@@ -306,7 +387,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         return img
     }()
 
-    private func refreshStatus() {
+    func refreshStatus() {
+        menuStrip.refresh()
+        applyPrefsIfChanged()
         let st = store.state
         let n = st.current + 1
         let title: String
@@ -318,7 +401,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             let c = AX.trusted ? engine.windowCount(in: st.current) : 0
             title = c == 1 ? String(localized: "1 window") : String(localized: "\(c) windows")
         }
-        statusItem.button?.title = title
+        // Update reminders put a dot on the item while an update waits.
+        let dot = st.prefs.updateReminders && updates.available != nil ? " •" : ""
+        statusItem.button?.title = title + dot
+        let off = AX.trusted && !engine.arrangesHere
+        statusItem.button?.appearsDisabled = off
+        statusItem.button?.toolTip = off ? String(localized: "Bower: off on this desktop")
+            : updates.available.map { String(localized: "Bower: update to \($0.version) waiting") }
         statusItem.button?.setAccessibilityLabel(String(localized: "Bower, layout \(n), \(st.layouts[st.current].name)"))
     }
 
@@ -407,6 +496,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(recipes)
         menu.addItem(.separator())
 
+        addMoreItems(to: menu, screen: screen)
+        menu.addItem(.separator())
         let settings = NSMenuItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)

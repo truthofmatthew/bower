@@ -4,13 +4,17 @@ import SwiftUI
 /// The Settings window: SetGeneral / SetLayouts / SetDisplays / SetShortcuts .dc.html.
 struct SettingsView: View {
     enum Tab: String, CaseIterable {
-        case general = "General", layouts = "Layouts", displays = "Displays", shortcuts = "Shortcuts", wheel = "Snap Wheel", ai = "AI"
+        case general = "General", layouts = "Layouts", displays = "Displays", dock = "Dock", gestures = "Gestures",
+             appearance = "Appearance", shortcuts = "Shortcuts", wheel = "Snap Wheel", ai = "AI"
 
         var icon: String {
             switch self {
             case .general: "M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2M4.7 4.7l1.4 1.4M13.9 13.9l1.4 1.4M4.7 15.3l1.4-1.4M13.9 6.1l1.4-1.4"
             case .layouts: "M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z"
             case .displays: "M2.5 3.5h15v10h-15zM7 17h6M10 13.5V17"
+            case .dock: "M2.5 3.5h15v13h-15zM10 3.5v13M10 10h7.5"
+            case .gestures: "M6 9V4.5a1.5 1.5 0 0 1 3 0V9M9 8V3.5a1.5 1.5 0 0 1 3 0V9M12 8.5V5a1.5 1.5 0 0 1 3 0v6a6 6 0 0 1-12 0V9.5a1.5 1.5 0 0 1 3 0"
+            case .appearance: "M10 2.5a7.5 7.5 0 1 0 0 15zM10 2.5v15"
             case .shortcuts: "M2 5.5h16v9H2zM5 8.5h1M8 8.5h1M11 8.5h1M14 8.5h1M6 11.5h8"
             case .wheel: "M10 2.5V7M10 13v4.5M2.5 10H7M13 10h4.5"
             case .ai: "M5 2.5h7l3 3v12H5zM12 2.5v3h3M7.5 9.5h5M7.5 12h5M7.5 14.5h3"
@@ -22,6 +26,9 @@ struct SettingsView: View {
             case .general: String(localized: "General")
             case .layouts: String(localized: "Layouts")
             case .displays: String(localized: "Displays")
+            case .dock: String(localized: "Dock")
+            case .gestures: String(localized: "Gestures")
+            case .appearance: String(localized: "Appearance")
             case .shortcuts: String(localized: "Shortcuts")
             case .wheel: String(localized: "Snap Wheel")
             case .ai: String(localized: "AI")
@@ -43,6 +50,9 @@ struct SettingsView: View {
     @ObservedObject var store: Store
     let engine: Engine
     var shortcuts = ShortcutCenter()
+    var openReport: () -> Void = {}
+    var openLessons: () -> Void = {}
+    var setMissionControl: (Bool) -> Void = { _ in }
     @State var tab: Tab = .general
 
     var body: some View {
@@ -60,9 +70,12 @@ struct SettingsView: View {
 
             Group {
                 switch tab {
-                case .general: GeneralTab(store: store, engine: engine)
+                case .general: GeneralTab(store: store, engine: engine, openReport: openReport, openLessons: openLessons)
                 case .layouts: LayoutsTab(store: store, engine: engine)
                 case .displays: DisplaysTab(store: store, engine: engine)
+                case .dock: DockTab(store: store, engine: engine)
+                case .gestures: GesturesTab(store: store, engine: engine, setMissionControl: setMissionControl)
+                case .appearance: AppearanceTab(store: store, engine: engine)
                 case .ai: AITab(store: store, engine: engine)
                 case .wheel: WheelEditorTab(store: store, engine: engine)
                 default: ShortcutsTab(store: store, engine: engine, center: shortcuts)
@@ -109,6 +122,8 @@ struct SettingsView: View {
 private struct GeneralTab: View {
     @ObservedObject var store: Store
     let engine: Engine
+    var openReport: () -> Void = {}
+    var openLessons: () -> Void = {}
     @State private var atLogin = SMAppService.mainApp.status == .enabled
 
     private let styles: [(StatusStyle, String, String)] = [
@@ -119,6 +134,7 @@ private struct GeneralTab: View {
     ]
 
     var body: some View {
+        ScrollView {
         VStack(alignment: .leading, spacing: 14) {
             FormGroup {
                 FormRow(first: true) {
@@ -171,10 +187,13 @@ private struct GeneralTab: View {
                         .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).fixedSize()
                 }
             }
-            (Text("Bower is free and open source and runs only on this Mac. No account, and no network access unless you set up an AI endpoint. ")
+            GeneralMore(store: store, engine: engine, openReport: openReport, openLessons: openLessons)
+            (Text("Bower is free and open source and runs only on this Mac. No account, and no network access unless you set up an AI endpoint or turn on update checks. ")
                 + Text("[View source](https://github.com/truthofmatthew/bower)"))
                 .font(.system(size: 12)).lineSpacing(3).foregroundStyle(Palette.label2).tint(Palette.accent)
                 .padding(.horizontal, 4)
+        }
+        .padding(.bottom, 8)
         }
     }
 
@@ -564,6 +583,9 @@ private struct ShortcutsTab: View {
                     Segmented(options: ["ANSI", "ISO"], selected: store.state.isoKeyboard ? "ISO" : "ANSI") { engine.setISO($0 == "ISO") }
                     Text("ISO uses ⌃⌥< (the key left of Z) for Center Third.").font(.system(size: 11)).foregroundStyle(Palette.label2)
                 }
+                if let n = center.notice {
+                    Text(n).font(.system(size: 12)).foregroundStyle(Palette.warn).padding(.horizontal, 4)
+                }
                 HStack(alignment: .top, spacing: 14) {
                     // Definite column widths: inside a ScrollView, flexible ones get measured too wide, and
                     // wrapped (translated) text then overflows its row.
@@ -571,6 +593,8 @@ private struct ShortcutsTab: View {
                         .frame(width: 345)
                     VStack(alignment: .leading, spacing: 8) {
                         group("Snapping")
+                        group("Zoom")
+                        group("Dock")
                         HStack {
                             Spacer()
                             Button("Restore Defaults") { center.stop(); engine.resetShortcuts() }.buttonStyle(BowerButton())
@@ -601,20 +625,10 @@ private struct ShortcutsTab: View {
                         .accessibilityLabel("Three-finger tap opens the Snap Wheel")
                 }
                 FormRow {
-                    RowText(title: "Three-finger swipe changes layout",
-                            sub: !TrackpadTap.shared.available ? "No trackpad found."
-                                : TrackpadTap.systemUsesThreeFingerSwipe ? "macOS also switches desktops with this swipe. In Trackpad settings › More Gestures, set Swipe between full-screen applications to four fingers."
-                                : "Swipe left for the next layout, right for the previous one.")
-                    if TrackpadTap.shared.available, TrackpadTap.systemUsesThreeFingerSwipe {
-                        Button("Open Trackpad Settings") {
-                            NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Trackpad-Settings.extension")!)
-                        }
-                        .buttonStyle(BowerButton())
-                    }
+                    RowText(title: "Swipe sideways to change layout", sub: "Fingers, and how it shares the swipe with macOS, are in Settings › Gestures.")
                     Toggle("", isOn: Binding(get: { store.state.swipeLayouts }, set: engine.setSwipeLayouts))
                         .toggleStyle(BowerToggle())
-                        .disabled(!TrackpadTap.shared.available)
-                        .accessibilityLabel("Three-finger swipe changes layout")
+                        .accessibilityLabel("Swipe sideways to change layout")
                 }
                 FormRow {
                     RowText(title: "Middle-click opens the Snap Wheel", sub: "Off: the middle button goes to apps as usual.")

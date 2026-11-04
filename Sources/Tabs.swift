@@ -56,12 +56,13 @@ final class TabsController {
     }
 
     func applyAll() {
+        applyDock()
         var shown = Set<String>()
         for s in NSScreen.screens where engine.mode(of: s) == .tabs {
             apply(s)
             shown.insert(s.uuid)
         }
-        for (k, p) in strips where !shown.contains(String(k.split(separator: "#")[0])) { p.orderOut(nil) }
+        for (k, p) in strips where !k.hasPrefix("dock|") && !shown.contains(String(k.split(separator: "#")[0])) { p.orderOut(nil) }
         // A display that just left Tabs mode: the windows behind other tabs come back, stacked in the pane.
         for s in NSScreen.screens where !shown.contains(s.uuid) {
             let keys = Set(state(s).groups.joined())
@@ -119,16 +120,125 @@ final class TabsController {
         strips[id] = panel
         panel.model.screen = s
         panel.model.group = g
+        panel.model.dock = false
+        panel.model.prefs = engine.state.prefs
         panel.model.focused = g == tg.focus
         panel.model.active = tg.active[g]
         panel.model.tabs = tg.groups[g].compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } }
         panel.setFrame(NSScreen.appKit(rect), display: true)
-        panel.orderFrontRegardless()
+        if !tucked.contains(id) { panel.orderFrontRegardless() }
+    }
+
+    // MARK: Tab groups in Dock mode
+
+    /// Strips over the Dock trees' tab groups. The group's frame starts below its strip (Engine.place leaves room).
+    func applyDock() {
+        var ids = Set<String>()
+        let wins = Dictionary(AX.windows().map { ($0.key, $0) }, uniquingKeysWith: { a, _ in a })
+        let focused = AX.focusedWindow()?.key
+        for g in engine.dockGroups() {
+            let id = "dock|\(g.keys.first ?? "")"
+            ids.insert(id)
+            let panel = strips[id] ?? StripPanel(controller: self)
+            strips[id] = panel
+            panel.model.screen = g.screen
+            panel.model.dock = true
+            panel.model.prefs = engine.state.prefs
+            panel.model.active = g.selected
+            panel.model.focused = focused.map(g.keys.contains) ?? false
+            panel.model.tabs = g.keys.compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } }
+            let strip = CGRect(x: g.frame.minX, y: g.frame.minY - Self.stripHeight, width: g.frame.width, height: Self.stripHeight)
+            panel.setFrame(NSScreen.appKit(strip), display: true)
+            if !tucked.contains(id) { panel.orderFrontRegardless() }
+        }
+        for (k, p) in strips where k.hasPrefix("dock|") && !ids.contains(k) { p.orderOut(nil); strips[k] = nil }
+    }
+
+    /// Strips hidden while their window is dragged ("Tuck the strip away while its window moves").
+    private var tucked: Set<String> = []
+
+    func tuck(_ windowKey: String?) {
+        guard engine.state.prefs.tuckStrips else { return }
+        let ids = strips.filter { windowKey.map($0.value.model.tabs.map(\.id).contains) ?? false }.map(\.key)
+        if windowKey == nil {
+            for id in tucked { strips[id]?.orderFrontRegardless() }
+            tucked = []
+        } else {
+            for id in ids { strips[id]?.orderOut(nil); tucked.insert(id) }
+        }
+    }
+
+    /// Tabs-mode and Dock-mode groups alike: the keys in the group holding `windowKey`.
+    func groupKeys(of windowKey: String) -> [String]? {
+        strips.values.first { $0.model.tabs.contains { $0.id == windowKey } }?.model.tabs.map(\.id)
+    }
+
+    func minimize(_ windowKey: String) {
+        guard let w = AX.windows().first(where: { $0.key == windowKey }) else { return }
+        AXUIElementSetAttributeValue(w.el, kAXMinimizedAttribute as CFString, kCFBooleanTrue)
+    }
+
+    /// Takes a tab out of its group: Dock mode puts it beside the group, Tabs mode gives it a pane of its own.
+    func moveToNewWindow(_ windowKey: String, from model: StripModel) {
+        if model.dock {
+            for s in NSScreen.screens where engine.mode(of: s) == .dock && engine.dockLayout(s).root.path(of: windowKey) != nil {
+                engine.updateDock(s) { $0.root.ungroup(windowKey) }
+                engine.arrangeDock(s)
+            }
+            applyDock()
+        } else if let s = model.screen {
+            split(windowKey, on: s)
+        }
+    }
+
+    /// The red, yellow and green buttons of a grouped window act on the whole group (⇧-click: just this tab;
+    /// fn-click: macOS's own). Green on the tab shown takes it out of the group.
+    func installGroupButtons() {
+        var h = EventTap.Handler()
+        h.down = { [weak self] p, e in
+            guard let self, !e.fn, p.y >= 0 else { return false }
+            guard let id = AX.windowID(at: p), let w = AX.windows().first(where: { $0.id == id }),
+                  let keys = self.groupKeys(of: w.key), keys.count > 1 else { return false }
+            let whole = self.engine.state.prefs.windowButtonsActOnGroup != e.shift
+            let near: (String) -> Bool = { attr in w.button(attr)?.insetBy(dx: -2, dy: -2).contains(p) ?? false }
+            if near(kAXCloseButtonAttribute) {
+                guard whole else { return false }
+                DispatchQueue.main.async { for k in keys { self.close(k) } }
+                return true
+            }
+            if near(kAXMinimizeButtonAttribute) {
+                guard whole else { return false }
+                DispatchQueue.main.async { for k in keys { self.minimize(k) } }
+                return true
+            }
+            if near(kAXFullScreenButtonAttribute) || near(kAXZoomButtonAttribute) {
+                guard let model = self.strips.values.first(where: { $0.model.tabs.contains { $0.id == w.key } })?.model else { return false }
+                DispatchQueue.main.async { self.moveToNewWindow(w.key, from: model) }
+                return true
+            }
+            return false
+        }
+        h.dragged = { [weak self] p, _ in
+            guard let self, self.engine.state.prefs.tuckStrips, self.tucked.isEmpty,
+                  let id = AX.windowID(at: p), let w = AX.windows().first(where: { $0.id == id }) else { return false }
+            DispatchQueue.main.async { self.tuck(w.key) }
+            return false
+        }
+        h.up = { [weak self] _, _ in
+            if self?.tucked.isEmpty == false { DispatchQueue.main.async { self?.tuck(nil) } }
+            return false
+        }
+        EventTap.shared.add("tabButtons", h)
     }
 
     // MARK: Actions from the strip
 
     func activate(_ windowKey: String, on s: NSScreen) {
+        if engine.mode(of: s) == .dock {
+            engine.selectTab(windowKey)
+            AX.windows().first { $0.key == windowKey }?.focus()
+            return applyDock()
+        }
         var tg = state(s)
         guard let g = tg.groups.firstIndex(where: { $0.contains(windowKey) }) else { return }
         tg.active[g] = windowKey
@@ -247,8 +357,11 @@ final class StripModel: ObservableObject {
     @Published var tabs: [Tab] = []
     @Published var active: String?
     @Published var focused = false
+    @Published var prefs = Prefs()
     var screen: NSScreen?
     var group = 0
+    /// A group inside a Dock mode tree rather than a Tabs mode pane.
+    var dock = false
 }
 
 final class StripPanel: NSPanel {
@@ -301,26 +414,39 @@ private struct TabStripView: View {
     @ObservedObject var model: StripModel
     let controller: TabsController
 
+    private var p: Prefs { model.prefs }
+
     var body: some View {
         GeometryReader { geo in
-            let w = max(120, geo.size.width / CGFloat(max(model.tabs.count, 1)))
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 0) {
-                    ForEach(model.tabs) { t in
-                        TabView_(tab: t, active: t.id == model.active, underline: t.id == model.active && model.focused,
-                                 activate: { if let s = model.screen { controller.activate(t.id, on: s) } },
-                                 close: { controller.close(t.id) })
-                            .frame(width: w)
-                            .onDrag {
-                                if let s = model.screen { controller.began(dragging: t.id, on: s) }
-                                return NSItemProvider(object: t.id as NSString)
-                            }
+            let lights: CGFloat = p.tabStripLights ? 60 : 0
+            let w = max(120, (geo.size.width - lights) / CGFloat(max(model.tabs.count, 1)))
+            HStack(spacing: 0) {
+                if p.tabStripLights { GroupLights(model: model, controller: controller).frame(width: lights) }
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: CGFloat(p.tabSelectedChip ? p.tabChipMargin : 0)) {
+                        ForEach(model.tabs) { t in
+                            TabView_(tab: t, active: t.id == model.active, underline: t.id == model.active && model.focused, prefs: p,
+                                     activate: { if let s = model.screen { controller.activate(t.id, on: s) } },
+                                     close: { controller.close(t.id) })
+                                .frame(width: w - CGFloat(p.tabSelectedChip ? p.tabChipMargin : 0))
+                                .onDrag {
+                                    if let s = model.screen { controller.began(dragging: t.id, on: s) }
+                                    return NSItemProvider(object: t.id as NSString)
+                                }
+                                .contextMenu {
+                                    Button("Close Tab") { controller.close(t.id) }
+                                    Button("Minimize Tab") { controller.minimize(t.id) }
+                                    Button("Move Tab to New Window") { controller.moveToNewWindow(t.id, from: model) }
+                                }
+                        }
                     }
+                    .padding(.horizontal, CGFloat(p.tabSelectedChip ? p.tabInset : 0))
+                    .padding(.vertical, CGFloat(p.tabSelectedChip ? p.tabInset : 0))
                 }
             }
         }
         .frame(height: TabsController.stripHeight)
-        .background(TC.strip)
+        .background(StripBackground(prefs: p, focused: model.focused))
         .overlay(alignment: .bottom) { TC.hair.frame(height: 1) }
         .onDrop(of: [.plainText], isTargeted: nil) { _ in
             guard let k = controller.draggedKey(), let s = model.screen, !model.tabs.contains(where: { $0.id == k }) else { return false }
@@ -337,12 +463,14 @@ private struct TabView_: View {
     let tab: StripModel.Tab
     let active: Bool
     let underline: Bool
+    let prefs: Prefs
     let activate: () -> Void
     let close: () -> Void
     @State private var hover = false
 
     var body: some View {
         HStack(spacing: 6) {
+            if prefs.tabCloseButtons, !prefs.tabCloseOnRight { CloseButton(action: close).opacity(hover || active ? 1 : 0) }
             Group {
                 if let icon = tab.icon { Image(nsImage: icon).resizable() } else { TC.fill2 }
             }
@@ -350,12 +478,13 @@ private struct TabView_: View {
             Text(tab.title).font(.system(size: 12)).lineLimit(1).truncationMode(.tail)
                 .foregroundStyle(active ? TC.label : TC.label2)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            CloseButton(action: close).opacity(hover || active ? 1 : 0)
+            if prefs.tabCloseButtons, prefs.tabCloseOnRight { CloseButton(action: close).opacity(hover || active ? 1 : 0) }
         }
-        .padding(.leading, 10).padding(.trailing, 6)
+        .padding(.leading, CGFloat(prefs.tabPadding) + 2).padding(.trailing, CGFloat(prefs.tabPadding) - 2)
         .frame(maxHeight: .infinity)
-        .background(active ? TC.win : hover ? TC.fill : .clear)
-        .overlay(alignment: .trailing) { if !active { TC.hair.frame(width: 1) } }
+        .background(active ? TC.win : hover ? TC.fill : .clear,
+                    in: RoundedRectangle(cornerRadius: prefs.tabSelectedChip ? 6 : 0))
+        .overlay(alignment: .trailing) { if !active && !prefs.tabSelectedChip { TC.hair.frame(width: 1) } }
         .overlay(alignment: .bottom) {
             if underline { RoundedRectangle(cornerRadius: 1).fill(TC.accent).frame(height: 2).padding(.horizontal, 8) }
         }
@@ -366,6 +495,55 @@ private struct TabView_: View {
         .accessibilityAddTraits(active ? [.isButton, .isSelected] : .isButton)
         .accessibilityLabel(tab.title)
         .accessibilityAction(named: "Close tab", close)
+    }
+}
+
+/// The strip's look (Settings › Appearance › Tabs): material, glass (the wallpaper, blurred, darker to the left and
+/// lighter to the right) or solid; tinted with the accent; glass turns opaque when its group isn't focused.
+private struct StripBackground: View {
+    let prefs: Prefs
+    let focused: Bool
+
+    var body: some View {
+        ZStack {
+            switch prefs.tabStyle {
+            case .material: VisualEffect(material: .headerView)
+            case .glass:
+                if prefs.tabGlassOpaqueWhenInactive && !focused { TC.strip } else {
+                    VisualEffect(material: .hudWindow)
+                    LinearGradient(colors: [.black.opacity(0.18), .white.opacity(0.06)], startPoint: .leading, endPoint: .trailing)
+                }
+            case .solid: TC.strip
+            }
+            TC.accent.opacity(prefs.tabTint * 0.5)
+        }
+    }
+}
+
+/// Red, yellow and green on the strip itself: close, minimise, or take out of the group the tab shown;
+/// with "act on the whole group", every tab.
+private struct GroupLights: View {
+    @ObservedObject var model: StripModel
+    let controller: TabsController
+
+    var body: some View {
+        HStack(spacing: 8) {
+            light(Color(red: 1, green: 0.37, blue: 0.34), String(localized: "Close")) { act { controller.close($0) } }
+            light(Color(red: 1, green: 0.74, blue: 0.18), String(localized: "Minimize")) { act { controller.minimize($0) } }
+            light(Color(red: 0.16, green: 0.79, blue: 0.25), String(localized: "Take out of the group")) {
+                if let a = model.active { controller.moveToNewWindow(a, from: model) }
+            }
+        }
+    }
+
+    private func act(_ f: (String) -> Void) {
+        let keys = model.prefs.windowButtonsActOnGroup != NSEvent.modifierFlags.contains(.shift) ? model.tabs.map(\.id) : [model.active].compactMap { $0 }
+        keys.forEach(f)
+    }
+
+    private func light(_ c: Color, _ label: String, _ action: @escaping () -> Void) -> some View {
+        Button(action: action) { Circle().fill(c).frame(width: 12, height: 12) }
+            .buttonStyle(.plain).accessibilityLabel(label).help(label)
     }
 }
 

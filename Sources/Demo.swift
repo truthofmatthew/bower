@@ -85,6 +85,10 @@ extension WindowMode {
             DemoScene(before: [w(0.25, 0.25, 0.5, 0.5, on: false), w(0, 0, 0.5, 1), w(0.5, 0, 0.5, 1)],
                       after: [w(0, 0, 0.5, 1), w(0.5, 0, 0.5, 0.5), w(0.5, 0.5, 0.5, 0.5)])
         case .tabs: DemoScene(before: loose, after: Array(repeating: w(0, 0.14, 1, 0.86), count: 3), tabs: true)
+        case .dock:
+            // A window dragged to another's edge docks there; its neighbours make room.
+            DemoScene(before: [w(0.3, 0.3, 0.4, 0.45), w(0, 0, 0.5, 1), w(0.5, 0, 0.5, 1)],
+                      after: [w(0.5, 0.5, 0.5, 0.5), w(0, 0, 0.5, 1), w(0.5, 0, 0.5, 0.5)])
         }
     }
 
@@ -93,6 +97,7 @@ extension WindowMode {
         case .native: String(localized: "Windows stay where you put them.")
         case .bento: String(localized: "Windows tile on their own. The one you used last gets the big column.")
         case .tabs: String(localized: "Windows share one pane, with a tab for each.")
+        case .dock: String(localized: "Windows never overlap. Drag one to the edge of another to dock it there.")
         }
     }
 }

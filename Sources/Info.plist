@@ -18,6 +18,17 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Bower commands</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>bower</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSUIElement</key>
@@ -27,6 +38,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>Bower asks Finder for a new window when you split a tile with one.</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
 </dict>

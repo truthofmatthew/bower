@@ -1,13 +1,14 @@
 import AppKit
 
 enum WindowMode: String, Codable, CaseIterable {
-    case native, bento, tabs
+    case native, bento, tabs, dock
 
     var title: String {
         switch self {
         case .native: String(localized: "Native")
         case .bento: String(localized: "Bento Box")
         case .tabs: String(localized: "Tabs")
+        case .dock: String(localized: "Dock")
         }
     }
 }
@@ -72,6 +73,9 @@ struct DeskState: Codable {
     var isoKeyboard = false
     /// Tabs Mode groups, keyed "layout|display UUID".
     var tabs: [String: TabGroups] = [:]
+    /// Dock mode trees, keyed "layout|display UUID".
+    var docks: [String: DockLayout] = [:]
+    var prefs = Prefs.releaseDefaults
 }
 
 extension DeskState {
@@ -117,7 +121,7 @@ extension DeskState {
         try read(.records, &records); try read(.orphans, &orphans); try read(.keepEmptySpace, &keepEmptySpace)
         try read(.wheelSlots, &wheelSlots); try read(.shortcuts, &shortcuts)
         try read(.clearedShortcuts, &clearedShortcuts); try read(.isoKeyboard, &isoKeyboard)
-        try read(.tabs, &tabs)
+        try read(.tabs, &tabs); try read(.docks, &docks); try read(.prefs, &prefs)
         currentWorkspace = try c.decodeIfPresent(String.self, forKey: .currentWorkspace)
     }
 }
@@ -134,6 +138,19 @@ struct WindowRecord: Codable {
     var display: String?
     /// The app's process when the record was made; a new process means the app quit, even if it relaunched at once.
     var pid: Int32?
+    /// The open document and the app's own window name, when the app reports them: the surest way to know a window again.
+    var document: String?
+    var identifier: String?
+    /// When the window was closed (for "Also when reopened", kept a day).
+    var closedAt: Date?
+}
+
+/// A window and a record are the same one: same app and AXIdentifier, or same open document.
+func sameIdentity(_ w: Win, _ r: WindowRecord) -> Bool {
+    guard r.bundleID == w.bundleID else { return false }
+    if let i = r.identifier, i == w.identifier { return true }
+    if let d = r.document, d == w.document { return true }
+    return false
 }
 
 struct DisplayRecord: Codable {
@@ -184,6 +201,7 @@ extension Array where Element == WindowRecord {
         var out: [(Win, WindowRecord)] = []
         let passes: [(Win, WindowRecord) -> Bool] = [
             { w, r in r.key == w.key },
+            sameIdentity,
             { w, r in r.bundleID == w.bundleID && r.title == w.title },
             sameProfile,
             { w, r in r.bundleID == w.bundleID }

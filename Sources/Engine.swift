@@ -8,6 +8,12 @@ final class Engine {
     let store: Store
     var onChange: () -> Void = {}
     var onRetile: (_ count: Int, _ screen: NSScreen) -> Void = { _, _ in }
+    /// Windows that went back to their places after their app (or the Mac) restarted.
+    var onPutBack: (Int) -> Void = { _ in }
+    /// A short message on the display, such as "Docked. Its neighbours made room."
+    var onHUD: (String) -> Void = { _ in }
+    /// A move the lessons wait for ("switch", "dock", "frame"…).
+    var onDid: (String) -> Void = { _ in }
 
     /// Runs after windows open or close on the current layout; Tabs Mode uses it to keep its groups current.
     var onWindowsChanged: () -> Void = {}
@@ -18,6 +24,9 @@ final class Engine {
 
     /// What was on each display at the last look, so a display that disconnects can be shelved.
     var displaySnapshot: [String: (display: DisplayRecord, windows: [WindowRecord])] = [:]
+
+    /// What lasts only while Bower runs: framing, history, which docked windows are kept out of view.
+    let live = EngineLive()
 
     init(store: Store) { self.store = store }
 
@@ -49,7 +58,8 @@ final class Engine {
     func park(_ w: Win, frame: CGRect) {
         guard let p = parkPoint() else { return }
         store.update { $0.saved[w.key] = frame }
-        w.move(to: p)
+        // "Park hidden windows small": less of each shows in Mission Control; it's resized as it's shown again.
+        if state.prefs.parkSmall { w.setFrame(CGRect(origin: p, size: CGSize(width: 240, height: 160))) } else { w.move(to: p) }
     }
 
     /// Some apps (Edge, Chrome) pull their off-screen windows back onto the screen after a desktop change, such as
@@ -115,7 +125,7 @@ final class Engine {
                 park(w, frame: f)
             }
         }
-        for s in NSScreen.screens where mode(of: s) == .bento { retile(s, toast: false) }
+        for s in NSScreen.screens { arrange(s) }
         onWindowsChanged()  // Tabs Mode places its panes and strips for the new layout
         if let target {
             target.focus()
@@ -126,6 +136,7 @@ final class Engine {
         }
         prune()
         lastSwitch = Date()
+        onDid("switch")
         onChange()
     }
 
@@ -195,10 +206,18 @@ final class Engine {
 
     /// Three-finger swipe: the next or previous layout in use (named, or holding windows). Stops at the ends, as desktops do.
     func step(_ d: Int) {
+        guard let n = stepTarget(d) else { return }
+        live.history.push(currentView())
+        switchTo(n)
+    }
+
+    func canStep(_ d: Int) -> Bool { stepTarget(d) != nil }
+
+    private func stepTarget(_ d: Int) -> Int? {
         let used = Set(state.assignment.values)
         let list = (0..<9).filter { !state.layouts[$0].isUntitled || used.contains($0) || $0 == state.current }
-        guard let i = list.firstIndex(of: state.current), list.indices.contains(i + d) else { return }
-        switchTo(list[i + d])
+        guard let i = list.firstIndex(of: state.current), list.indices.contains(i + d) else { return nil }
+        return list[i + d]
     }
 
     /// The windows layout `n` holds on screen `s`, at their resting frames: what the wheel's layout preview draws.
@@ -232,6 +251,7 @@ final class Engine {
         guard (0..<9).contains(n), let f = w.frame else { return }
         store.update { $0.assignment[w.key] = n }
         if n != state.current, state.hideOtherLayouts, !isParked(f) { park(w, frame: f) }
+        onDid("send")
         onChange()
     }
 
@@ -275,7 +295,18 @@ final class Engine {
         store.update { st in
             let gone = st.records.filter { !keys.contains($0.key) }
             for (key, r) in gone {
-                guard let layout = st.assignment[key], let pid = r.pid, !livePIDs.contains(pid) else { continue }
+                guard let layout = st.assignment[key], let pid = r.pid else { continue }
+                if livePIDs.contains(pid) {
+                    // Closed on purpose while its app runs: only "Also when reopened" keeps it, and only when it
+                    // can be told apart (its document or the app's name for it), for a day.
+                    guard st.prefs.returnWindows == .alsoReopened, r.document != nil || r.identifier != nil else { continue }
+                    var c = r
+                    c.layout = layout
+                    c.closedAt = Date()
+                    if let f = st.saved[key] { c.frame = f }
+                    st.prefs.closed.append(c)
+                    continue
+                }
                 // The record may be a few seconds old: take the window's current layout and resting frame.
                 var orphan = r
                 orphan.layout = layout
@@ -283,6 +314,7 @@ final class Engine {
                 st.orphans.append(orphan)
             }
             st.orphans = Array(st.orphans.suffix(200))
+            st.prefs.closed = Array(st.prefs.closed.filter { Date().timeIntervalSince($0.closedAt ?? .distantPast) < 86_400 }.suffix(100))
             st.records = st.records.filter { keys.contains($0.key) }
             st.assignment = st.assignment.filter { keys.contains($0.key) }
             st.saved = st.saved.filter { keys.contains($0.key) }
@@ -298,32 +330,53 @@ final class Engine {
     func windowsChanged() {
         prune()
         let wins = AX.windows()
+        var putBack = 0
         for w in wins where state.assignment[w.key] == nil {
             guard let f = w.frame, !isPinned(f) else { continue }
-            if let i = orphanIndex(for: w) {
-                let r = state.orphans[i]
-                store.update { $0.orphans.remove(at: i); $0.assignment[w.key] = r.layout }
+            if let r = takeReturning(w) {
+                putBack += 1
+                store.update { $0.assignment[w.key] = r.layout }
                 if r.layout == state.current || !state.hideOtherLayouts { w.setFrame(r.frame) } else { park(w, frame: r.frame) }
+                dockReturned(w, r)
             } else {
                 let n = w.bundleID.flatMap { state.routes[$0] } ?? state.current
                 store.update { $0.assignment[w.key] = n }
                 if n != state.current, state.hideOtherLayouts, !isParked(f) { park(w, frame: f) }
             }
         }
+        if putBack > 0 { onPutBack(putBack) }
         updateRecords(wins)
         let visible = Set(wins.filter { w in w.frame.map { !isParked($0) } ?? false }.map(\.key))
         if visible != lastVisible {
             lastVisible = visible
-            for s in NSScreen.screens where mode(of: s) == .bento { retile(s) }
+            for s in NSScreen.screens { arrange(s, toast: true) }
             onWindowsChanged()
         }
         onChange()
     }
 
-    /// Same app and title first, then the same browser profile, then the same app.
+    /// A window going back to the place it had: after its app quit (orphans), or, with "Also when reopened",
+    /// after being closed and opened again within a day. Taken out of the list it came from.
+    private func takeReturning(_ w: Win) -> WindowRecord? {
+        guard state.prefs.returnWindows != .never else { return nil }
+        if let i = orphanIndex(for: w) {
+            let r = state.orphans[i]
+            store.update { $0.orphans.remove(at: i) }
+            return r
+        }
+        if state.prefs.returnWindows == .alsoReopened, let i = state.prefs.closed.lastIndex(where: { sameIdentity(w, $0) }) {
+            let r = state.prefs.closed[i]
+            store.update { $0.prefs.closed.remove(at: i) }
+            return r
+        }
+        return nil
+    }
+
+    /// Same identity (AXIdentifier or document) first, then app and title, the same browser profile, then the same app.
     private func orphanIndex(for w: Win) -> Int? {
         guard let b = w.bundleID else { return nil }
-        return state.orphans.lastIndex { $0.bundleID == b && $0.title == w.title }
+        return state.orphans.lastIndex { sameIdentity(w, $0) }
+            ?? state.orphans.lastIndex { $0.bundleID == b && $0.title == w.title }
             ?? state.orphans.lastIndex { sameProfile(w, $0) }
             ?? state.orphans.lastIndex { $0.bundleID == b }
     }
@@ -335,7 +388,8 @@ final class Engine {
             guard let b = w.bundleID, let f = w.frame else { continue }
             let frame = isParked(f) ? state.saved[w.key] ?? f : f
             recs[w.key] = WindowRecord(bundleID: b, title: w.title, layout: state.assignment[w.key] ?? state.current,
-                                       frame: frame, key: w.key, display: NSScreen.containing(ax: frame)?.uuid, pid: w.pid)
+                                       frame: frame, key: w.key, display: NSScreen.containing(ax: frame)?.uuid, pid: w.pid,
+                                       document: w.document, identifier: w.identifier)
         }
         // Windows on other Spaces aren't listed; keep their last record.
         store.update { $0.records.merge(recs) { _, new in new } }
@@ -365,7 +419,7 @@ final class Engine {
 
     func setMode(_ m: WindowMode, display uuid: String, layout n: Int) {
         store.update { $0.layouts[n].modes[uuid] = m }
-        if m == .bento, n == state.current, let s = NSScreen.screens.first(where: { $0.uuid == uuid }) { retile(s, toast: true) }
+        if m == .bento || m == .dock, n == state.current, let s = NSScreen.screens.first(where: { $0.uuid == uuid }) { arrange(s, toast: true) }
         if n == state.current { onWindowsChanged() }
         onChange()
     }
@@ -416,16 +470,18 @@ final class Engine {
 
     /// Bento tiling of one display: the most recently focused window takes the left column.
     func retile(_ s: NSScreen, toast: Bool = true) {
+        if mode(of: s) == .dock { return rebalance(s) }
         let order = AX.zOrder()
         let wins = AX.windows().filter { w in
-            guard let f = w.frame, !isParked(f), NSScreen.containing(ax: f) == s else { return false }
+            guard let f = w.frame, !isParked(f), NSScreen.containing(ax: f) == s, !ignores(w) else { return false }
             return (state.assignment[w.key] ?? state.current) == state.current
         }.sorted { (order.firstIndex(of: $0.id) ?? .max) < (order.firstIndex(of: $1.id) ?? .max) }
         // "Keep its space empty": windows of quit apps that lived here hold their tiles, at the end of the grid.
         let running = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
         let held = state.keepEmptySpace
             ? state.orphans.filter { $0.layout == state.current && $0.display == s.uuid && !running.contains($0.bundleID) }.count : 0
-        for (w, f) in zip(wins, Bento.tiles(count: wins.count + held, in: s.axVisibleFrame)) { w.setFrame(f) }
+        let tiles = Bento.tiles(count: wins.count + held, in: s.axVisibleFrame, gap: CGFloat(state.prefs.gap))
+        Motion.shared.apply(Array(zip(wins, tiles)), engine: self)
         if toast, !wins.isEmpty { onRetile(wins.count, s) }
     }
 

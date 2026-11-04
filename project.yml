@@ -27,6 +27,11 @@ targets:
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         CFBundleDisplayName: Bower
+        # bower:// links run Bower's commands from Raycast, Alfred, Shortcuts or a script.
+        CFBundleURLTypes:
+          - CFBundleURLName: Bower commands
+            CFBundleURLSchemes: [bower]
+        NSAppleEventsUsageDescription: Bower asks Finder for a new window when you split a tile with one.
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSHumanReadableCopyright: ""
