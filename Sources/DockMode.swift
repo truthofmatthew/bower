@@ -267,12 +267,20 @@ extension Engine {
     /// In a level, toward the focused window (or the one under the pointer).
     func stepIn(_ s: NSScreen? = nil) {
         guard let s = s ?? focusedScreen else { return }
+        // Say why nothing moves, so a pinch never looks ignored.
+        guard arrangesHere else {
+            onHUD(String(localized: "Bower is off on this desktop. Turn it on in This Display › Use Bower on This Desktop."))
+            return
+        }
         let w = AX.focusedWindow()
         guard mode(of: s) == .dock else { if let w, live.framedFrom[w.key] == nil { frameToggle(w) }; return }
         let d = dockLayout(s)
-        guard let k = w?.key ?? d.root.keys.first, let leaf = d.root.path(of: k) else { return }
+        guard let k = w?.key ?? d.root.keys.first, let leaf = d.root.path(of: k) else {
+            onHUD(String(localized: "No windows to zoom into."))
+            return
+        }
         let z = d.zoom ?? []
-        guard leaf.count > z.count else { return }
+        guard leaf.count > z.count else { onHUD(String(localized: "Zoomed in all the way.")); return }
         setZoom(s, Array(leaf.prefix(z.count + 1)))
         onHUD(String(localized: "Zoomed."))
     }

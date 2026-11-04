@@ -5401,6 +5401,58 @@
         }
       }
     },
+    "Bower is off on this desktop. Turn it on in This Display › Use Bower on This Desktop.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bower ist auf diesem Schreibtisch aus. Einschalten unter Dieses Display › Bower auf diesem Schreibtisch verwenden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bower está desactivado en este escritorio. Actívalo en Esta pantalla › Usar Bower en este escritorio."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "‏Bower روی این دسکتاپ خاموشه. از «این نمایشگر › Bower رو تو این دسکتاپ استفاده کن» روشنش کن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bower est désactivé sur ce bureau. Activez-le dans Cet écran › Utiliser Bower sur ce bureau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bower è disattivato su questa scrivania. Attivalo in Questo schermo › Usa Bower su questa scrivania."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このデスクトップでは Bower がオフです。「このディスプレイ › このデスクトップでBowerを使用」でオンにしてください。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Bower está desativado nesta mesa. Ative em Esta Tela › Usar o Bower Nesta Mesa."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bower 在此桌面上已关闭。在“此显示器 › 在此桌面上使用 Bower”中打开。"
+          }
+        }
+      }
+    },
     "Bower is up to date": {
       "localizations": {
         "de": {
@@ -17643,6 +17695,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "此显示器上此布局中没有窗口"
+          }
+        }
+      }
+    },
+    "No windows to zoom into.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Fenster zum Hineinzoomen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay ventanas para acercar."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌ای برای زوم نیست."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune fenêtre sur laquelle zoomer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna finestra su cui zoomare."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ズームできるウインドウがありません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não há janelas para aproximar."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有可放大的窗口。"
           }
         }
       }
@@ -32577,6 +32681,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "缩放到矩形"
+          }
+        }
+      }
+    },
+    "Zoomed in all the way.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ganz hineingezoomt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya está al máximo de zoom."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا آخر زوم شده."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom au maximum."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom già al massimo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これ以上ズームインできません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom já está no máximo."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已放大到最大。"
           }
         }
       }
