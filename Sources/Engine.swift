@@ -222,8 +222,14 @@ final class Engine {
 
     /// The windows layout `n` holds on screen `s`, at their resting frames: what the wheel's layout preview draws.
     func windows(in n: Int, on s: NSScreen) -> [(win: Win, frame: CGRect)] {
-        AX.windows().compactMap { w in
+        // In Dock mode a window's place is its tile in the whole tree, even while it's parked (zoomed past, a tab
+        // behind another, too small for its tile).
+        let tiles = state.layouts[n].modes[s.uuid] == .dock
+            ? state.docks[dockKey(s, layout: n)]?.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap)).frames ?? [:]
+            : [:]
+        return AX.windows().compactMap { w in
             guard let f = w.frame, (state.assignment[w.key] ?? state.current) == n else { return nil }
+            if let t = tiles[w.key] { return (w, t) }
             let r = isParked(f) ? state.saved[w.key] ?? f : f
             return NSScreen.containing(ax: r) == s ? (w, r) : nil
         }
@@ -407,11 +413,18 @@ final class Engine {
     }
 
     /// On launch: windows parked by an earlier run that belong to the current layout, or to no layout, come back.
+    /// Windows of other layouts that quitting put back on screen go out of sight again, when they're still the same
+    /// window (after a restart a number can belong to another app's window).
     func recover() {
         for w in AX.windows() {
-            guard let f = w.frame, isParked(f) else { continue }
+            guard let f = w.frame else { continue }
             let l = state.assignment[w.key]
-            if (l == nil || l == state.current) && !keepParked(w.key) { unpark(w) }
+            if isParked(f) {
+                if (l == nil || l == state.current) && !keepParked(w.key) { unpark(w) }
+            } else if state.hideOtherLayouts, let l, l != state.current, !isPinned(f),
+                      state.records[w.key]?.bundleID == w.bundleID {
+                park(w, frame: f)
+            }
         }
     }
 
@@ -507,6 +520,17 @@ final class Engine {
     }
 
     func snap(_ w: Win, _ a: SnapAction) {
+        // A docked window keeps to the tree: it docks against that side of the display, or fills it on its own.
+        if isDocked(w), let s = screen(of: w) {
+            switch a {
+            case .maximize, .centerThird: frameToggle(w)
+            case .leftHalf, .topLeft, .bottomLeft, .firstThird, .firstTwoThirds: drop(w, at: .screenEdge(.left), on: s)
+            case .rightHalf, .topRight, .bottomRight, .lastThird, .lastTwoThirds: drop(w, at: .screenEdge(.right), on: s)
+            case .topHalf: drop(w, at: .screenEdge(.top), on: s)
+            case .bottomHalf: drop(w, at: .screenEdge(.bottom), on: s)
+            }
+            return
+        }
         if let t = target(a, for: w) { move(w, to: t.frame) }
     }
 }
