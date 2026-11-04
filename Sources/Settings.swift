@@ -13,8 +13,9 @@ struct SettingsView: View {
             case .layouts: "M3 3h6v6H3zM11 3h6v6h-6zM3 11h6v6H3zM11 11h6v6h-6z"
             case .displays: "M2.5 3.5h15v10h-15zM7 17h6M10 13.5V17"
             case .dock: "M2.5 3.5h15v13h-15zM10 3.5v13M10 10h7.5"
-            case .gestures: "M6 9V4.5a1.5 1.5 0 0 1 3 0V9M9 8V3.5a1.5 1.5 0 0 1 3 0V9M12 8.5V5a1.5 1.5 0 0 1 3 0v6a6 6 0 0 1-12 0V9.5a1.5 1.5 0 0 1 3 0"
-            case .appearance: "M10 2.5a7.5 7.5 0 1 0 0 15zM10 2.5v15"
+            // Icon.path reads only M L H V Z: straight lines.
+            case .gestures: "M2.5 10h15M5.5 7l-3 3 3 3M14.5 7l3 3-3 3"
+            case .appearance: "M3 3h14v14H3zM3 17L17 3"
             case .shortcuts: "M2 5.5h16v9H2zM5 8.5h1M8 8.5h1M11 8.5h1M14 8.5h1M6 11.5h8"
             case .wheel: "M10 2.5V7M10 13v4.5M2.5 10H7M13 10h4.5"
             case .ai: "M5 2.5h7l3 3v12H5zM12 2.5v3h3M7.5 9.5h5M7.5 12h5M7.5 14.5h3"

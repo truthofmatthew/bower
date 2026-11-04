@@ -540,3 +540,20 @@ Total: about 12–14 weeks for one person. Steps 1–3 are shippable on their ow
 - **Event taps** add input lag if slow: the handlers must return in < 1 ms, with anything heavy run asynchronously.
 - **Two models side by side:** Bower's "swap the whole desk" layouts and Trellis's "zoom through one tree". Keep Dock as a mode inside a layout, so Native, Bento and Tabs users see no change.
 - **Screen Recording** permission is optional everywhere. Every picture feature needs the colour-and-icon fallback.
+
+---
+
+## Status (branch `trellis-parity`)
+
+Built and installed; 37 unit tests pass (Dock tree, history, links, versions, old state files, settings icons).
+Not yet tried by hand: anything that needs a trackpad or mouse on the real desk (drags, gaps, swipes, pinches,
+the green button, double-clicks, tab strips in Dock mode, Mission Control takeover).
+
+Where the build differs from the plan:
+- **0.3** The pure logic lives in `Sources/Core/` inside the app target, not a separate framework target.
+- **1.5 / 3.1** Zooming moves in levels (step in, step out, frame one window, zoom to a rectangle); there's no free,
+  continuous zoom of a rendered canvas. The overview is its own full-screen view.
+- **6.2** Updates: an opt-in daily check of GitHub releases that opens the release page, not Sparkle self-install.
+  Off by default, so Bower still makes no network requests unless asked.
+- **6.8** The paid tier isn't ported.
+- Translations for the ~300 new strings (and all of Simplified Chinese) are machine-made and want a native read.

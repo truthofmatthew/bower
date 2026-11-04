@@ -10,6 +10,8 @@ import SwiftUI
 final class Overview {
     private unowned let engine: Engine
     private var panels: [OverviewPanel] = []
+    /// Esc closes it whichever app has the keyboard: macOS may not hand a menu-bar app the focus.
+    private var monitors: [Any] = []
     var isOpen: Bool { !panels.isEmpty }
 
     init(engine: Engine) { self.engine = engine }
@@ -29,11 +31,20 @@ final class Overview {
         NSApp.activate()
         panels.forEach { $0.makeKeyAndOrderFront(nil); $0.orderFrontRegardless() }
         (panels.first { $0.screen == NSScreen.underMouse } ?? panels.first)?.makeKey()
+        let esc: (NSEvent) -> Bool = { [weak self] e in
+            guard Int(e.keyCode) == kVK_Escape else { return false }
+            DispatchQueue.main.async { self?.close() }
+            return true
+        }
+        if let m = NSEvent.addLocalMonitorForEvents(matching: .keyDown, handler: { esc($0) ? nil : $0 }) { monitors.append(m) }
+        if let m = NSEvent.addGlobalMonitorForEvents(matching: .keyDown, handler: { _ = esc($0) }) { monitors.append(m) }
     }
 
     func close() {
         panels.forEach { $0.orderOut(nil) }
         panels = []
+        monitors.forEach(NSEvent.removeMonitor)
+        monitors = []
     }
 }
 
@@ -357,6 +368,9 @@ final class ZoomGestures {
     private var pinch: CGFloat = 0
     private var pan = CGSize.zero
     private var marqueeStart: CGPoint?
+    /// The ⌘⇧ mouse-down, held until it turns into a drag; a plain ⌘⇧-click is handed back to the app.
+    private var heldDown: CGEvent?
+    private var marqueeActive = false
     private let marquee = OverlayPanel(level: .popUpMenu)
     private var escMonitor: Any?
 
@@ -377,7 +391,7 @@ final class ZoomGestures {
         h.scroll = { [weak self] e in self?.scroll(e) ?? false }
         h.down = { [weak self] p, e in self?.marqueeDown(p, e) ?? false }
         h.dragged = { [weak self] p, _ in self?.marqueeDragged(p) ?? false }
-        h.up = { [weak self] p, _ in self?.marqueeUp(p) ?? false }
+        h.up = { [weak self] p, e in self?.marqueeUp(p, e) ?? false }
         EventTap.shared.add("zoom", h)
     }
 
@@ -428,25 +442,42 @@ final class ZoomGestures {
         return true
     }
 
+    /// ⌘⇧ (or ⌘⌥⇧) pressed on a Dock mode display: held, in case it becomes a drag.
     private func marqueeDown(_ p: CGPoint, _ e: CGEvent) -> Bool {
-        guard engine.state.prefs.marqueeZoom, e.command, e.shift else { return false }
+        guard engine.state.prefs.marqueeZoom, e.command, e.shift,
+              let s = NSScreen.screens.first(where: { $0.axFrame.contains(p) }), engine.mode(of: s) == .dock else { return false }
         marqueeStart = p
-        escMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] ev in
-            if Int(ev.keyCode) == kVK_Escape { self?.cancelMarquee() }
-        }
+        heldDown = e.copy()
+        marqueeActive = false
         return true
     }
 
     private func marqueeDragged(_ p: CGPoint) -> Bool {
         guard let s = marqueeStart else { return false }
+        if !marqueeActive {
+            guard hypot(p.x - s.x, p.y - s.y) > 8 else { return true }
+            marqueeActive = true
+            escMonitor = NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { [weak self] ev in
+                if Int(ev.keyCode) == kVK_Escape { DispatchQueue.main.async { self?.cancelMarquee() } }
+            }
+        }
         let r = CGRect(origin: s, size: .zero).union(CGRect(origin: p, size: .zero))
-        marquee.setFrame(NSScreen.appKit(r), display: true)
-        marquee.orderFrontRegardless()
+        DispatchQueue.main.async {
+            self.marquee.setFrame(NSScreen.appKit(r), display: true)
+            self.marquee.orderFrontRegardless()
+        }
         return true
     }
 
-    private func marqueeUp(_ p: CGPoint) -> Bool {
+    private func marqueeUp(_ p: CGPoint, _ e: CGEvent) -> Bool {
         guard let s = marqueeStart else { return false }
+        if !marqueeActive {
+            // Never became a drag: it was an ordinary ⌘⇧-click, which the app gets after all.
+            let events = [heldDown, e.copy()].compactMap { $0 }
+            cancelMarquee()
+            DispatchQueue.main.async { EventTap.replay(events) }
+            return true
+        }
         let r = CGRect(origin: s, size: .zero).union(CGRect(origin: p, size: .zero))
         cancelMarquee()
         if r.width > 30, r.height > 30 { DispatchQueue.main.async { self.engine.zoom(to: r) } }
@@ -455,6 +486,8 @@ final class ZoomGestures {
 
     private func cancelMarquee() {
         marqueeStart = nil
+        heldDown = nil
+        marqueeActive = false
         marquee.orderOut(nil)
         if let escMonitor { NSEvent.removeMonitor(escMonitor) }
         escMonitor = nil

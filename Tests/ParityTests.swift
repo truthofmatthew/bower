@@ -13,6 +13,13 @@ final class ParityTests: XCTestCase {
         XCTAssertNil(Command(url: URL(string: "https://layout/3")!))
     }
 
+    /// Icon.path reads only M L H V Z; anything else crashes it while drawing.
+    func testSettingsIconsUseLinesOnly() {
+        for t in SettingsView.Tab.allCases {
+            XCTAssertNil(t.icon.range(of: "[^MmLlHhVvZz0-9 .,-]", options: .regularExpression), t.rawValue)
+        }
+    }
+
     func testVersionCompare() {
         XCTAssertTrue(Updates.newer("v1.10", than: "1.9"))
         XCTAssertTrue(Updates.newer("1.0.1", than: "1.0"))

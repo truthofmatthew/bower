@@ -44,8 +44,20 @@ final class EventTap {
         CGEvent.tapEnable(tap: t, enable: true)
     }
 
+    /// Marks events Bower posts itself (a click handed back after all), so the tap lets them through.
+    static let replayMark: Int64 = 0xB0E1
+
+    /// Posts a held mouse-down and its mouse-up again, for a press Bower took and then didn't use.
+    static func replay(_ events: [CGEvent]) {
+        for e in events {
+            e.setIntegerValueField(.eventSourceUserData, value: replayMark)
+            e.post(tap: .cgSessionEventTap)
+        }
+    }
+
     private func handle(_ type: CGEventType, _ e: CGEvent) -> Unmanaged<CGEvent>? {
         let pass = Unmanaged.passUnretained(e)
+        if e.getIntegerValueField(.eventSourceUserData) == Self.replayMark { return pass }
         switch type {
         case .tapDisabledByTimeout, .tapDisabledByUserInput:
             if let tap { CGEvent.tapEnable(tap: tap, enable: true) }

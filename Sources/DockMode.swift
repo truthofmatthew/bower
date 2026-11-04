@@ -450,7 +450,7 @@ extension Array {
 final class DockDrag {
     private unowned let engine: Engine
     private let preview = SnapPreview()
-    private var candidate: (id: CGWindowID, start: CGPoint)?
+    private var candidate: (id: CGWindowID, pid: pid_t, start: CGPoint)?
     private var dragging: (win: Win, screen: NSScreen, original: DockLayout)?
     private var pending: (target: DropTarget?, since: Date)?
     private var active: DropTarget?
@@ -466,39 +466,32 @@ final class DockDrag {
         EventTap.shared.add("dock", h)
     }
 
-    /// The window under a point with its window-server bounds (AX coordinates), without asking Accessibility.
-    private func hit(_ p: CGPoint) -> (id: CGWindowID, bounds: CGRect)? {
-        guard let id = AX.windowID(at: p),
-              let info = (CGWindowListCopyWindowInfo([.optionIncludingWindow], id) as? [[String: Any]])?.first,
-              let b = info[kCGWindowBounds as String] as? NSDictionary, let r = CGRect(dictionaryRepresentation: b) else { return nil }
-        return (id, r)
-    }
-
     private func down(_ p: CGPoint, _ e: CGEvent) -> Bool {
         candidate = nil
-        guard let s = NSScreen.screens.first(where: { $0.axFrame.contains(p) }), let (id, r) = hit(p), p.y - r.minY < 30 else { return false }
+        // Only clicks in a title bar on a Dock mode display matter; everything else passes at the cost of one lookup.
+        guard let s = NSScreen.screens.first(where: { $0.axFrame.contains(p) }), engine.mode(of: s) == .dock,
+              let hit = AX.hit(p), p.y - hit.bounds.minY < 30, engine.arrangesHere else { return false }
         let st = engine.state
-        let inDock = engine.mode(of: s) == .dock && engine.arrangesHere
         // The window buttons sit in the first 80 points of the title bar.
-        if p.x - r.minX < 80 {
-            guard inDock, st.prefs.greenButtonFloats, !e.fn, !e.option,
-                  let w = AX.windows().first(where: { $0.id == id }), !engine.ignores(w),
+        if p.x - hit.bounds.minX < 80 {
+            guard st.prefs.greenButtonFloats, !e.fn, !e.option, let w = AX.window(id: hit.id, pid: hit.pid), !engine.ignores(w),
                   let b = w.button(kAXFullScreenButtonAttribute) ?? w.button(kAXZoomButtonAttribute), b.insetBy(dx: -2, dy: -2).contains(p) else { return false }
             DispatchQueue.main.async { self.engine.toggleFloat(w) }
             return true
         }
-        if e.clicks == 2, st.prefs.doubleClickFrames, !e.option, let w = AX.windows().first(where: { $0.id == id }), !engine.ignores(w) {
+        if e.clicks == 2, st.prefs.doubleClickFrames, !e.option, let w = AX.window(id: hit.id, pid: hit.pid), !engine.ignores(w) {
             DispatchQueue.main.async { self.engine.frameToggle(w) }
             return true
         }
-        if inDock { candidate = (id, p) }
+        candidate = (hit.id, hit.pid, p)
         return false
     }
 
     private func dragged(_ p: CGPoint) {
         if dragging == nil {
-            guard let c = candidate, hypot(p.x - c.start.x, p.y - c.start.y) > 6,
-                  let w = AX.windows().first(where: { $0.id == c.id }), !engine.ignores(w), let s = engine.screen(of: w) else { return }
+            guard let c = candidate, hypot(p.x - c.start.x, p.y - c.start.y) > 6 else { return }
+            candidate = nil  // one lookup per drag, not one per mouse move
+            guard let w = AX.window(id: c.id, pid: c.pid), !engine.ignores(w), let s = engine.screen(of: w) else { return }
             dragging = (w, s, engine.dockLayout(s))
             candidate = nil
         }

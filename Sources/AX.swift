@@ -77,6 +77,30 @@ enum AX {
         writes[key].map { Date().timeIntervalSince($0) < t } ?? false
     }
 
+    /// The window under a point: its ID, owner and bounds (AX coordinates), from the window server alone. Cheap
+    /// enough for every click, unlike asking Accessibility.
+    static func hit(_ p: CGPoint) -> (id: CGWindowID, pid: pid_t, bounds: CGRect)? {
+        let me = ProcessInfo.processInfo.processIdentifier
+        let info = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+        for w in info where (w[kCGWindowLayer as String] as? Int) == 0 {
+            guard let pid = w[kCGWindowOwnerPID as String] as? pid_t, pid != me, let b = w[kCGWindowBounds as String] as? NSDictionary,
+                  let r = CGRect(dictionaryRepresentation: b), r.contains(p), let id = w[kCGWindowNumber as String] as? CGWindowID else { continue }
+            return (id, pid, r)
+        }
+        return nil
+    }
+
+    /// One window by ID, asking only its own app.
+    static func window(id: CGWindowID, pid: pid_t) -> Win? {
+        guard let app = NSRunningApplication(processIdentifier: pid) ?? apps().first(where: { $0.pid == pid })?.app else { return nil }
+        let list: [AXUIElement] = value(AXUIElementCreateApplication(pid), kAXWindowsAttribute) ?? []
+        for el in list {
+            var wid: CGWindowID = 0
+            if _AXUIElementGetWindow(el, &wid) == .success, wid == id { return win(el, pid, app) }
+        }
+        return nil
+    }
+
     /// The window under a point (AX coordinates), front to back, from the window server.
     static func windowID(at p: CGPoint) -> CGWindowID? {
         let me = ProcessInfo.processInfo.processIdentifier

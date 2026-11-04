@@ -274,7 +274,11 @@ final class Engine {
 
     /// Back to an unused layout: Untitled, Native everywhere. Its windows stay where they are.
     func clearLayout(_ n: Int) {
-        store.update { $0.layouts[n].name = Layout.untitled; $0.layouts[n].modes = [:] }
+        store.update { st in
+            st.layouts[n].name = Layout.untitled
+            st.layouts[n].modes = [:]
+            st.docks = st.docks.filter { !$0.key.hasPrefix("\(n)|") }
+        }
         if n == state.current { onWindowsChanged() }  // Tabs Mode takes its strips down
         onChange()
     }
@@ -435,6 +439,16 @@ final class Engine {
             st.current = newIndex[st.current]!
             st.assignment = st.assignment.mapValues { newIndex[$0]! }
             st.routes = st.routes.mapValues { newIndex[$0]! }
+            // Per-layout trees and tab groups are keyed "layout|display"; they move with their layout.
+            func remap<V>(_ d: [String: V]) -> [String: V] {
+                Dictionary(d.map { k, v in
+                    let parts = k.split(separator: "|", maxSplits: 1)
+                    guard parts.count == 2, let n = Int(parts[0]), let m = newIndex[n] else { return (k, v) }
+                    return ("\(m)|\(parts[1])", v)
+                }, uniquingKeysWith: { a, _ in a })
+            }
+            st.docks = remap(st.docks)
+            st.tabs = remap(st.tabs)
         }
         onChange()
     }

@@ -204,7 +204,8 @@ struct GesturesTab: View {
                         }
                     }
                     FormRow {
-                        RowText(verbatim: ex.text)
+                        Text(verbatim: ex.text).font(.system(size: 12)).foregroundStyle(ex.needsSettings ? Palette.warn : Palette.label2)
+                            .fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity, alignment: .leading)
                         if ex.needsSettings {
                             Button("Open macOS Trackpad Settings") {
                                 NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.Trackpad-Settings.extension")!)

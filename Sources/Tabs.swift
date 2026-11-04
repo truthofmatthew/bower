@@ -156,6 +156,8 @@ final class TabsController {
 
     /// Strips hidden while their window is dragged ("Tuck the strip away while its window moves").
     private var tucked: Set<String> = []
+    /// A grouped window whose title bar was just pressed: if the press becomes a drag, its strip tucks away.
+    private var dragKey: String?
 
     func tuck(_ windowKey: String?) {
         guard engine.state.prefs.tuckStrips else { return }
@@ -196,9 +198,13 @@ final class TabsController {
     func installGroupButtons() {
         var h = EventTap.Handler()
         h.down = { [weak self] p, e in
-            guard let self, !e.fn, p.y >= 0 else { return false }
-            guard let id = AX.windowID(at: p), let w = AX.windows().first(where: { $0.id == id }),
-                  let keys = self.groupKeys(of: w.key), keys.count > 1 else { return false }
+            guard let self else { return false }
+            self.dragKey = nil
+            // Cheap checks first: some group exists, and the click is on a window's buttons (its first 80 × 30 points).
+            guard !self.strips.isEmpty, !e.fn, let hit = AX.hit(p), p.y - hit.bounds.minY < 30 else { return false }
+            if self.engine.state.prefs.tuckStrips, self.groupKeys(of: String(hit.id)) != nil { self.dragKey = String(hit.id) }
+            guard p.x - hit.bounds.minX < 80, let keys = self.groupKeys(of: String(hit.id)), keys.count > 1,
+                  let w = AX.window(id: hit.id, pid: hit.pid) else { return false }
             let whole = self.engine.state.prefs.windowButtonsActOnGroup != e.shift
             let near: (String) -> Bool = { attr in w.button(attr)?.insetBy(dx: -2, dy: -2).contains(p) ?? false }
             if near(kAXCloseButtonAttribute) {
@@ -218,10 +224,10 @@ final class TabsController {
             }
             return false
         }
-        h.dragged = { [weak self] p, _ in
-            guard let self, self.engine.state.prefs.tuckStrips, self.tucked.isEmpty,
-                  let id = AX.windowID(at: p), let w = AX.windows().first(where: { $0.id == id }) else { return false }
-            DispatchQueue.main.async { self.tuck(w.key) }
+        h.dragged = { [weak self] _, _ in
+            guard let self, let k = self.dragKey else { return false }
+            self.dragKey = nil
+            DispatchQueue.main.async { self.tuck(k) }
             return false
         }
         h.up = { [weak self] _, _ in
