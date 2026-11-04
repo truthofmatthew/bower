@@ -35,6 +35,18 @@ struct DockNode: Codable, Equatable {
                  children: children)
     }
 
+    /// An even grid: about as many columns as rows, each column split top to bottom.
+    static func grid(_ keys: [String]) -> DockNode {
+        guard keys.count > 1 else { return .split(.h, keys.map(DockNode.window)) }
+        let cols = Int(Double(keys.count).squareRoot().rounded(.up))
+        let per = Int((Double(keys.count) / Double(cols)).rounded(.up))
+        let columns = stride(from: 0, to: keys.count, by: per).map { i -> DockNode in
+            let part = keys[i..<min(i + per, keys.count)].map(DockNode.window)
+            return part.count == 1 ? part[0] : .split(.v, part)
+        }
+        return .split(.h, columns)
+    }
+
     /// Every window key, depth first; a tab group's windows in tab order.
     var keys: [String] {
         switch kind {

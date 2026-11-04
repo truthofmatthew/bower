@@ -114,6 +114,12 @@ final class DockSwipe {
                     held = []
                     return Unmanaged.passUnretained(e)
                 }
+            } else if phase == 4 || phase == 8 {
+                // Ended without moving: macOS gets the whole gesture back, so the Dock isn't left mid-swipe.
+                owner = .macOS
+                for h in held { h.tapPostEvent(proxy) }
+                held = []
+                return Unmanaged.passUnretained(e)
             } else {
                 if let copy = e.copy() { held.append(copy) }
                 return nil

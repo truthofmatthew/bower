@@ -72,6 +72,10 @@ extension Engine {
             let before = d.root.keys
             for k in before where !keys.contains(k) { d.root.remove(k, share: state.prefs.shareRemovedSpace) }
             d.floating = d.floating.intersection(keys)
+            // A display new to Dock mode starts from an even grid, not each window halving the one before.
+            if d.root.keys.isEmpty, wins.filter({ !d.floating.contains($0.key) }).count > 1 {
+                d.root = .grid(wins.filter { !d.floating.contains($0.key) }.map(\.key))
+            }
             for w in wins where !d.root.keys.contains(w.key) && !d.floating.contains(w.key) {
                 let frames = d.root.solve(in: rect, gap: gap).frames
                 let beside = focused.flatMap { frames[$0] != nil ? $0 : nil } ?? d.root.keys.last
@@ -403,7 +407,8 @@ extension Engine {
     func arrangeIntoTiles(everywhere: Bool) {
         let screens = everywhere ? NSScreen.screens : [focusedScreen].compactMap { $0 }
         for s in screens {
-            updateDock(s) { d in d.floating = [] }
+            // Every window, floating or docked, into a fresh even grid.
+            updateDock(s) { d in d.floating = []; d.root = .split(.h, []); d.zoom = nil }
             if mode(of: s) != .dock { setMode(.dock, for: s) } else { arrangeDock(s) }
         }
         onHUD(String(localized: "Arranged."))

@@ -80,6 +80,13 @@ final class DockTreeTests: XCTestCase {
         XCTAssertEqual(DropTarget.over("a", frame: r, at: CGPoint(x: 50, y: 97)), .edge(.bottom, of: "a"))
     }
 
+    func testGridIsEven() {
+        let t = DockNode.grid(["a", "b", "c", "d", "e"])
+        XCTAssertEqual(t.keys, ["a", "b", "c", "d", "e"])
+        XCTAssertEqual(t.children.count, 3)
+        noOverlap(t.solve(in: screen, gap: 6))
+    }
+
     func testHistory() {
         var h = History<Int>()
         h.push(1); h.push(2)
