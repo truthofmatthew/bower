@@ -13,8 +13,10 @@ final class ParityTests: XCTestCase {
         XCTAssertNil(Command(url: URL(string: "https://layout/3")!))
     }
 
-    /// Icon.path reads only M L H V Z; anything else crashes it while drawing.
+    /// Icon.path reads only M L H V Z; anything else would draw only part of the icon.
     func testSettingsIconsUseLinesOnly() {
+        // An arc, a stray number after Z, a cut-off pair: drawn as far as possible, never a crash.
+        for d in ["M2 2A5 5 0 1 1 8 8", "M1 1L4 4Z 3", "M1 1L4", ""] { _ = Icon.path(d) }
         for t in SettingsView.Tab.allCases {
             XCTAssertNil(t.icon.range(of: "[^MmLlHhVvZz0-9 .,-]", options: .regularExpression), t.rawValue)
         }

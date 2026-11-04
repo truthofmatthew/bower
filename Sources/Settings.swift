@@ -321,15 +321,13 @@ private struct LayoutsTab: View {
     }
 
     private func routeRow(_ id: String) -> some View {
-        let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: id)
-        let name = url.map { FileManager.default.displayName(atPath: $0.path).replacingOccurrences(of: ".app", with: "") } ?? id
+        let name = AppInfo.name(id)
         let n = store.state.routes[id]
         return HStack(spacing: 8) {
-            Image(nsImage: url.map { NSWorkspace.shared.icon(forFile: $0.path) } ?? NSImage())
+            Image(nsImage: AppInfo.icon(id) ?? NSImage())
                 .resizable().frame(width: 18, height: 18)
             Text(name).frame(maxWidth: .infinity, alignment: .leading).lineLimit(1)
             Menu {
-                Button("Current layout") { engine.route(bundleID: id, to: nil) }
                 ForEach(0..<9, id: \.self) { i in
                     Button("\(i + 1) · \(store.state.layouts[i].name)") { engine.route(bundleID: id, to: i) }
                 }
@@ -537,7 +535,7 @@ private struct DisplaysTab: View {
         return Button { self.selected = s.uuid } label: {
             VStack(spacing: 2) {
                 Text(r.width < 90 ? String(s.localizedName.prefix(2)) : s.localizedName).lineLimit(1)
-                Text((isMain ? "Main · " : "") + "\(st.current + 1) · \(st.layouts[st.current].name)")
+                Text(verbatim: (isMain ? String(localized: "Main") + " · " : "") + "\(st.current + 1) · \(st.layouts[st.current].name)")
                     .fontWeight(.medium).opacity(0.85).lineLimit(1)
             }
             .font(.system(size: 11, weight: .semibold))
@@ -614,30 +612,6 @@ private struct ShortcutsTab: View {
         GroupHeading(verbatim: rows.first?.groupTitle ?? name)
         FormGroup {
             ForEach(Array(rows.enumerated()), id: \.element) { i, id in row(id, first: i == 0) }
-            if name == "Overlays" {
-                FormRow {
-                    RowText(title: "Three-finger tap opens the Snap Wheel",
-                            sub: !TrackpadTap.shared.available ? "No trackpad found."
-                                : TrackpadTap.systemUsesThreeFingerTap ? "macOS also uses this tap for Look Up (System Settings › Trackpad)."
-                                : "Tap with three fingers, then click an action.")
-                    Toggle("", isOn: Binding(get: { store.state.trackpadTapOn }, set: engine.setTrackpadTapWheel))
-                        .toggleStyle(BowerToggle())
-                        .disabled(!TrackpadTap.shared.available)
-                        .accessibilityLabel("Three-finger tap opens the Snap Wheel")
-                }
-                FormRow {
-                    RowText(title: "Swipe sideways to change layout", sub: "Fingers, and how it shares the swipe with macOS, are in Settings › Gestures.")
-                    Toggle("", isOn: Binding(get: { store.state.swipeLayouts }, set: engine.setSwipeLayouts))
-                        .toggleStyle(BowerToggle())
-                        .accessibilityLabel("Swipe sideways to change layout")
-                }
-                FormRow {
-                    RowText(title: "Middle-click opens the Snap Wheel", sub: "Off: the middle button goes to apps as usual.")
-                    Toggle("", isOn: Binding(get: { store.state.middleClickWheel }, set: engine.setMiddleClickWheel))
-                        .toggleStyle(BowerToggle())
-                        .accessibilityLabel("Middle-click opens the Snap Wheel")
-                }
-            }
         }
     }
 

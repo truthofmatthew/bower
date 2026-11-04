@@ -29,7 +29,13 @@ final class Overview {
             model.load()
         }
         NSApp.activate()
-        panels.forEach { $0.makeKeyAndOrderFront(nil); $0.orderFrontRegardless() }
+        // A short fade, so the desk visibly turns into the overview rather than being swapped for it.
+        panels.forEach { $0.alphaValue = 0; $0.makeKeyAndOrderFront(nil); $0.orderFrontRegardless() }
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = Theme.reduceMotion ? 0.08 : 0.14
+            ctx.timingFunction = Theme.easeOut
+            panels.forEach { $0.animator().alphaValue = 1 }
+        }
         (panels.first { $0.screen == NSScreen.underMouse } ?? panels.first)?.makeKey()
         let esc: (NSEvent) -> Bool = { [weak self] e in
             guard Int(e.keyCode) == kVK_Escape else { return false }
@@ -41,7 +47,12 @@ final class Overview {
     }
 
     func close() {
-        panels.forEach { $0.orderOut(nil) }
+        let closing = panels
+        NSAnimationContext.runAnimationGroup({ ctx in
+            ctx.duration = 0.1
+            ctx.timingFunction = Theme.easeOut
+            closing.forEach { $0.animator().alphaValue = 0 }
+        }, completionHandler: { closing.forEach { $0.orderOut(nil) } })
         panels = []
         monitors.forEach(NSEvent.removeMonitor)
         monitors = []
@@ -231,7 +242,7 @@ struct OverviewView: View {
                     .frame(width: m.width, height: m.height).offset(x: m.minX, y: m.minY).allowsHitTesting(false)
             }
             if model.items.isEmpty {
-                Text("No windows in this layout on this display").font(.system(size: 14)).foregroundStyle(.white.opacity(0.7))
+                Text("Nothing here yet. ⌥-drag a window onto this layout to move it here.").font(.system(size: 14)).foregroundStyle(.white.opacity(0.7))
                     .frame(width: deskSize.width, height: deskSize.height)
             }
         }
@@ -326,7 +337,8 @@ final class Minimap {
         panel.orderFrontRegardless()
         hide?.cancel()
         let work = DispatchWorkItem { [panel] in
-            NSAnimationContext.runAnimationGroup({ $0.duration = 0.2; panel.animator().alphaValue = 0 }, completionHandler: { panel.orderOut(nil) })
+            NSAnimationContext.runAnimationGroup({ $0.duration = 0.15; $0.timingFunction = Theme.easeOut; panel.animator().alphaValue = 0 },
+                                                 completionHandler: { panel.orderOut(nil) })
         }
         hide = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.2, execute: work)

@@ -18,9 +18,9 @@ enum Conflict: String, CaseIterable, Identifiable {
 
     var what: String {
         switch self {
-        case .edgeTiling: String(localized: "snaps a window to half the screen when you drag it to an edge. Holding ⌥ to tile still works.")
-        case .clickWallpaper: String(localized: "sweeps every window aside when you click the desktop.")
-        case .stageManager: String(localized: "gathers windows into its own stacks at the side.")
+        case .edgeTiling: String(localized: "Snaps a window to half the screen when you drag it to an edge. Holding ⌥ to tile still works.")
+        case .clickWallpaper: String(localized: "Sweeps every window aside when you click the desktop.")
+        case .stageManager: String(localized: "Gathers windows into its own stacks at the side.")
         }
     }
 

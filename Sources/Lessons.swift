@@ -24,10 +24,10 @@ final class Lessons: ObservableObject {
         Step(id: "switch", title: String(localized: "Switch layouts"), text: String(localized: "Hold ⌥ and press a number from 1 to 9. Each layout keeps its own windows.")),
         Step(id: "wheel", title: String(localized: "Open the Snap Wheel"), text: String(localized: "Press ⌃⌥Space, tap with three fingers, or click the middle button.")),
         Step(id: "send", title: String(localized: "Send a window"), text: String(localized: "Press ⇧⌥ and a number: the focused window moves to that layout.")),
-        Step(id: "dock", title: String(localized: "Dock a window"), text: String(localized: "Set this display to Dock mode (Bower's menu › Mode for This Display), then drag a window by its title bar to the edge of another. Its neighbours make room.")),
+        Step(id: "dock", title: String(localized: "Dock a window"), text: String(localized: "Set this display to Dock mode (Bower's menu › This Display), then drag a window by its title bar to the edge of another. Its neighbours make room.")),
         Step(id: "float", title: String(localized: "Float a window"), text: String(localized: "Click a docked window's green button. It floats on the Desktop; click it again to dock it.")),
         Step(id: "frame", title: String(localized: "Focus on one window"), text: String(localized: "Double-click a window's title bar. Double-click it again to go back.")),
-        Step(id: "everything", title: String(localized: "See everything"), text: String(localized: "Press ⌃⌥O, or hold ⌥ and pinch in on the trackpad."))
+        Step(id: "everything", title: String(localized: "Open the overview"), text: String(localized: "Press ⌃⌥O, or hold ⌥ and pinch in on the trackpad."))
     ]
 
     static let more: [Step] = [
@@ -35,7 +35,7 @@ final class Lessons: ObservableObject {
         Step(id: "marquee", title: String(localized: "Zoom to a rectangle"), text: String(localized: "Hold ⌘⇧ and drag a rectangle around a few windows. The view zooms to fit them.")),
         Step(id: "saveView", title: String(localized: "Save a view"), text: String(localized: "Press ⌃⌥⇧ and a number to save what you're looking at; ⌃⌥ and the number brings it back.")),
         Step(id: "back", title: String(localized: "Go back and forward"), text: String(localized: "Press ⌃⌥[ to go back to where you were, ⌃⌥] to go forward.")),
-        Step(id: "swipe", title: String(localized: "Swipe between layouts"), text: String(localized: "Turn it on in Settings › Shortcuts, then swipe sideways with three fingers."))
+        Step(id: "swipe", title: String(localized: "Swipe between layouts"), text: String(localized: "Turn it on in Settings › Gestures, then swipe sideways with three fingers."))
     ]
 
     /// New in this version, newest first.
@@ -165,6 +165,6 @@ private struct LessonCard: View {
         .frame(width: 340, height: 170, alignment: .topLeading)
         .background(Palette.window, in: RoundedRectangle(cornerRadius: 12))
         .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Palette.hair))
-        .animation(Theme.reduceMotion ? nil : .easeOut(duration: 0.2), value: lessons.index)
+        .animation(Theme.reduceMotion ? nil : .timingCurve(0.23, 1, 0.32, 1, duration: 0.2), value: lessons.index)
     }
 }

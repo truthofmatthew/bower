@@ -101,26 +101,34 @@ enum Icon {
         let regex = try! NSRegularExpression(pattern: "[MmLlHhVvZz]|-?(?:\\d+\\.?\\d*|\\.\\d+)")
         let tokens = regex.matches(in: d, range: NSRange(d.startIndex..., in: d)).map { String(d[Range($0.range, in: d)!]) }
         var i = 0, cmd = "M", cur = CGPoint.zero, start = CGPoint.zero
-        func num() -> CGFloat { defer { i += 1 }; return CGFloat(Double(tokens[i])!) }
+        // A malformed path draws what it has so far instead of crashing.
+        func num() -> CGFloat? {
+            guard i < tokens.count, let v = Double(tokens[i]) else { return nil }
+            i += 1
+            return CGFloat(v)
+        }
         while i < tokens.count {
             if Double(tokens[i]) == nil { cmd = tokens[i]; i += 1 }
             switch cmd {
             case "M", "m":
-                let x = num(), y = num()
+                guard let x = num(), let y = num() else { return p }
                 cur = cmd == "M" ? CGPoint(x: x, y: y) : CGPoint(x: cur.x + x, y: cur.y + y)
                 start = cur
                 p.move(to: cur)
                 cmd = cmd == "M" ? "L" : "l"  // extra pairs after a move are line-tos
             case "L", "l":
-                let x = num(), y = num()
+                guard let x = num(), let y = num() else { return p }
                 cur = cmd == "L" ? CGPoint(x: x, y: y) : CGPoint(x: cur.x + x, y: cur.y + y)
                 p.addLine(to: cur)
             case "H", "h":
-                let x = num(); cur.x = cmd == "H" ? x : cur.x + x; p.addLine(to: cur)
+                guard let x = num() else { return p }; cur.x = cmd == "H" ? x : cur.x + x; p.addLine(to: cur)
             case "V", "v":
-                let y = num(); cur.y = cmd == "V" ? y : cur.y + y; p.addLine(to: cur)
-            default:  // Z
+                guard let y = num() else { return p }; cur.y = cmd == "V" ? y : cur.y + y; p.addLine(to: cur)
+            case "Z", "z":
                 p.closeSubpath(); cur = start
+                if i < tokens.count, Double(tokens[i]) != nil { return p }  // numbers after Z: not a path we can read
+            default:
+                return p
             }
         }
         return p

@@ -88,18 +88,34 @@ struct AISettings: Codable, Equatable {
     var model = ""
 
     var configured: Bool { !endpoint.isEmpty && !model.isEmpty }
+    /// Anthropic's own API has its own request shape; everything else speaks OpenAI's.
+    var isAnthropic: Bool { preset == .claude || endpoint.contains("anthropic.com") }
 }
 
 enum AIPreset: String, Codable, CaseIterable {
-    case ollama = "Ollama", lmStudio = "LM Studio", custom = "OpenAI-compatible"
+    case ollama = "Ollama", lmStudio = "LM Studio", openAI = "OpenAI", claude = "Claude", custom = "OpenAI-compatible"
 
-    var title: String { self == .custom ? String(localized: "OpenAI-compatible") : rawValue }
+    var title: String { self == .custom ? String(localized: "Other") : rawValue }
 
     var endpoint: String {
         switch self {
         case .ollama: "http://localhost:11434/v1"
         case .lmStudio: "http://localhost:1234/v1"
+        case .openAI: "https://api.openai.com/v1"
+        case .claude: "https://api.anthropic.com/v1"
         case .custom: ""
+        }
+    }
+
+    /// Runs on this Mac, so nothing leaves it and no key is needed.
+    var isLocal: Bool { self == .ollama || self == .lmStudio }
+
+    /// Where to make an API key.
+    var keysPage: URL? {
+        switch self {
+        case .openAI: URL(string: "https://platform.openai.com/api-keys")
+        case .claude: URL(string: "https://console.anthropic.com/settings/keys")
+        default: nil
         }
     }
 }

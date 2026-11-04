@@ -81,6 +81,7 @@ struct Prefs: Codable {
 
     // Views and history
     var views: [Int: SavedView] = [:]
+    /// No longer used: Back and Forward each have their own switch in the menu bar list. Kept so old files decode.
     var historyButtons = true
     var menuControls: [MenuControl] = [.layout]
     var menuBarFill = 0.12
@@ -113,7 +114,7 @@ enum MenuControl: String, Codable, CaseIterable {
     var title: String {
         switch self {
         case .layout: String(localized: "Layout")
-        case .everything: String(localized: "Everything")
+        case .everything: String(localized: "Overview")
         case .back: String(localized: "Back")
         case .forward: String(localized: "Forward")
         case .views: String(localized: "Saved Views")

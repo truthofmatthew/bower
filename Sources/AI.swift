@@ -3,27 +3,31 @@ import Security
 
 // MARK: - Keychain
 
-/// The API key, in the login Keychain (SetAI.dc.html: "never in Bower's settings file").
+/// API keys, one per provider, in the login Keychain (SetAI.dc.html: "never in Bower's settings file").
 enum Keychain {
-    private static let query: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
-                                               kSecAttrService as String: "Bower AI",
-                                               kSecAttrAccount as String: "api-key"]
+    /// "api-key" is the key from before there were several providers; it stays the "Other" endpoint's.
+    private static func query(_ p: AIPreset) -> [String: Any] {
+        [kSecClass as String: kSecClassGenericPassword,
+         kSecAttrService as String: "Bower AI",
+         kSecAttrAccount as String: p == .custom ? "api-key" : "api-key-\(p.rawValue)"]
+    }
 
-    static var apiKey: String {
-        get {
-            var q = query
-            q[kSecReturnData as String] = true
-            var out: CFTypeRef?
-            guard SecItemCopyMatching(q as CFDictionary, &out) == errSecSuccess, let d = out as? Data else { return "" }
-            return String(decoding: d, as: UTF8.self)
-        }
-        set {
-            SecItemDelete(query as CFDictionary)
-            guard !newValue.isEmpty else { return }
-            var q = query
-            q[kSecValueData as String] = Data(newValue.utf8)
-            SecItemAdd(q as CFDictionary, nil)
-        }
+    static func key(for p: AIPreset) -> String {
+        guard !p.isLocal else { return "" }
+        var q = query(p)
+        q[kSecReturnData as String] = true
+        var out: CFTypeRef?
+        guard SecItemCopyMatching(q as CFDictionary, &out) == errSecSuccess, let d = out as? Data else { return "" }
+        return String(decoding: d, as: UTF8.self)
+    }
+
+    static func set(_ key: String, for p: AIPreset) {
+        SecItemDelete(query(p) as CFDictionary)
+        let k = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !k.isEmpty else { return }
+        var q = query(p)
+        q[kSecValueData as String] = Data(k.utf8)
+        SecItemAdd(q as CFDictionary, nil)
     }
 }
 
@@ -152,7 +156,7 @@ enum Mentions {
 
 // MARK: - Client
 
-/// One client for every OpenAI-compatible endpoint: Ollama, LM Studio, llama.cpp, OpenRouter, OpenAI…
+/// One client for every OpenAI-compatible endpoint (Ollama, LM Studio, llama.cpp, OpenRouter, OpenAI…) and for Claude.
 struct AIClient {
     let settings: AISettings
     let key: String
@@ -188,7 +192,12 @@ struct AIClient {
     private func request(_ path: String, body: [String: Any]? = nil, timeout: TimeInterval) throws -> URLRequest {
         guard let url = URL(string: settings.endpoint.trimmingCharacters(in: CharacterSet(charactersIn: "/ ")) + path) else { throw Failure.badURL }
         var r = URLRequest(url: url, timeoutInterval: timeout)
-        if !key.isEmpty { r.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization") }
+        if settings.isAnthropic {
+            r.setValue("2023-06-01", forHTTPHeaderField: "anthropic-version")
+            if !key.isEmpty { r.setValue(key, forHTTPHeaderField: "x-api-key") }
+        } else if !key.isEmpty {
+            r.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
+        }
         if let body {
             r.httpMethod = "POST"
             r.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -212,7 +221,21 @@ struct AIClient {
     func models() async throws -> [String] {
         let data = try await send(request("/models", timeout: 8))
         let list = ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["data"] as? [[String: Any]] ?? []
-        return list.compactMap { $0["id"] as? String }.sorted()
+        let ids = list.compactMap { $0["id"] as? String }
+        guard settings.preset == .openAI else { return ids.sorted() }
+        // OpenAI lists every model it has; only the chat ones can write a plan.
+        let skip = ["audio", "realtime", "tts", "transcribe", "image", "search", "embedding", "moderation", "whisper", "dall-e", "instruct"]
+        return ids.filter { id in (id.hasPrefix("gpt") || id.hasPrefix("o") || id.hasPrefix("chatgpt")) && !skip.contains { id.contains($0) } }
+            .sorted()
+    }
+
+    /// The model to start with: the newest Sonnet for Claude, the newest full GPT for OpenAI, the only one anywhere else.
+    static func suggested(_ models: [String], for p: AIPreset) -> String? {
+        switch p {
+        case .claude: models.last { $0.contains("sonnet") } ?? models.last
+        case .openAI: models.last { $0.hasPrefix("gpt") && !$0.contains("mini") && !$0.contains("nano") } ?? models.last
+        default: models.count == 1 ? models.first : nil
+        }
     }
 
     func plan(recipe: String, context: MentionContext, layouts: [String]) async throws -> RecipePlan {
@@ -234,11 +257,20 @@ struct AIClient {
         Recipe:
         \(recipe)
         """
-        let body: [String: Any] = ["model": settings.model, "temperature": 0, "stream": false,
-                                   "messages": [["role": "system", "content": system], ["role": "user", "content": user]]]
-        let data = try await send(request("/chat/completions", body: body, timeout: 120))
-        let reply = (((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["choices"] as? [[String: Any]])?
-            .first.flatMap { ($0["message"] as? [String: Any])?["content"] as? String } ?? ""
+        let reply: String
+        if settings.isAnthropic {
+            let body: [String: Any] = ["model": settings.model, "max_tokens": 4096, "temperature": 0, "system": system,
+                                       "messages": [["role": "user", "content": user]]]
+            let data = try await send(request("/messages", body: body, timeout: 120))
+            reply = ((((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["content"] as? [[String: Any]]) ?? [])
+                .compactMap { $0["text"] as? String }.joined()
+        } else {
+            let body: [String: Any] = ["model": settings.model, "temperature": 0, "stream": false,
+                                       "messages": [["role": "system", "content": system], ["role": "user", "content": user]]]
+            let data = try await send(request("/chat/completions", body: body, timeout: 120))
+            reply = (((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["choices"] as? [[String: Any]])?
+                .first.flatMap { ($0["message"] as? [String: Any])?["content"] as? String } ?? ""
+        }
         guard let plan = RecipePlan.parse(reply), !plan.layouts.isEmpty else { throw Failure.notAPlan }
         return plan
     }

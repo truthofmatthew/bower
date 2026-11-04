@@ -131,8 +131,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         signalSource?.setEventHandler { NSApp.terminate(nil) }
         signalSource?.resume()
 
+        // A diagnostics run (-dumpAX, -dumpLayout) only reads and quits, so it leaves the running copy alone.
+        // exit, not terminate: the quit routine would unpark the running copy's windows and give back its shortcuts.
+        if Diagnostics.handleLaunchArguments(store: store, engine: engine) { exit(0) }
         Diagnostics.quitOtherCopies()
-        if Diagnostics.handleLaunchArguments(store: store, engine: engine) { NSApp.terminate(nil); return }
         Log.info("PERMISSIONS accessibility=\(AX.trusted) screen-recording=\(Capture.allowed)")
         if AX.trusted { start() } else { waitForAccess() }
         if !AX.trusted || !UserDefaults.standard.bool(forKey: Self.onboardedKey) { showFirstRun() } else { lessons.offerWhatsNew() }
@@ -146,6 +148,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                 UserDefaults.standard.set(true, forKey: Self.onboardedKey)
                 self?.firstRunWindow?.close()
                 self?.lessons.start(.gettingStarted)
+            }, skip: { [weak self] in
+                UserDefaults.standard.set(true, forKey: Self.onboardedKey)
+                self?.firstRunWindow?.close()
             }, turnOffConflicts: { [weak self] in
                 guard let self else { return }
                 Conflict.active.forEach { $0.turnOff(self.engine) }
@@ -430,9 +435,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(.separator())
 
         let screen = NSScreen.underMouse
-        let modeItem = NSMenuItem(title: String(localized: "Mode for This Display"), action: nil, keyEquivalent: "")
-        modeItem.submenu = modeMenu(for: screen)
-        menu.addItem(modeItem)
+        let displayItem = NSMenuItem(title: String(localized: "This Display"), action: nil, keyEquivalent: "")
+        let dMenu = modeMenu(for: screen)
+        addDisplayItems(to: dMenu, screen: screen)
+        displayItem.submenu = dMenu
+        menu.addItem(displayItem)
+        addAppItem(to: menu)
+        addGoItem(to: menu)
 
         let workspaces = NSMenuItem(title: String(localized: "Workspaces"), action: nil, keyEquivalent: "")
         let wsMenu = NSMenu()
@@ -457,28 +466,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         workspaces.submenu = wsMenu
         menu.addItem(workspaces)
 
-        let app = NSWorkspace.shared.frontmostApplication
-        if let app, let id = app.bundleIdentifier, app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
-            let route = NSMenuItem(title: String(localized: "Route “\(app.localizedName ?? id)” to Layout"), action: nil, keyEquivalent: "")
-            let sub = NSMenu()
-            for (i, l) in st.layouts.enumerated() {
-                let it = NSMenuItem(title: "\(i + 1)  \(l.name)", action: #selector(routeApp(_:)), keyEquivalent: "")
-                it.target = self
-                it.tag = i
-                it.representedObject = id
-                it.state = st.routes[id] == i ? .on : .off
-                sub.addItem(it)
-            }
-            route.submenu = sub
-            menu.addItem(route)
-        }
-
-        let pin = NSMenuItem(title: String(localized: "Pin This Display"), action: #selector(togglePin(_:)), keyEquivalent: "")
-        pin.target = self
-        pin.state = screen.map { st.pinned.contains($0.uuid) } == true ? .on : .off
-        pin.representedObject = screen
-        menu.addItem(pin)
-
         let recipes = NSMenuItem(title: String(localized: "Recipes"), action: nil, keyEquivalent: "")
         let rMenu = NSMenu()
         let new = NSMenuItem(title: String(localized: "New Recipe…"), action: #selector(newRecipe), keyEquivalent: "")
@@ -496,7 +483,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(recipes)
         menu.addItem(.separator())
 
-        addMoreItems(to: menu, screen: screen)
+        addHelpItems(to: menu)
         menu.addItem(.separator())
         let settings = NSMenuItem(title: String(localized: "Settings…"), action: #selector(openSettings), keyEquivalent: ",")
         settings.target = self
@@ -531,13 +518,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     @objc private func switchLayout(_ sender: NSMenuItem) { engine.switchTo(sender.tag) }
 
-    @objc private func routeApp(_ sender: NSMenuItem) {
+    @objc func routeApp(_ sender: NSMenuItem) {
         guard let id = sender.representedObject as? String else { return }
         // Choosing the checked layout again removes the route.
         engine.route(bundleID: id, to: store.state.routes[id] == sender.tag ? nil : sender.tag)
     }
 
-    @objc private func togglePin(_ sender: NSMenuItem) {
+    @objc func togglePin(_ sender: NSMenuItem) {
         if let s = sender.representedObject as? NSScreen { engine.togglePin(s) }
     }
 

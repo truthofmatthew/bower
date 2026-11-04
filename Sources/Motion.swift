@@ -106,7 +106,7 @@ final class Motion {
         DispatchQueue.main.async {
             CATransaction.begin()
             CATransaction.setAnimationDuration(duration)
-            CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(controlPoints: 0.65, 0, 0.35, 1))
+            CATransaction.setAnimationTimingFunction(Theme.easeInOut)  // strong in-out: windows stay on screen as they move
             for (l, to) in layers {
                 l.frame = to
                 l.opacity = 1

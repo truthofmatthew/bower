@@ -4672,6 +4672,7 @@
       }
     },
     "Back and forward buttons": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -4719,6 +4720,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "后退和前进按钮"
+          }
+        }
+      }
+    },
+    "Back to how they came. Layouts, shortcuts and workspaces stay.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurück zum Auslieferungszustand. Layouts, Kurzbefehle und Arbeitsbereiche bleiben erhalten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se restablecen los valores de fábrica. Las disposiciones, los atajos y los espacios de trabajo se conservan."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه‌چی برمی‌گرده به حالت اول. چیدمان‌ها، میان‌برها و فضاهای کار سر جاشون می‌مونن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retour aux réglages d’origine. Les dispositions, raccourcis et espaces de travail sont conservés."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si torna alle impostazioni originali. Layout, abbreviazioni e spazi di lavoro restano."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "初期状態に戻します。レイアウト、ショートカット、ワークスペースはそのまま残ります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tudo volta ao padrão. Layouts, atalhos e espaços de trabalho são mantidos."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复为初始状态。布局、快捷键和工作区会保留。"
           }
         }
       }
@@ -7284,6 +7337,58 @@
         }
       }
     },
+    "Delete Recipe": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rezept löschen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar receta"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پاک کردن دستور"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer la recette"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina ricetta"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レシピを削除"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apagar Receita"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除配方"
+          }
+        }
+      }
+    },
     "Delete “%@”": {
       "localizations": {
         "de": {
@@ -7753,6 +7858,7 @@
       }
     },
     "Dock mode is a Window Mode, set per display in each layout (Bower's menu › Mode for This Display). Windows never overlap: drag one by its title bar to the edge of another, or of the screen, to dock it there.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -7805,6 +7911,7 @@
       }
     },
     "Dock, gestures, appearance and updates. Layouts, shortcuts and workspaces stay.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -8805,6 +8912,7 @@
       }
     },
     "Everything": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -8857,6 +8965,7 @@
       }
     },
     "Fingers, and how it shares the swipe with macOS, are in Settings › Gestures.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -9169,6 +9278,7 @@
       }
     },
     "Float All Windows on Desktop": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -9216,6 +9326,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "将所有窗口浮动在桌面上"
+          }
+        }
+      }
+    },
+    "Float All Windows on the Desktop Tile": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Fenster auf der Schreibtisch-Kachel schweben lassen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hacer flotar todas las ventanas en el mosaico del Escritorio"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه‌ی پنجره‌ها رو رو کاشی دسکتاپ شناور کن"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Faire flotter toutes les fenêtres sur la tuile du Bureau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai fluttuare tutte le finestre sul riquadro della Scrivania"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すべてのウインドウをデスクトップのタイルにフロート"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flutuar Todas as Janelas no Bloco da Mesa"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将所有窗口浮动在桌面平铺位置上"
           }
         }
       }
@@ -10416,6 +10578,58 @@
         }
       }
     },
+    "Gathers windows into its own stacks at the side.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sammelt Fenster in eigenen Stapeln am Rand."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agrupa las ventanas en sus propias pilas a un lado."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌ها رو تو پشته‌های خودش کنار صفحه جمع می‌کنه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regroupe les fenêtres dans ses propres piles sur le côté."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raccoglie le finestre in pile proprie sul lato."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウを横の専用スタックにまとめます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reúne as janelas em pilhas próprias na lateral."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将窗口收拢到侧边它自己的堆叠中。"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "de": {
@@ -10516,6 +10730,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "手势"
+          }
+        }
+      }
+    },
+    "Get a key": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlüssel holen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtener una clave"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گرفتن کلید"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obtenir une clé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottieni una chiave"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーを取得"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obter uma chave"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "获取密钥"
           }
         }
       }
@@ -10886,6 +11152,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "窗口不活跃时玻璃变为不透明"
+          }
+        }
+      }
+    },
+    "Go": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehe zu"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ir"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "برو"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aller"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vai"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "移動"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ir"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前往"
           }
         }
       }
@@ -11566,7 +11884,60 @@
         }
       }
     },
+    "Hide Desktop Tile": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibtisch-Kachel ausblenden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar el mosaico del Escritorio"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "قایم کردن کاشی دسکتاپ"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Masquer la tuile du Bureau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascondi il riquadro della Scrivania"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デスクトップのタイルを隠す"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar Bloco da Mesa"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐藏桌面平铺位置"
+          }
+        }
+      }
+    },
     "Hide Desktop in This Layout": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -12398,6 +12769,58 @@
         }
       }
     },
+    "If the endpoint needs one": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falls der Endpunkt einen braucht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si el endpoint la necesita"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اگه سرور لازمش داره"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si le point de terminaison en a besoin"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se l'endpoint ne richiede una"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エンドポイントで必要な場合"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se o endpoint precisar de uma"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果端点需要"
+          }
+        }
+      }
+    },
     "If they open again, they're placed as new windows.": {
       "localizations": {
         "de": {
@@ -12446,6 +12869,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "如果它们再次打开，会作为新窗口放置。"
+          }
+        }
+      }
+    },
+    "In Dock mode windows sit side by side and never overlap. Turn it on for a display in Bower's menu › This Display, then drag a title bar to another window's edge to dock it there.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Dock-Modus liegen Fenster nebeneinander und überlappen sich nie. Schalte ihn für ein Display in Bowers Menü › Dieses Display ein und zieh dann eine Titelleiste an den Rand eines anderen Fensters, um es dort anzudocken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el modo Dock las ventanas se colocan una al lado de otra y nunca se superponen. Actívalo para una pantalla en el menú de Bower › Esta pantalla y luego arrastra una barra de título al borde de otra ventana para acoplarla ahí."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تو حالت داک پنجره‌ها کنار هم می‌شینن و هیچ‌وقت رو هم نمی‌افتن. از منوی Bower › این نمایشگر برای یه نمایشگر روشنش کن، بعد نوار عنوان یه پنجره رو بکش ببر لبه‌ی یه پنجره‌ی دیگه تا همون‌جا داک بشه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En mode Dock, les fenêtres se placent côte à côte sans jamais se chevaucher. Activez-le pour un écran dans le menu de Bower › Cet écran, puis faites glisser une barre de titre sur le bord d’une autre fenêtre pour l’y docker."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In modalità Dock le finestre stanno una accanto all'altra e non si sovrappongono mai. Attivala per uno schermo dal menu di Bower › Questo schermo, poi trascina una barra del titolo sul bordo di un'altra finestra per ancorarla lì."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ドックモードでは、ウインドウは横に並び、重なることはありません。Bowerのメニュー › このディスプレイでディスプレイごとにオンにし、タイトルバーを別のウインドウの端にドラッグするとそこにドッキングします。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No modo Dock, as janelas ficam lado a lado e nunca se sobrepõem. Ative-o para uma tela no menu do Bower › Esta Tela e arraste uma barra de título até a borda de outra janela para acoplá-la ali."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在停靠模式下，窗口并排排列，绝不重叠。在 Bower 的菜单 › 此显示器中为显示器开启它，然后将标题栏拖到另一个窗口的边缘，即可停靠在那里。"
           }
         }
       }
@@ -12607,6 +13082,7 @@
       }
     },
     "Its swipe and keyboard shortcut show every window, where it is in your layouts; click one to go to it. Opened another way (its Dock icon, a hot corner), Mission Control shows for a moment first. Hold fn as you swipe for Mission Control itself.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -13237,6 +13713,7 @@
       }
     },
     "Layout %lld": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -13988,6 +14465,58 @@
         }
       }
     },
+    "Lets the overview show what's in your windows. Still pictures only, never recorded or kept.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damit zeigt die Übersicht, was in deinen Fenstern ist. Nur Standbilder, nie aufgezeichnet oder gespeichert."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite que la vista general muestre lo que hay en tus ventanas. Solo imágenes fijas, nunca grabadas ni guardadas."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمای کلی می‌تونه محتوای پنجره‌هات رو نشون بده. فقط عکس ثابت؛ نه ضبط می‌شه، نه نگه داشته می‌شه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permet à la vue d'ensemble de montrer le contenu de vos fenêtres. Des images fixes, jamais enregistrées ni conservées."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permette alla panoramica di mostrare cosa c'è nelle tue finestre. Solo immagini fisse, mai registrate né conservate."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーバービューにウインドウの中身を表示できます。静止画のみで、録画も保存もしません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permite que a visão geral mostre o que há nas suas janelas. Só imagens estáticas, nunca gravadas nem guardadas."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "让总览显示窗口里的内容。只是静态画面，从不录制或保存。"
+          }
+        }
+      }
+    },
     "Load": {
       "localizations": {
         "de": {
@@ -14140,6 +14669,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "邮件"
+          }
+        }
+      }
+    },
+    "Main": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hauptdisplay"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Principal"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "اصلی"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Principal"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Principale"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メイン"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Principal"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主显示器"
           }
         }
       }
@@ -14716,7 +15297,60 @@
         }
       }
     },
+    "Mission Control's swipe and shortcut open Bower's overview instead. Hold fn for Mission Control itself.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wischgeste und Kurzbefehl von Mission Control öffnen stattdessen Bowers Übersicht. Halte fn gedrückt für Mission Control selbst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El gesto y el atajo de Mission Control abren la vista general de Bower. Mantén fn para el propio Mission Control."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کشیدن انگشت و میانبر Mission Control به‌جاش نمای کلی باوِر رو باز می‌کنن. برای خود Mission Control، fn رو نگه دار."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le balayage et le raccourci de Mission Control ouvrent la vue d'ensemble de Bower. Maintenez fn pour Mission Control lui-même."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo scorrimento e la scorciatoia di Mission Control aprono la panoramica di Bower. Tieni premuto fn per Mission Control."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mission Controlのスワイプとショートカットで、代わりにBowerのオーバービューが開きます。Mission Control本体はfnを押しながら。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O gesto e o atalho do Mission Control abrem a visão geral do Bower. Segure fn para o próprio Mission Control."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mission Control 的轻扫和快捷键会改为打开 Bower 的总览。按住 fn 可使用 Mission Control 本身。"
+          }
+        }
+      }
+    },
     "Mode for This Display": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -16022,6 +16656,58 @@
         }
       }
     },
+    "New windows open in": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Fenster öffnen in"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las ventanas nuevas se abren en"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "پنجره‌های جدید باز می‌شن تو"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les nouvelles fenêtres s’ouvrent dans"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le nuove finestre si aprono in"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しいウインドウの表示先"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Novas janelas abrem em"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新窗口打开于"
+          }
+        }
+      }
+    },
     "Next": {
       "localizations": {
         "de": {
@@ -16334,7 +17020,60 @@
         }
       }
     },
+    "No conflicts with macOS": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Konflikte mit macOS"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin conflictos con macOS"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "با macOS تداخلی نداره"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun conflit avec macOS"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun conflitto con macOS"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOSとの競合なし"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum conflito com o macOS"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "与 macOS 无冲突"
+          }
+        }
+      }
+    },
     "No models found": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -16382,6 +17121,110 @@
           "stringUnit": {
             "state": "translated",
             "value": "未找到模型"
+          }
+        }
+      }
+    },
+    "No models found. Check the key.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Modelle gefunden. Prüfe den Schlüssel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se han encontrado modelos. Revisa la clave."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدلی پیدا نشد. کلید رو چک کن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun modèle trouvé. Vérifiez la clé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun modello trovato. Controlla la chiave."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "モデルが見つかりません。キーを確認してください。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum modelo encontrado. Verifique a chave."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未找到模型。请检查密钥。"
+          }
+        }
+      }
+    },
+    "No models found. Is it running?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Modelle gefunden. Läuft er?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se han encontrado modelos. ¿Se está ejecutando?"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "مدلی پیدا نشد. روشنه؟"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun modèle trouvé. Est-il en cours d’exécution ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun modello trovato. È in esecuzione?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "モデルが見つかりません。実行中ですか？"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum modelo encontrado. Ele está em execução?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未找到模型。它是否正在运行？"
           }
         }
       }
@@ -16439,6 +17282,7 @@
       }
     },
     "No saved views yet": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -16486,6 +17330,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "尚无已存视图"
+          }
+        }
+      }
+    },
+    "No saved views. Press ⌃⌥⇧1 to save one.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine gesicherten Ansichten. Drück ⌃⌥⇧1, um eine zu sichern."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay vistas guardadas. Pulsa ⌃⌥⇧1 para guardar una."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمای ذخیره‌شده‌ای نداری. برای ذخیره‌ی یکی ⁦⌃⌥⇧1⁩ رو بزن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune vue enregistrée. Appuyez sur ⌃⌥⇧1 pour en enregistrer une."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuna vista salvata. Premi ⌃⌥⇧1 per salvarne una."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存したビューはありません。⌃⌥⇧1を押すと保存できます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhuma vista salva. Pressione ⌃⌥⇧1 para salvar uma."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有已存视图。按 ⌃⌥⇧1 保存一个。"
           }
         }
       }
@@ -16699,6 +17595,7 @@
       }
     },
     "No windows in this layout on this display": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -16751,6 +17648,7 @@
       }
     },
     "None in the way": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -16798,6 +17696,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "没有冲突项"
+          }
+        }
+      }
+    },
+    "None of macOS's own ways of moving windows is on, so nothing will fight Bower.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine der macOS-eigenen Arten, Fenster zu bewegen, ist aktiv. Nichts kommt Bower in die Quere."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguna de las formas propias de macOS de mover ventanas está activada, así que nada interferirá con Bower."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هیچ‌کدوم از روش‌های خود macOS برای جابه‌جا کردن پنجره‌ها روشن نیست، پس چیزی با Bower درگیر نمی‌شه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucune des méthodes de macOS pour déplacer les fenêtres n’est activée : rien n’entrera en conflit avec Bower."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessuno dei metodi di macOS per spostare le finestre è attivo, quindi niente entrerà in conflitto con Bower."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS独自のウインドウ移動機能はどれもオフなので、Bowerと競合することはありません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhum dos recursos do próprio macOS para mover janelas está ativado, então nada vai brigar com o Bower."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "macOS 自带的窗口移动方式均未开启，不会与 Bower 冲突。"
           }
         }
       }
@@ -16855,6 +17805,7 @@
       }
     },
     "Not needed for local endpoints": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -17006,6 +17957,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "未测试"
+          }
+        }
+      }
+    },
+    "Nothing here yet. ⌥-drag a window onto this layout to move it here.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch nichts hier. Zieh ein Fenster mit ⌥ auf dieses Layout, um es hierher zu bewegen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay nada. Arrastra una ventana con ⌥ a esta disposición para moverla aquí."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هنوز چیزی اینجا نیست. یه پنجره رو با ⁦⌥⁩ بکش رو این چیدمان تا بیاد اینجا."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rien ici pour l’instant. Faites glisser une fenêtre avec ⌥ sur cette disposition pour l’y déplacer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora niente qui. Trascina una finestra con ⌥ su questo layout per spostarla qui."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ何もありません。⌥キーを押しながらウインドウをこのレイアウトにドラッグすると、ここに移動します。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada aqui ainda. Arraste uma janela com ⌥ até este layout para movê-la para cá."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这里还没有内容。按住 ⌥ 将窗口拖到此布局上即可移到这里。"
           }
         }
       }
@@ -17739,7 +18742,60 @@
         }
       }
     },
+    "Open the overview": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersicht öffnen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir la vista general"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "باز کردن نمای کلی"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ouvrir la vue d’ensemble"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri la panoramica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーバービューを開く"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir a visão geral"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开总览"
+          }
+        }
+      }
+    },
     "OpenAI-compatible": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -18155,6 +19211,58 @@
         }
       }
     },
+    "Other": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Andere"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otro"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دیگه"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autre"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その他"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Outro"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "其他"
+          }
+        }
+      }
+    },
     "Otherwise a gap's handle shows when the pointer is over it.": {
       "localizations": {
         "de": {
@@ -18312,6 +19420,7 @@
       }
     },
     "Overlays": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -18359,6 +19468,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "叠加层"
+          }
+        }
+      }
+    },
+    "Overview": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersicht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista general"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمای کلی"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vue d’ensemble"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Panoramica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーバービュー"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visão Geral"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总览"
           }
         }
       }
@@ -18515,6 +19676,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "将隐藏的窗口缩小停放"
+          }
+        }
+      }
+    },
+    "Paste your key": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlüssel einfügen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pega tu clave"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "کلیدت رو اینجا بچسبون"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collez votre clé"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla la chiave"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キーをペースト"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cole sua chave"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "粘贴你的密钥"
           }
         }
       }
@@ -18935,6 +20148,58 @@
         }
       }
     },
+    "Places Bower is keeping for windows that closed, or whose app quit. They go back there when they open again.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plätze, die Bower für geschlossene Fenster oder beendete Apps freihält. Die Fenster kehren dorthin zurück, wenn sie wieder geöffnet werden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lugares que Bower reserva para las ventanas que se cerraron o cuya app se cerró. Vuelven ahí cuando se abren de nuevo."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "جاهایی که Bower برای پنجره‌های بسته‌شده، یا پنجره‌هایی که برنامه‌شون بسته شده، نگه داشته. وقتی دوباره باز بشن برمی‌گردن همون‌جا."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emplacements que Bower réserve aux fenêtres fermées ou dont l’app a été quittée. Elles y retournent quand elles se rouvrent."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posti che Bower tiene da parte per le finestre chiuse o la cui app è stata chiusa. Ci tornano quando si riaprono."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じたウインドウや、アプリが終了したウインドウのためにBowerが確保している場所です。再び開いたときにそこに戻ります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lugares que o Bower guarda para janelas que foram fechadas ou cujo app foi encerrado. Elas voltam para lá quando abrem de novo."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bower 为已关闭的窗口或应用已退出的窗口保留的位置。它们再次打开时会回到那里。"
+          }
+        }
+      }
+    },
     "Plan ready · %lld layouts": {
       "localizations": {
         "de": {
@@ -19196,6 +20461,7 @@
       }
     },
     "Preset": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -19711,6 +20977,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "预览从应用图标中取用这么多颜色，而不是灰色。"
+          }
+        }
+      }
+    },
+    "Provider": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anbieter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proveedor"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "سرویس‌دهنده"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fournisseur"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fornitore"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プロバイダ"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provedor"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提供商"
           }
         }
       }
@@ -20391,6 +21709,58 @@
         }
       }
     },
+    "Recipes, with the names of your running apps and displays, are sent to this provider when you run them. Nothing else is.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rezepte werden beim Ausführen zusammen mit den Namen deiner geöffneten Apps und Displays an diesen Anbieter gesendet. Sonst nichts."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las recetas, junto con los nombres de tus apps abiertas y pantallas, se envían a este proveedor al ejecutarlas. Nada más."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی یه دستور رو اجرا می‌کنی، خودش با اسم برنامه‌های باز و نمایشگرهات برای این سرویس‌دهنده فرستاده می‌شه. چیز دیگه‌ای فرستاده نمی‌شه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les recettes, avec les noms de vos apps ouvertes et de vos écrans, sont envoyées à ce fournisseur quand vous les exécutez. Rien d’autre."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le ricette, con i nomi delle app aperte e degli schermi, vengono inviate a questo fornitore quando le esegui. Nient'altro."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レシピを実行すると、レシピと実行中のアプリおよびディスプレイの名前がこのプロバイダに送信されます。それ以外は送信されません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As receitas, com os nomes dos seus apps abertos e telas, são enviadas a este provedor quando você as executa. Nada mais é enviado."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行配方时，配方以及正在运行的应用和显示器的名称会发送给此提供商。不会发送其他内容。"
+          }
+        }
+      }
+    },
     "Record": {
       "localizations": {
         "de": {
@@ -20963,6 +22333,214 @@
         }
       }
     },
+    "Reset": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurücksetzen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازنشانی"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リセット"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redefinir"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置"
+          }
+        }
+      }
+    },
+    "Reset Dock, gestures and appearance": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock, Gesten und Erscheinungsbild zurücksetzen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer Dock, gestos y apariencia"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازنشانی داک، ژست‌ها و ظاهر"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser le Dock, les gestes et l’apparence"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina Dock, gesti e aspetto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ドック、ジェスチャ、外観をリセット"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redefinir Dock, gestos e aparência"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置停靠、手势和外观"
+          }
+        }
+      }
+    },
+    "Reset Dock, gestures and appearance?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dock, Gesten und Erscheinungsbild zurücksetzen?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Restablecer Dock, gestos y apariencia?"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "داک، ژست‌ها و ظاهر بازنشانی بشن؟"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser le Dock, les gestes et l’apparence ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristinare Dock, gesti e aspetto?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ドック、ジェスチャ、外観をリセットしますか？"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redefinir Dock, gestos e aparência?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要重置停靠、手势和外观吗？"
+          }
+        }
+      }
+    },
+    "Reset…": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zurücksetzen …"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restablecer…"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "بازنشانی…"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réinitialiser…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina…"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リセット…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redefinir…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置…"
+          }
+        }
+      }
+    },
     "Restore": {
       "localizations": {
         "de": {
@@ -21068,6 +22646,7 @@
       }
     },
     "Restore the newer settings to their defaults": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -21386,6 +22965,7 @@
       }
     },
     "Route “%@” to Layout": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -22113,6 +23693,64 @@
         }
       }
     },
+    "Saved view %lld. Press ⌃⌥%lld to come back to it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ansicht %1$lld gesichert. Drück ⌃⌥%2$lld, um zu ihr zurückzukehren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Saved view %1$lld. Press ⌃⌥%2$lld to come back to it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista %1$lld guardada. Pulsa ⌃⌥%2$lld para volver a ella."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمای %1$lld ذخیره شد. برای برگشتن بهش ⁦⌃⌥⁩%2$lld رو بزن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vue %1$lld enregistrée. Appuyez sur ⌃⌥%2$lld pour y revenir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista %1$lld salvata. Premi ⌃⌥%2$lld per tornarci."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ビュー%1$lldを保存しました。⌃⌥%2$lldを押すと戻れます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vista %1$lld salva. Pressione ⌃⌥%2$lld para voltar a ela."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已存视图 %1$lld。按 ⌃⌥%2$lld 可回到此视图。"
+          }
+        }
+      }
+    },
     "Saved views and history": {
       "localizations": {
         "de": {
@@ -22276,6 +23914,7 @@
       }
     },
     "See everything": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -22750,6 +24389,7 @@
       }
     },
     "Set this display to Dock mode (Bower's menu › Mode for This Display), then drag a window by its title bar to the edge of another. Its neighbours make room.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -22797,6 +24437,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "将此显示器设为停靠模式（Bower 菜单 › 此显示器的模式），然后按住标题栏将窗口拖到另一个窗口的边缘。相邻窗口会腾出空间。"
+          }
+        }
+      }
+    },
+    "Set this display to Dock mode (Bower's menu › This Display), then drag a window by its title bar to the edge of another. Its neighbours make room.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stell dieses Display auf den Dock-Modus (Bowers Menü › Dieses Display) und zieh dann ein Fenster an seiner Titelleiste an den Rand eines anderen. Die Nachbarn machen Platz."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pon esta pantalla en modo Dock (menú de Bower › Esta pantalla) y luego arrastra una ventana por su barra de título hasta el borde de otra. Las vecinas le hacen sitio."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این نمایشگر رو بذار رو حالت داک (منوی Bower › این نمایشگر)، بعد یه پنجره رو از نوار عنوانش بکش ببر لبه‌ی یه پنجره‌ی دیگه. پنجره‌های کناری براش جا باز می‌کنن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passez cet écran en mode Dock (menu de Bower › Cet écran), puis faites glisser une fenêtre par sa barre de titre jusqu’au bord d’une autre. Ses voisines lui font de la place."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imposta questo schermo in modalità Dock (menu di Bower › Questo schermo), poi trascina una finestra dalla barra del titolo sul bordo di un'altra. Le vicine le fanno spazio."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このディスプレイをドックモードに設定し（Bowerのメニュー › このディスプレイ）、ウインドウのタイトルバーを別のウインドウの端までドラッグします。隣のウインドウが場所を空けます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coloque esta tela no modo Dock (menu do Bower › Esta Tela) e arraste uma janela pela barra de título até a borda de outra. As vizinhas abrem espaço."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将此显示器设为停靠模式（Bower 的菜单 › 此显示器），然后拖移窗口的标题栏到另一个窗口的边缘。相邻窗口会让出空间。"
           }
         }
       }
@@ -23321,7 +25013,60 @@
         }
       }
     },
+    "Show Desktop Tile": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreibtisch-Kachel zeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar el mosaico del Escritorio"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشون دادن کاشی دسکتاپ"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher la tuile du Bureau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra il riquadro della Scrivania"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デスクトップのタイルを表示"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar Bloco da Mesa"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示桌面平铺位置"
+          }
+        }
+      }
+    },
     "Show Desktop in This Layout": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -23374,6 +25119,7 @@
       }
     },
     "Show Everything": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -23421,6 +25167,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "显示全部"
+          }
+        }
+      }
+    },
+    "Show Overview": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersicht zeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar vista general"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نشون دادن نمای کلی"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher la vue d’ensemble"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra panoramica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーバービューを表示"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar Visão Geral"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示总览"
           }
         }
       }
@@ -23582,6 +25380,7 @@
       }
     },
     "Show everything": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -23681,6 +25480,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "显示或隐藏桌面的平铺位置"
+          }
+        }
+      }
+    },
+    "Show the overview": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Übersicht zeigen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar la vista general"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "نمای کلی رو نشون بده"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afficher la vue d’ensemble"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra la panoramica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オーバービューを表示"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar a visão geral"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示总览"
           }
         }
       }
@@ -24055,6 +25906,58 @@
         }
       }
     },
+    "Snap Wheel and Layouts Bar": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snap-Rad und Layoutleiste"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rueda de ajuste y Barra de disposiciones"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چرخ چینش و نوار چیدمان‌ها"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roue d’ancrage et Barre des dispositions"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruota di aggancio e Barra dei layout"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スナップホイールとレイアウトバー"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roda de Encaixe e Barra de Layouts"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "吸附轮盘和布局栏"
+          }
+        }
+      }
+    },
     "Snapping": {
       "localizations": {
         "de": {
@@ -24103,6 +26006,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "吸附"
+          }
+        }
+      }
+    },
+    "Snaps a window to half the screen when you drag it to an edge. Holding ⌥ to tile still works.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rastet ein Fenster auf eine Bildschirmhälfte ein, wenn du es an einen Rand ziehst. Kacheln mit gedrückter ⌥-Taste funktioniert weiterhin."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajusta una ventana a media pantalla cuando la arrastras a un borde. Mantener pulsada ⌥ para organizar en mosaico sigue funcionando."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی یه پنجره رو می‌کشی لبه‌ی صفحه، می‌چسبونتش به نصف صفحه. نگه داشتن ⁦⌥⁩ برای کاشی‌چینی هنوز کار می‌کنه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancre une fenêtre sur la moitié de l’écran quand vous la faites glisser vers un bord. Maintenir ⌥ pour la disposer en mosaïque fonctionne toujours."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggancia una finestra a metà schermo quando la trascini su un bordo. Tenere premuto ⌥ per affiancare funziona ancora."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ウインドウを端にドラッグすると、画面の半分にスナップします。⌥キーを押しながらのタイル表示も引き続き使えます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Encaixa uma janela em metade da tela quando você a arrasta até uma borda. Manter ⌥ pressionada para organizar continua funcionando."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将窗口拖到边缘时，会吸附到半个屏幕。按住 ⌥ 平铺仍然可用。"
           }
         }
       }
@@ -24835,6 +26790,58 @@
         }
       }
     },
+    "Sweeps every window aside when you click the desktop.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schiebt alle Fenster beiseite, wenn du auf den Schreibtisch klickst."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aparta todas las ventanas cuando haces clic en el escritorio."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی رو دسکتاپ کلیک می‌کنی، همه‌ی پنجره‌ها رو کنار می‌زنه."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Écarte toutes les fenêtres quand vous cliquez sur le bureau."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sposta da parte tutte le finestre quando fai clic sulla scrivania."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "デスクトップをクリックすると、すべてのウインドウを脇に寄せます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afasta todas as janelas quando você clica na mesa."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "点按桌面时，将所有窗口移到一旁。"
+          }
+        }
+      }
+    },
     "Swipe between layouts": {
       "localizations": {
         "de": {
@@ -25304,6 +27311,7 @@
       }
     },
     "Tabs Mode, within the focused group": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -26135,6 +28143,58 @@
         }
       }
     },
+    "These macOS features move windows behind Bower's back. You can turn them back on in Settings › General.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese macOS-Funktionen verschieben Fenster an Bower vorbei. Du kannst sie unter Einstellungen › Allgemein wieder einschalten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estas funciones de macOS mueven ventanas a espaldas de Bower. Puedes volver a activarlas en Ajustes › General."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این قابلیت‌های macOS پشت سر باوِر پنجره‌ها رو جابه‌جا می‌کنن. هر وقت خواستی تو تنظیمات › عمومی دوباره روشنشون کن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ces fonctions de macOS déplacent les fenêtres dans le dos de Bower. Vous pouvez les réactiver dans Réglages › Général."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queste funzioni di macOS spostano le finestre alle spalle di Bower. Puoi riattivarle in Impostazioni › Generali."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これらのmacOSの機能はBowerの知らないうちにウインドウを動かします。設定 › 一般でいつでも元に戻せます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estes recursos do macOS movem janelas sem o Bower saber. Você pode reativá-los em Ajustes › Geral."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这些 macOS 功能会绕过 Bower 移动窗口。你可以随时在设置 › 通用中重新打开它们。"
+          }
+        }
+      }
+    },
     "These would fight Bower": {
       "localizations": {
         "de": {
@@ -26287,6 +28347,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "三等分"
+          }
+        }
+      }
+    },
+    "This Display": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Display"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta pantalla"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این نمایشگر"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cet écran"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questo schermo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このディスプレイ"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta Tela"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此显示器"
           }
         }
       }
@@ -27228,7 +29340,60 @@
         }
       }
     },
+    "Turn it on in Settings › Gestures, then swipe sideways with three fingers.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schalte es in Einstellungen › Gesten ein und streiche dann mit drei Fingern seitwärts."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actívalo en Ajustes › Gestos y luego desliza de lado con tres dedos."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تو تنظیمات › ژست‌ها روشنش کن، بعد با سه انگشت به پهلو سوایپ کن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activez-le dans Réglages › Gestes, puis balayez latéralement avec trois doigts."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attivalo in Impostazioni › Gesti, poi scorri lateralmente con tre dita."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "設定 › ジェスチャでオンにしてから、3本指で横にスワイプします。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ative em Ajustes › Gestos e deslize para o lado com três dedos."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在设置 › 手势中开启，然后用三指左右轻扫。"
+          }
+        }
+      }
+    },
     "Turn it on in Settings › Shortcuts, then swipe sideways with three fingers.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -27281,6 +29446,7 @@
       }
     },
     "Turn it on or off for the desktop you're on from Bower's menu: Use Bower on This Desktop.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -27328,6 +29494,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "在 Bower 菜单中为当前桌面开启或关闭：在此桌面上使用 Bower。"
+          }
+        }
+      }
+    },
+    "Turn it on or off for the desktop you're on in Bower's menu › This Display.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für den aktuellen Schreibtisch ein- oder ausschalten: Bowers Menü › Dieses Display."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actívalo o desactívalo para el escritorio actual en el menú de Bower › Esta pantalla."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "از منوی Bower › این نمایشگر، برای دسکتاپی که روش هستی روشن یا خاموشش کن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activez-le ou désactivez-le pour le bureau actuel dans le menu de Bower › Cet écran."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attivalo o disattivalo per la scrivania attuale dal menu di Bower › Questo schermo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bowerのメニュー › このディスプレイで、現在のデスクトップでのオン/オフを切り替えます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ative ou desative para a mesa atual no menu do Bower › Esta Tela."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 Bower 的菜单 › 此显示器中，为当前桌面开启或关闭。"
           }
         }
       }
@@ -27957,6 +30175,7 @@
       }
     },
     "Use the menu bar's arrows to go back to where you were, and forward again.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -29321,6 +31540,7 @@
       }
     },
     "Windows that haven't come back since they closed, their app quit or the Mac restarted: their places, and what Bower knows them by.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -29425,6 +31645,7 @@
       }
     },
     "With Screen Recording allowed, the overview and moving windows show real contents: still pictures, never recorded or kept. Without it, windows show as their app's colour and icon.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -29576,6 +31797,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "任意位置按住 ⌥，或在空白桌面上"
+          }
+        }
+      }
+    },
+    "Within the focused tab group": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Innerhalb der aktiven Tab-Gruppe"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dentro del grupo de pestañas activo"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تو گروه زبانه‌ی فعال"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dans le groupe d’onglets actif"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nel gruppo di pannelli attivo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォーカス中のタブグループ内"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dentro do grupo de abas em foco"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在当前标签页组内"
           }
         }
       }
@@ -30044,6 +32317,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "最前面的四个窗口各占一角。"
+          }
+        }
+      }
+    },
+    "Your layouts, shortcuts and workspaces stay.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Layouts, Kurzbefehle und Arbeitsbereiche bleiben erhalten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus disposiciones, atajos y espacios de trabajo se conservan."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "چیدمان‌ها، میان‌برها و فضاهای کارت سر جاشون می‌مونن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vos dispositions, raccourcis et espaces de travail sont conservés."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Layout, abbreviazioni e spazi di lavoro restano invariati."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レイアウト、ショートカット、ワークスペースはそのまま残ります。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seus layouts, atalhos e espaços de trabalho são mantidos."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的布局、快捷键和工作区会保留。"
           }
         }
       }
@@ -30569,6 +32894,7 @@
       }
     },
     "gathers windows into its own stacks at the side.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -30934,6 +33260,7 @@
       }
     },
     "macOS has its own ways of moving windows around. None of them is on now, so nothing will fight Bower.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -30986,6 +33313,7 @@
       }
     },
     "macOS has its own ways of moving windows around. While Bower arranges your windows, these would fight it. You can turn them back on any time in Settings › General.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -31298,6 +33626,7 @@
       }
     },
     "snaps a window to half the screen when you drag it to an edge. Holding ⌥ to tile still works.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -31350,6 +33679,7 @@
       }
     },
     "sweeps every window aside when you click the desktop.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {

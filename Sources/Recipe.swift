@@ -37,7 +37,9 @@ final class RecipeModel: ObservableObject {
     init(name: String?, engine: Engine) {
         self.engine = engine
         savedName = name
-        self.name = name ?? String(localized: "New Recipe")
+        // A second new recipe mustn't overwrite the first.
+        let base = String(localized: "New Recipe"), taken = Set(RecipeFiles.names())
+        self.name = name ?? ([base] + (2...99).map { "\(base) \($0)" }).first { !taken.contains($0) } ?? base
         text = name.flatMap(RecipeFiles.read) ?? RecipeFiles.starter
     }
 
@@ -64,10 +66,17 @@ final class RecipeModel: ObservableObject {
         savedName = n
     }
 
+    var isSaved: Bool { savedName != nil }
+
+    func delete() {
+        if let old = savedName { RecipeFiles.delete(old) }
+        savedName = nil
+    }
+
     func preview() {
         save()
         phase = .loading
-        let client = AIClient(settings: ai, key: Keychain.apiKey)
+        let client = AIClient(settings: ai, key: Keychain.key(for: ai.preset))
         let text = text, context = context, layouts = engine.state.layouts.map(\.name)
         Task { @MainActor in
             do { phase = .ready(try await client.plan(recipe: text, context: context, layouts: layouts)) } catch let f as AIClient.Failure {
@@ -115,9 +124,13 @@ struct RecipeEditorView: View {
             .frame(maxHeight: .infinity)
 
             HStack(spacing: 8) {
+                if model.isSaved {
+                    Button("Delete Recipe", role: .destructive) { model.delete(); close() }.buttonStyle(BowerButton())
+                }
                 Text(footer).font(.system(size: 12)).foregroundStyle(Palette.label2)
                 Spacer()
-                Button("Cancel") { model.save(); close() }.buttonStyle(BowerButton()).keyboardShortcut(.cancelAction)
+                // Closing keeps what's typed, so it says Close rather than Cancel.
+                Button("Close") { model.save(); close() }.buttonStyle(BowerButton()).keyboardShortcut(.cancelAction)
                 Button("Preview", action: model.preview).buttonStyle(BowerButton())
                     .disabled(!model.ai.configured || isLoading)
                 Button("Apply") { model.apply(); close() }.buttonStyle(BowerButton(primary: true))

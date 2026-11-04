@@ -5,13 +5,19 @@ import AppKit
 final class MenuStrip: NSObject {
     private unowned let app: AppDelegate
     private var items: [MenuControl: NSStatusItem] = [:]
+    private var order: [MenuControl] = []
 
     init(app: AppDelegate) { self.app = app }
 
     func refresh() {
         let p = app.store.state.prefs
-        let want = p.menuControls.filter { $0 != .layout && (p.historyButtons || ($0 != .back && $0 != .forward)) }
-        for (c, it) in items where !want.contains(c) {
+        let want = p.menuControls.filter { $0 != .layout }
+        // A new order means making them again, since an item's place is set when it's made.
+        let reordered = order.filter(want.contains) != want.filter(order.contains)
+        order = want
+        // macOS keeps each item's last place by its autosave name; forget it so the new order shows.
+        if reordered { for c in want { UserDefaults.standard.removeObject(forKey: "NSStatusItem Preferred Position Bower.\(c.rawValue)") } }
+        for (c, it) in items where !want.contains(c) || reordered {
             NSStatusBar.system.removeStatusItem(it)
             items[c] = nil
         }
@@ -66,7 +72,7 @@ final class MenuStrip: NSObject {
         case .views:
             let m = NSMenu()
             let views = app.store.state.prefs.views.sorted { $0.key < $1.key }
-            if views.isEmpty { m.addItem(NSMenuItem(title: String(localized: "No saved views yet"), action: nil, keyEquivalent: "")) }
+            if views.isEmpty { m.addItem(NSMenuItem(title: String(localized: "No saved views. Press ⌃⌥⇧1 to save one."), action: nil, keyEquivalent: "")) }
             for (n, v) in views {
                 let it = NSMenuItem(title: String(localized: "View \(n): \(v.name)"), action: #selector(AppDelegate.menuGoView(_:)), keyEquivalent: "")
                 it.target = app

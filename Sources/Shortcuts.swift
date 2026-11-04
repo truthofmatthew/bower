@@ -35,7 +35,7 @@ enum ShortcutID: String, CaseIterable, Codable {
         case .twoThirds: String(localized: "First / Last Two Thirds")
         case .maximize: String(localized: "Maximize")
         case .retile: String(localized: "Retile display")
-        case .everything: String(localized: "Show everything")
+        case .everything: String(localized: "Show the overview")
         case .stepIn: String(localized: "Step in a level")
         case .stepOut: String(localized: "Step out a level")
         case .frame: String(localized: "Frame the focused window on its own")
@@ -64,7 +64,7 @@ enum ShortcutID: String, CaseIterable, Codable {
     /// The group's heading, translated; `group` stays the English key the Shortcuts tab sorts by.
     var groupTitle: String {
         switch group {
-        case "Overlays": String(localized: "Overlays")
+        case "Overlays": String(localized: "Snap Wheel and Layouts Bar")
         case "Layouts": String(localized: "Layouts")
         case "Windows": String(localized: "Windows")
         case "Zoom": String(localized: "Views and zoom")
@@ -75,7 +75,7 @@ enum ShortcutID: String, CaseIterable, Codable {
 
     var sub: String? {
         switch self {
-        case .nextTab: String(localized: "Tabs Mode, within the focused group")
+        case .nextTab: String(localized: "Within the focused tab group")
         case .goView: String(localized: "Hold the modifiers and press a number from 1 to 9.")
         case .saveView: String(localized: "Saves what you're looking at, to come back to with the number.")
         case .everything: String(localized: "Every window on every display, your layouts along the top.")

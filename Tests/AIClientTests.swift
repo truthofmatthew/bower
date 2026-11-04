@@ -68,6 +68,25 @@ final class AIClientTests: XCTestCase {
         }
     }
 
+    func testClaudeUsesTheMessagesAPI() async throws {
+        let plan = #"{\"layouts\":[{\"number\":1,\"name\":\"Mail\",\"windows\":[{\"app\":\"Finder\"}]}]}"#
+        MockEndpoint.replies = ["/messages": (200, #"{"content":[{"type":"text","text":""# + plan + #""}]}"#)]
+        let claude = AISettings(preset: .claude, endpoint: "http://mock.local/v1", model: "claude-sonnet-test")
+        let result = try await AIClient(settings: claude, key: "k").plan(recipe: "- Mail — @Finder", context: context, layouts: [])
+        XCTAssertEqual(result.layouts.first?.name, "Mail")
+        // The system prompt goes in its own field, not as a message.
+        XCTAssertNotNil(MockEndpoint.lastBody?["system"] as? String)
+        XCTAssertEqual((MockEndpoint.lastBody?["messages"] as? [[String: Any]])?.count, 1)
+        XCTAssertNotNil(MockEndpoint.lastBody?["max_tokens"])
+    }
+
+    func testSuggestedModel() {
+        XCTAssertEqual(AIClient.suggested(["claude-haiku-4-5", "claude-opus-4-1", "claude-sonnet-4-5"], for: .claude), "claude-sonnet-4-5")
+        XCTAssertEqual(AIClient.suggested(["gpt-4.1", "gpt-4.1-mini", "o3"], for: .openAI), "gpt-4.1")
+        XCTAssertNil(AIClient.suggested(["a", "b"], for: .ollama))
+        XCTAssertEqual(AIClient.suggested(["only"], for: .lmStudio), "only")
+    }
+
     @MainActor func testRecipeWindowKeepsTheDesignSize() {
         let w = HostedWindow(title: "Recipe", size: CGSize(width: 1020, height: 604), bareTitlebar: true, hideButtons: true) {
             Color.clear.frame(width: 1020, height: 604)

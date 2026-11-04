@@ -73,7 +73,7 @@ struct DockTab: View {
         let r = PrefRows(store: store, engine: engine)
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Dock mode is a Window Mode, set per display in each layout (Bower's menu › Mode for This Display). Windows never overlap: drag one by its title bar to the edge of another, or of the screen, to dock it there.")
+                Text("In Dock mode windows sit side by side and never overlap. Turn it on for a display in Bower's menu › This Display, then drag a title bar to another window's edge to dock it there.")
                     .font(.system(size: 12)).foregroundStyle(Palette.label2).fixedSize(horizontal: false, vertical: true).padding(.horizontal, 4)
                 GroupHeading(text: "Windows")
                 FormGroup {
@@ -100,13 +100,6 @@ struct DockTab: View {
                     r.toggle("A sole floating window takes the Desktop's space", "Only for a window that's the only one floating: it fills the Desktop's tile.", \.soleFloatTakesDesktop).level(.advanced, store)
                     r.toggle("Floating a window brings the Desktop back", "When the Desktop is hidden in this layout.", \.hiddenDesktopReturns).level(.advanced, store)
                 }
-                GroupHeading(text: "Desktops")
-                FormGroup {
-                    r.menu("Arrange desktops as Bower first sees them", "Turn it on or off for the desktop you're on from Bower's menu: Use Bower on This Desktop.",
-                           \.arrangeDesktops, [(ArrangeDesktops.all, String(localized: "All desktops")), (.firstOnly, String(localized: "First desktop only"))], first: true)
-                }
-                IgnoredApps(store: store, engine: engine)
-                MissingWindows(store: store, engine: engine)
             }
             .padding(.bottom, 8)
         }
@@ -125,14 +118,14 @@ private struct IgnoredApps: View {
                 Menu {
                     let running = NSWorkspace.shared.runningApplications.filter { $0.activationPolicy == .regular && $0.bundleIdentifier != nil }
                     ForEach(running, id: \.processIdentifier) { a in
-                        Button(a.localizedName ?? a.bundleIdentifier!) { engine.setIgnored(a.bundleIdentifier!, true) }
+                        Button(a.localizedName ?? AppInfo.name(a.bundleIdentifier!)) { engine.setIgnored(a.bundleIdentifier!, true) }
                     }
                 } label: { PopLabel(text: String(localized: "Add App")) }
                     .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).fixedSize()
             }
             ForEach(store.state.prefs.ignoredApps.sorted(), id: \.self) { id in
                 FormRow {
-                    RowText(verbatim: NSWorkspace.shared.urlForApplication(withBundleIdentifier: id).map { FileManager.default.displayName(atPath: $0.path) } ?? id)
+                    AppRow(bundleID: id)
                     Button("Arrange Again") { engine.setIgnored(id, false) }.buttonStyle(BowerButton())
                 }
             }
@@ -156,14 +149,16 @@ private struct MissingWindows: View {
                     (.never, String(localized: "Never"))], first: true)
             FormRow {
                 RowText(title: "Missing windows",
-                        sub: "Windows that haven't come back since they closed, their app quit or the Mac restarted: their places, and what Bower knows them by.")
+                        sub: "Places Bower is keeping for windows that closed, or whose app quit. They go back there when they open again.")
                 Text(missing.count == 1 ? String(localized: "1 missing") : String(localized: "\(missing.count) missing"))
                     .font(.system(size: 12)).foregroundStyle(Palette.label2)
                 Button("Forget Missing Windows…") { confirm = true }.buttonStyle(BowerButton()).disabled(missing.isEmpty)
             }
             ForEach(Array(missing.suffix(8).enumerated()), id: \.offset) { _, w in
                 FormRow {
-                    RowText(verbatim: w.title, sub: "\(w.bundleID) · \(String(localized: "Layout \(w.layout + 1)"))")
+                    let app = AppInfo.name(w.bundleID)
+                    AppRow(bundleID: w.bundleID, title: w.title.isEmpty ? app : w.title,
+                           sub: "\(app) · \(w.layout + 1) · \(store.state.layouts[w.layout].name)")
                     Button("Forget") { engine.forgetMissing(w) }.buttonStyle(BowerButton())
                 }
             }
@@ -189,6 +184,25 @@ struct GesturesTab: View {
         let ex = DockSwipe.explanation(fingers: p.swipeFingers, missionControl: p.replaceMissionControl)
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
+                GroupHeading(text: "Snap Wheel")
+                FormGroup {
+                    FormRow(first: true) {
+                        RowText(title: "Three-finger tap opens the Snap Wheel",
+                                sub: !TrackpadTap.shared.available ? "No trackpad found."
+                                    : TrackpadTap.systemUsesThreeFingerTap ? "macOS also uses this tap for Look Up (System Settings › Trackpad)."
+                                    : "Tap with three fingers, then click an action.")
+                        Toggle("", isOn: Binding(get: { store.state.trackpadTapOn }, set: engine.setTrackpadTapWheel))
+                            .toggleStyle(BowerToggle())
+                            .disabled(!TrackpadTap.shared.available)
+                            .accessibilityLabel("Three-finger tap opens the Snap Wheel")
+                    }
+                    FormRow {
+                        RowText(title: "Middle-click opens the Snap Wheel", sub: "Off: the middle button goes to apps as usual.")
+                        Toggle("", isOn: Binding(get: { store.state.middleClickWheel }, set: engine.setMiddleClickWheel))
+                            .toggleStyle(BowerToggle())
+                            .accessibilityLabel("Middle-click opens the Snap Wheel")
+                    }
+                }
                 GroupHeading(text: "Moving between layouts")
                 FormGroup {
                     FormRow(first: true) {
@@ -219,7 +233,7 @@ struct GesturesTab: View {
                 FormGroup {
                     FormRow(first: true) {
                         RowText(title: "Show Bower's overview instead",
-                                sub: "Its swipe and keyboard shortcut show every window, where it is in your layouts; click one to go to it. Opened another way (its Dock icon, a hot corner), Mission Control shows for a moment first. Hold fn as you swipe for Mission Control itself.")
+                                sub: "Mission Control's swipe and shortcut open Bower's overview instead. Hold fn for Mission Control itself.")
                         Toggle("", isOn: Binding(get: { p.replaceMissionControl }, set: setMissionControl)).toggleStyle(BowerToggle())
                             .accessibilityLabel("Show Bower's overview instead of Mission Control")
                     }
@@ -314,7 +328,9 @@ private struct MenuControlsEditor: View {
         let r = PrefRows(store: store, engine: engine)
         let on = store.state.prefs.menuControls
         FormGroup {
-            ForEach(Array(MenuControl.allCases.enumerated()), id: \.element) { i, c in
+            // Shown in the menu bar's order, so the arrows visibly move a row; the ones that are off follow.
+            let rows = on + MenuControl.allCases.filter { !on.contains($0) }
+            ForEach(Array(rows.enumerated()), id: \.element) { i, c in
                 FormRow(first: i == 0) {
                     RowText(verbatim: c.title, sub: c == .layout ? String(localized: "Bower's own item. Right-clicking any of them opens Bower's menu.") : nil)
                     if let at = on.firstIndex(of: c), c != .layout {
@@ -329,7 +345,6 @@ private struct MenuControlsEditor: View {
                     .toggleStyle(BowerToggle()).disabled(c == .layout).accessibilityLabel(c.title)
                 }
             }
-            r.toggle("Back and forward buttons", "Use the menu bar's arrows to go back to where you were, and forward again.", \.historyButtons)
             r.slider("Frame", "How white the frame round Bower's menu bar buttons is.", \.menuBarFill, 0...0.5, step: 0.02, format: pct).level(.advanced, store)
         }
     }
@@ -350,14 +365,22 @@ struct GeneralMore: View {
     var openReport: () -> Void = {}
     var openLessons: () -> Void = {}
     @State private var conflicts = Conflict.active
+    @State private var confirmReset = false
 
     var body: some View {
         let r = PrefRows(store: store, engine: engine)
+        IgnoredApps(store: store, engine: engine)
+        MissingWindows(store: store, engine: engine)
+        GroupHeading(text: "Desktops")
+        FormGroup {
+            r.menu("Arrange desktops as Bower first sees them", "Turn it on or off for the desktop you're on in Bower's menu › This Display.",
+                   \.arrangeDesktops, [(ArrangeDesktops.all, String(localized: "All desktops")), (.firstOnly, String(localized: "First desktop only"))], first: true)
+        }
         GroupHeading(text: "macOS features")
         FormGroup {
             if conflicts.isEmpty {
                 FormRow(first: true) {
-                    RowText(title: "None in the way", sub: "macOS has its own ways of moving windows around. None of them is on now, so nothing will fight Bower.")
+                    RowText(title: "No conflicts with macOS", sub: "None of macOS's own ways of moving windows is on, so nothing will fight Bower.")
                     if !store.state.prefs.turnedOff.isEmpty {
                         Button("Turn Back On") { Conflict.turnBackOn(engine); refresh() }.buttonStyle(BowerButton())
                     }
@@ -397,18 +420,24 @@ struct GeneralMore: View {
             }
             #endif
             FormRow {
-                RowText(title: "Restore the newer settings to their defaults", sub: "Dock, gestures, appearance and updates. Layouts, shortcuts and workspaces stay.")
-                Button("Restore Defaults") {
-                    let keep = store.state.prefs
-                    engine.setPrefs { p in
-                        p = Prefs.releaseDefaults
-                        p.views = keep.views; p.closed = keep.closed; p.lessonsDone = keep.lessonsDone; p.lastWhatsNew = keep.lastWhatsNew
-                        p.turnedOff = keep.turnedOff; p.hotkeysTakenOver = keep.hotkeysTakenOver; p.desktopHidden = keep.desktopHidden
-                        p.desktopShown = keep.desktopShown; p.offSpaces = keep.offSpaces; p.onSpaces = keep.onSpaces; p.ignoredApps = keep.ignoredApps
-                    }
-                }
+                RowText(title: "Reset Dock, gestures and appearance", sub: "Back to how they came. Layouts, shortcuts and workspaces stay.")
+                Button("Reset…") { confirmReset = true }
                 .buttonStyle(BowerButton())
+                .alert("Reset Dock, gestures and appearance?", isPresented: $confirmReset) {
+                    Button("Reset", role: .destructive, action: reset)
+                    Button("Cancel", role: .cancel) {}
+                } message: { Text("Your layouts, shortcuts and workspaces stay.") }
             }
+        }
+    }
+
+    private func reset() {
+        let keep = store.state.prefs
+        engine.setPrefs { p in
+            p = Prefs.releaseDefaults
+            p.views = keep.views; p.closed = keep.closed; p.lessonsDone = keep.lessonsDone; p.lastWhatsNew = keep.lastWhatsNew
+            p.turnedOff = keep.turnedOff; p.hotkeysTakenOver = keep.hotkeysTakenOver; p.desktopHidden = keep.desktopHidden
+            p.desktopShown = keep.desktopShown; p.offSpaces = keep.offSpaces; p.onSpaces = keep.onSpaces; p.ignoredApps = keep.ignoredApps
         }
     }
 

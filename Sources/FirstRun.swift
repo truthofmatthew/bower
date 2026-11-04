@@ -11,27 +11,31 @@ final class FirstRunModel: ObservableObject {
     var finished: Bool { trusted && triedKeys && wheelOpened }
 }
 
-/// FirstRun.dc.html: three steps, each unlocked by the one before.
+/// FirstRun.dc.html: three steps, each unlocked by the one before, and two optional ones. Continue needs only Accessibility.
 struct FirstRunView: View {
     @ObservedObject var model: FirstRunModel
+    /// Continue: closes and starts the Getting Started lessons.
     var close: () -> Void
+    /// Skip Setup: closes without the lessons.
+    var skip: () -> Void = {}
     /// Turns off the macOS features that would fight Bower (edge tiling, click wallpaper, Stage Manager).
     var turnOffConflicts: () -> Void = {}
     @State private var conflicts = Conflict.active
     @State private var screenAllowed = Capture.allowed
 
-    private enum Status { case active, done, todo }
+    /// optional: a step that can be done any time, drawn at full strength so its button doesn't look disabled.
+    private enum Status { case active, done, todo, optional }
 
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 6) {
-                BowerIcon(size: 64)
+                BowerIcon(size: 56)
                 Text("Welcome to Bower").font(.system(size: 20, weight: .bold))
                 Text("Name a layout for each project and switch the whole desk with ⌥1–9.")
                     .font(.system(size: 12)).foregroundStyle(Palette.label2)
             }
-            .padding(.top, 30)
-            .padding(.bottom, 14)
+            .padding(.top, 22)
+            .padding(.bottom, 12)
 
             VStack(spacing: 4) {
                 if model.trusted {
@@ -73,20 +77,22 @@ struct FirstRunView: View {
                 }
                 step(!model.triedKeys ? .todo : model.wheelOpened ? .done : .active, model.wheelOpened ? "✓" : "3",
                      "Open the Snap Wheel", "Middle-click anywhere, or press ⌃⌥Space.")
-                step(screenAllowed ? .done : .todo, screenAllowed ? "✓" : "4", "Optional: see your windows as they are",
-                     "With Screen Recording allowed, the overview and moving windows show real contents: still pictures, never recorded or kept. Without it, windows show as their app's colour and icon.") {
+                step(screenAllowed ? .done : .optional, screenAllowed ? "✓" : "4", "Optional: see your windows as they are",
+                     "Lets the overview show what's in your windows. Still pictures only, never recorded or kept.") {
                     if !screenAllowed {
                         Button("Allow…") { Capture.requestAccess(); screenAllowed = Capture.allowed }.buttonStyle(BowerButton()).padding(.top, 6)
                     }
                 }
-                step(conflicts.isEmpty ? .done : .todo, conflicts.isEmpty ? "✓" : "5", "Turn off what gets in the way",
-                     conflicts.isEmpty ? "macOS has its own ways of moving windows around. None of them is on now, so nothing will fight Bower."
-                         : "macOS has its own ways of moving windows around. While Bower arranges your windows, these would fight it. You can turn them back on any time in Settings › General.") {
+                step(conflicts.isEmpty ? .done : .optional, conflicts.isEmpty ? "✓" : "5", "Turn off what gets in the way",
+                     conflicts.isEmpty ? "None of macOS's own ways of moving windows is on, so nothing will fight Bower."
+                         : "These macOS features move windows behind Bower's back. You can turn them back on in Settings › General.") {
                     if !conflicts.isEmpty {
-                        VStack(alignment: .leading, spacing: 2) {
-                            ForEach(conflicts) { c in Text(verbatim: "• \(c.title): \(c.what)").font(.system(size: 12)).foregroundStyle(Palette.label2) }
+                        HStack(spacing: 10) {
+                            Button("Turn Them Off") { turnOffConflicts(); conflicts = Conflict.active }.buttonStyle(BowerButton())
+                            Text(verbatim: conflicts.map(\.title).formatted(.list(type: .and)))
+                                .font(.system(size: 12)).foregroundStyle(Palette.label2).lineLimit(2)
                         }
-                        Button("Turn Them Off") { turnOffConflicts(); conflicts = Conflict.active }.buttonStyle(BowerButton()).padding(.top, 6)
+                        .padding(.top, 6)
                     }
                 }
             }
@@ -94,9 +100,9 @@ struct FirstRunView: View {
             .frame(maxHeight: .infinity, alignment: .top)
 
             HStack {
-                Button("Skip Setup", action: close).buttonStyle(.plain).foregroundStyle(Palette.label2).padding(.horizontal, 14)
+                Button("Skip Setup", action: skip).buttonStyle(.plain).foregroundStyle(Palette.label2).padding(.horizontal, 14)
                 Spacer()
-                Button("Continue", action: close).buttonStyle(BowerButton(primary: true)).disabled(!model.finished)
+                Button("Continue", action: close).buttonStyle(BowerButton(primary: true)).disabled(!model.trusted)
                     .keyboardShortcut(.defaultAction)
             }
             .padding(.horizontal, 24)

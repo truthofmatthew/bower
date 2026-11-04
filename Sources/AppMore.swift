@@ -34,57 +34,84 @@ extension AppDelegate {
 
     // MARK: Menu
 
-    func addMoreItems(to menu: NSMenu, screen: NSScreen?) {
+    /// This Display ▸, after its modes: pinning, Dock mode's Desktop tile, and whether Bower arranges this desktop.
+    func addDisplayItems(to sub: NSMenu, screen: NSScreen?) {
+        guard let screen else { return }
         let st = store.state
-        menu.addItem(.separator())
-        menu.addItem(item(String(localized: "Show Everything"), #selector(menuEverything)))
+        let pin = item(String(localized: "Pin This Display"), #selector(togglePin(_:)))
+        pin.state = st.pinned.contains(screen.uuid) ? .on : .off
+        pin.representedObject = screen
+        sub.addItem(pin)
+        if engine.mode(of: screen) == .dock {
+            let shown = engine.desktopShown(screen)
+            sub.addItem(item(shown ? String(localized: "Hide Desktop Tile") : String(localized: "Show Desktop Tile"),
+                             #selector(menuToggleDesktop)))
+            sub.addItem(item(String(localized: "Float All Windows on the Desktop Tile"), #selector(menuFloatAll)))
+        }
+        if SkyLight.available {
+            let here = item(String(localized: "Use Bower on This Desktop"), #selector(menuArrangeHere))
+            here.state = engine.arrangesHere ? .on : .off
+            sub.addItem(here)
+        }
+    }
+
+    /// The front app ▸: which layout its new windows open in, and whether Bower arranges it at all.
+    func addAppItem(to menu: NSMenu) {
+        guard let app = NSWorkspace.shared.frontmostApplication, let id = app.bundleIdentifier,
+              app.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
+        let st = store.state
+        let name = app.localizedName ?? AppInfo.name(id)
+        let top = NSMenuItem(title: name, action: nil, keyEquivalent: "")
+        top.image = app.icon.map { i in let c = i.copy() as! NSImage; c.size = NSSize(width: 16, height: 16); return c }
+        let sub = NSMenu()
+        sub.addItem(.sectionHeader(title: String(localized: "New windows open in")))
+        for (i, l) in st.layouts.enumerated() {
+            let it = item("\(i + 1)  \(l.name)", #selector(routeApp(_:)))
+            it.tag = i
+            it.representedObject = id
+            it.state = st.routes[id] == i ? .on : .off
+            sub.addItem(it)
+        }
+        sub.addItem(.separator())
+        let ignored = st.prefs.ignoredApps.contains(id)
+        let it = item(ignored ? String(localized: "Arrange “\(name)” Again") : String(localized: "Don’t Arrange “\(name)”"), #selector(menuIgnore(_:)))
+        it.representedObject = id
+        sub.addItem(it)
+        top.submenu = sub
+        menu.addItem(top)
+    }
+
+    /// Go ▸: the overview, back and forward, and saved views.
+    func addGoItem(to menu: NSMenu) {
+        let st = store.state
+        let go = NSMenuItem(title: String(localized: "Go"), action: nil, keyEquivalent: "")
+        let sub = NSMenu()
+        sub.autoenablesItems = false
+        sub.addItem(item(String(localized: "Show Overview"), #selector(menuEverything)))
         let back = item(String(localized: "Go Back"), #selector(menuBack))
         back.isEnabled = engine.canGoBack
-        menu.addItem(back)
+        sub.addItem(back)
         let fwd = item(String(localized: "Go Forward"), #selector(menuForward))
         fwd.isEnabled = engine.canGoForward
-        menu.addItem(fwd)
-
-        let views = NSMenuItem(title: String(localized: "Saved Views"), action: nil, keyEquivalent: "")
-        let vMenu = NSMenu()
-        vMenu.addItem(item(String(localized: "Save This View"), #selector(menuSaveView)))
-        let saved = st.prefs.views.sorted { $0.key < $1.key }
-        if !saved.isEmpty { vMenu.addItem(.separator()) }
-        for (n, v) in saved {
+        sub.addItem(fwd)
+        sub.addItem(.separator())
+        sub.addItem(.sectionHeader(title: String(localized: "Saved Views")))
+        for (n, v) in st.prefs.views.sorted(by: { $0.key < $1.key }) {
             let it = item(String(localized: "View \(n): \(v.name)"), #selector(menuGoView(_:)))
             it.tag = n
             let forget = item(String(localized: "Forget View \(n)"), #selector(menuForgetView(_:)))
             forget.tag = n
             forget.isAlternate = true
             forget.keyEquivalentModifierMask = .option
-            vMenu.addItem(it)
-            vMenu.addItem(forget)
+            sub.addItem(it)
+            sub.addItem(forget)
         }
-        views.submenu = vMenu
-        menu.addItem(views)
+        sub.addItem(item(String(localized: "Save This View"), #selector(menuSaveView)))
+        go.submenu = sub
+        menu.addItem(go)
+    }
 
-        if let screen {
-            if engine.mode(of: screen) == .dock {
-                let shown = engine.desktopShown(screen)
-                menu.addItem(item(shown ? String(localized: "Hide Desktop in This Layout") : String(localized: "Show Desktop in This Layout"),
-                                  #selector(menuToggleDesktop)))
-                menu.addItem(item(String(localized: "Float All Windows on Desktop"), #selector(menuFloatAll)))
-            }
-            if SkyLight.available {
-                let here = item(String(localized: "Use Bower on This Desktop"), #selector(menuArrangeHere))
-                here.state = engine.arrangesHere ? .on : .off
-                menu.addItem(here)
-            }
-        }
-        if let app = NSWorkspace.shared.frontmostApplication, let id = app.bundleIdentifier,
-           app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
-            let ignored = st.prefs.ignoredApps.contains(id)
-            let name = app.localizedName ?? id
-            let it = item(ignored ? String(localized: "Arrange “\(name)” Again") : String(localized: "Don’t Arrange “\(name)”"), #selector(menuIgnore(_:)))
-            it.representedObject = id
-            menu.addItem(it)
-        }
-        menu.addItem(.separator())
+    func addHelpItems(to menu: NSMenu) {
         let help = NSMenuItem(title: String(localized: "Help"), action: nil, keyEquivalent: "")
         let hMenu = NSMenu()
         hMenu.addItem(item(String(localized: "Getting Started"), #selector(menuGettingStarted)))
@@ -92,13 +119,11 @@ extension AppDelegate {
         hMenu.addItem(item(String(localized: "Read the Guide"), #selector(menuGuide)))
         hMenu.addItem(.separator())
         hMenu.addItem(item(String(localized: "Report a Problem…"), #selector(menuReport)))
+        if updates.available == nil { hMenu.addItem(item(String(localized: "Check for Updates…"), #selector(menuCheckUpdates))) }
         help.submenu = hMenu
         menu.addItem(help)
-        if let u = updates.available {
-            menu.addItem(item(String(localized: "Update to Bower \(u.version)…"), #selector(menuUpdate)))
-        } else {
-            menu.addItem(item(String(localized: "Check for Updates…"), #selector(menuCheckUpdates)))
-        }
+        // A waiting update stays in sight, outside Help.
+        if let u = updates.available { menu.addItem(item(String(localized: "Update to Bower \(u.version)…"), #selector(menuUpdate))) }
     }
 
     private func item(_ title: String, _ action: Selector) -> NSMenuItem {

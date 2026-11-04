@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// SetAI.dc.html: endpoint preset, URL, model, API key (Keychain), Test Connection.
+/// SetAI.dc.html: provider, URL (local or "Other" only), model, API key (Keychain, one per provider), Test Connection.
 struct AITab: View {
     @ObservedObject var store: Store
     let engine: Engine
-    @State private var key = Keychain.apiKey
+    @State private var key = ""
     @State private var url = ""
     @State private var models: [String] = []
     @State private var status: Status = .untested
@@ -17,33 +17,61 @@ struct AITab: View {
         VStack(alignment: .leading, spacing: 14) {
             FormGroup {
                 FormRow(first: true) {
-                    Text("Preset").frame(width: 110, alignment: .leading)
+                    Text("Provider").frame(width: 110, alignment: .leading)
                     Segmented(options: AIPreset.allCases.map(\.title), selected: ai.preset.title) { name in
-                        guard let p = AIPreset.allCases.first(where: { $0.title == name }) else { return }
+                        guard let p = AIPreset.allCases.first(where: { $0.title == name }), p != ai.preset else { return }
                         var a = ai
                         a.preset = p
                         if p != .custom { a.endpoint = p.endpoint }
                         a.model = ""
                         url = a.endpoint
+                        key = Keychain.key(for: p)
+                        models = []
+                        status = .untested
                         engine.setAI(a)
                         refresh()
                     }
                     Spacer(minLength: 0)
                 }
-                FormRow {
-                    Text("Endpoint URL").frame(width: 110, alignment: .leading)
-                    TextField("https://api.example.com/v1", text: $url)
-                        .textFieldStyle(.plain).font(.system(size: 12, design: .monospaced))
-                        .padding(.horizontal, 9).frame(height: 28)
-                        .background(Palette.field, in: RoundedRectangle(cornerRadius: 6))
-                        .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(Palette.hair, lineWidth: 0.5))
-                        .onSubmit(saveURL)
-                        .accessibilityLabel("Endpoint URL")
+                if ai.preset.isLocal || ai.preset == .custom {
+                    FormRow {
+                        Text("Endpoint URL").frame(width: 110, alignment: .leading)
+                        TextField("https://api.example.com/v1", text: $url)
+                            .textFieldStyle(.plain).font(.system(size: 12, design: .monospaced))
+                            .padding(.horizontal, 9).frame(height: 28)
+                            .background(Palette.field, in: RoundedRectangle(cornerRadius: 6))
+                            .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(Palette.hair, lineWidth: 0.5))
+                            .onSubmit(saveURL)
+                            .accessibilityLabel("Endpoint URL")
+                    }
+                }
+                if !ai.preset.isLocal {
+                    FormRow {
+                        Text("API key").frame(width: 110, alignment: .leading)
+                        VStack(alignment: .leading, spacing: 4) {
+                            SecureField(ai.preset == .custom ? String(localized: "If the endpoint needs one") : String(localized: "Paste your key"), text: $key)
+                                .textFieldStyle(.plain)
+                                .padding(.horizontal, 9).frame(height: 28)
+                                .background(Palette.field, in: RoundedRectangle(cornerRadius: 6))
+                                .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(Palette.hair, lineWidth: 0.5))
+                                .onSubmit(refresh)
+                                .onChange(of: key) { _, k in Keychain.set(k, for: ai.preset) }
+                                .accessibilityLabel("API key")
+                            HStack(spacing: 4) {
+                                Image(systemName: "lock").font(.system(size: 9, weight: .medium))  // the component sheet's SF equivalent
+                                Text("Stored in your login Keychain, never in Bower's settings file.")
+                                if let page = ai.preset.keysPage {
+                                    Link("Get a key", destination: page).foregroundStyle(Palette.accent)
+                                }
+                            }
+                            .font(.system(size: 11)).foregroundStyle(Palette.label2)
+                        }
+                    }
                 }
                 FormRow {
                     Text("Model").frame(width: 110, alignment: .leading)
                     Menu {
-                        if models.isEmpty { Button("No models found") {}.disabled(true) }
+                        if models.isEmpty { Button(ai.preset.isLocal ? String(localized: "No models found. Is it running?") : String(localized: "No models found. Check the key.")) {}.disabled(true) }
                         ForEach(models, id: \.self) { m in
                             Button(m) { var a = ai; a.model = m; engine.setAI(a) }
                         }
@@ -55,34 +83,17 @@ struct AITab: View {
                     }
                     .buttonStyle(BowerButton()).accessibilityLabel("Refresh model list")
                 }
-                FormRow {
-                    Text("API key").frame(width: 110, alignment: .leading)
-                    VStack(alignment: .leading, spacing: 4) {
-                        SecureField("Not needed for local endpoints", text: $key)
-                            .textFieldStyle(.plain)
-                            .padding(.horizontal, 9).frame(height: 28)
-                            .background(Palette.field, in: RoundedRectangle(cornerRadius: 6))
-                            .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(Palette.hair, lineWidth: 0.5))
-                            .onSubmit { Keychain.apiKey = key }
-                            .onChange(of: key) { _, k in Keychain.apiKey = k }
-                            .accessibilityLabel("API key")
-                        HStack(spacing: 4) {
-                            Image(systemName: "lock").font(.system(size: 9, weight: .medium))  // the component sheet's SF equivalent
-                            Text("Stored in your login Keychain, never in Bower's settings file.")
-                        }
-                        .font(.system(size: 11)).foregroundStyle(Palette.label2)
-                    }
-                }
             }
 
             HStack(spacing: 12) {
                 Button("Test Connection", action: test).buttonStyle(BowerButton())
                 statusView
             }
-            Text("Recipes are sent only to this endpoint. With Ollama or LM Studio nothing leaves your Mac.")
+            Text(ai.preset.isLocal ? "Recipes are sent only to this endpoint. With Ollama or LM Studio nothing leaves your Mac."
+                                   : "Recipes, with the names of your running apps and displays, are sent to this provider when you run them. Nothing else is.")
                 .font(.system(size: 11)).foregroundStyle(Palette.label2)
         }
-        .onAppear { url = ai.endpoint; refresh() }
+        .onAppear { url = ai.endpoint; key = Keychain.key(for: ai.preset); refresh() }
     }
 
     @ViewBuilder private var statusView: some View {
@@ -104,9 +115,13 @@ struct AITab: View {
         refresh()
     }
 
+    /// Lists the models, and picks one when none is chosen yet so a new provider works without another click.
     private func refresh() {
         let client = AIClient(settings: store.state.ai, key: key)
-        Task { @MainActor in models = (try? await client.models()) ?? [] }
+        Task { @MainActor in
+            models = (try? await client.models()) ?? []
+            if ai.model.isEmpty, let m = AIClient.suggested(models, for: ai.preset) { var a = ai; a.model = m; engine.setAI(a) }
+        }
     }
 
     /// "Connected · 4 models · 142 ms", or the failure.

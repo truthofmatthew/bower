@@ -21,7 +21,8 @@ extension Engine {
         let app = AX.focusedWindow()?.appName
         let name = [state.layouts[state.current].name, app].compactMap { $0 }.joined(separator: " · ")
         setPrefs { $0.views[n] = currentView(name: name) }
-        onHUD(String(localized: "Saved view \(n). It's in the menu bar now."))
+        onHUD(state.prefs.menuControls.contains(.views) ? String(localized: "Saved view \(n). It's in the menu bar now.")
+                                                        : String(localized: "Saved view \(n). Press ⌃⌥\(n) to come back to it."))
     }
 
     func goToView(_ n: Int) {

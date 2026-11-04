@@ -197,7 +197,11 @@ final class WheelController {
     // MARK: Arcs
 
     private func arc(for slot: Int) -> Arc {
-        self.slot(slot) == .layouts || self.slot(slot) == .send ? .layouts(slot) : .three(slot)
+        switch self.slot(slot) {
+        case .layouts, .send: .layouts(slot)
+        case .mode: .modes(slot)
+        default: .three(slot)
+        }
     }
 
     /// 150 ms dwell, then 100 ms opacity and radius 146 → 154.
@@ -238,7 +242,8 @@ final class WheelController {
         case .mode:
             let current = screen.map(engine.mode(of:)) ?? .native
             let all = WindowMode.allCases
-            view.model.arcLabels = [String(localized: "Native"), String(localized: "Bento"), String(localized: "Tabs")].enumerated().map { all[$0.offset] == current ? $0.element + " ✓" : $0.element }
+            view.model.arcLabels = [String(localized: "Native"), String(localized: "Bento"), String(localized: "Tabs"), String(localized: "Dock")]
+                .enumerated().map { all[$0.offset] == current ? $0.element + " ✓" : $0.element }
             view.model.arcCurrent = all.firstIndex(of: current)
             view.model.arcDim = []
         default:

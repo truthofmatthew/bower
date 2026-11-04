@@ -25,7 +25,7 @@ enum Palette {
     static let warn = dyn(h(0xFFC94D), h(0x9A6200))
     static let danger = dyn(h(0xFF7066), h(0xC9302C))
     static let stage = dyn(r(0, 0, 0, 0.25), r(0, 0, 0, 0.05))
-    static let screen = dyn(h(0x2E3A52), h(0xA9C1DA))
+    static let screen = dyn(h(0x2E3A52), h(0x5E7FA3))  // light: dark enough for white text
     static let groupSolid = dyn(h(0x2A2A2D), h(0xFFFFFF))
     static let field = dyn(r(255, 255, 255, 0.06), h(0xFFFFFF))
 }
@@ -246,5 +246,38 @@ final class HostedWindow: NSWindow {
         makeKeyAndOrderFront(nil)
         // On macOS 14 activation is a request the active app can decline; the window still comes to the front.
         orderFrontRegardless()
+    }
+}
+
+/// An app's name and icon from its bundle identifier, for rows that would otherwise show "com.apple.TextEdit".
+enum AppInfo {
+    static func url(_ id: String) -> URL? { NSWorkspace.shared.urlForApplication(withBundleIdentifier: id) }
+
+    static func name(_ id: String) -> String {
+        if let n = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == id })?.localizedName { return n }
+        if let u = url(id) {
+            let b = Bundle(url: u)
+            if let n = (b?.localizedInfoDictionary?["CFBundleDisplayName"] ?? b?.infoDictionary?["CFBundleDisplayName"]
+                        ?? b?.infoDictionary?["CFBundleName"]) as? String, !n.isEmpty { return n }
+            return FileManager.default.displayName(atPath: u.path).replacingOccurrences(of: ".app", with: "")
+        }
+        // An app that's gone: its identifier's last part reads better than the whole thing.
+        return id.split(separator: ".").last.map { $0.prefix(1).uppercased() + $0.dropFirst() } ?? id
+    }
+
+    static func icon(_ id: String) -> NSImage? { url(id).map { NSWorkspace.shared.icon(forFile: $0.path) } }
+}
+
+/// A row that names an app with its icon.
+struct AppRow: View {
+    let bundleID: String
+    var title: String?
+    var sub: String?
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(nsImage: AppInfo.icon(bundleID) ?? NSImage()).resizable().frame(width: 22, height: 22).accessibilityHidden(true)
+            RowText(verbatim: title ?? AppInfo.name(bundleID), sub: sub)
+        }
     }
 }

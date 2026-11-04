@@ -4,7 +4,7 @@
 
 A window and workspace manager for macOS. Give each project a named layout and switch your whole desk, across every display, with ⌥1–9. There's no Spaces animation: windows from other layouts move out of the way and the layout you picked comes back where you left it.
 
-It's native Swift with no dependencies, no account and no telemetry. It needs only the Accessibility permission, and SIP stays on.
+It's native Swift with no dependencies, no account and no telemetry. It needs only the Accessibility permission, and SIP stays on. Screen Recording is optional: with it, the overview shows real window contents instead of each app's colour and icon. It checks GitHub for updates only if you turn that on.
 
 <p align="center"><img src="docs/screenshots/wheel.png" width="560" alt="The Snap Wheel: a radial menu with snap targets on the inner ring, actions on the outer ring and the Layouts arc open, hovering layout 2, Design"></p>
 
@@ -17,13 +17,19 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
   - **Native**: windows where you put them, with snapping.
   - **Bento Box**: auto-tiled; it retiles the moment a window opens or closes.
   - **Tabs**: windows from any app share a pane under a tab strip. Drag a tab to the pane's right edge to split it into two groups, or onto the other strip to move it. ⌃Tab cycles tabs in the focused group.
+  - **Dock**: windows sit side by side and never overlap. Drag a title bar to another window's edge to dock it there, or onto its middle to make a tab group. Drag the gaps to resize. The green button floats or docks a window; double-clicking a title bar shows it on its own.
+- **Overview and zoom** (⌃⌥O, or pinch with ⌥): every window on every display, with your layouts along the top. Click one to go to it, ⌥-drag to rearrange, or drag a rectangle to zoom to it. ⌃⌥= and ⌃⌥- step in and out; ⌃⌥[ and ⌃⌥] go back and forward.
+- **Saved views**: ⌃⌥⇧1–9 saves what you're looking at, ⌃⌥1–9 brings it back.
+- **Gestures**: swipe with three or four fingers to move between layouts (Bower takes the swipe from macOS so both don't happen; hold fn for macOS's own), and optionally show Bower's overview instead of Mission Control.
 - **Snapping** with a live preview: halves, quarters, thirds, two thirds, maximize.
 - **Snap Wheel** (middle-click or ⌃⌥Space). Its outer ring is yours to arrange in Settings › Snap Wheel, with extra actions: Center, Almost Maximize, Next Display, Restore, Minimize, Hide Others, and the presets Split, Four Corners and Focus + Stack.
 - **Layouts Bar** (⌥↑): every layout and its windows; drag a window onto a layout.
 - **Workspaces**: save every layout, mode and window position under a name and load it later.
 - **Continuity**: when an app quits and comes back (or the Mac restarts), its windows return to their layouts and places. A display that disconnects keeps its windows on the Offline shelf until it's back.
-- **AI Recipes**: describe your desk in Markdown and let a local or hosted model plan it.
+- **AI Recipes**: describe your desk in Markdown and let a model plan it: Ollama or LM Studio on your Mac, or Claude or OpenAI with your own API key.
 - **Shortcuts**: every one can be rebound in Settings › Shortcuts, with an ISO keyboard preset and conflict warnings.
+- **`bower://` links**: `bower://layout/3`, `bower://everything`, `bower://mode/dock` and more, for Shortcuts, Raycast or scripts.
+- **Gets out of macOS's way**: one button in Settings › General turns off edge tiling, click-wallpaper-to-show-desktop and Stage Manager, and another turns them back on.
 
 ## Screenshots
 
@@ -33,7 +39,9 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 | --- | --- |
 | <img src="docs/screenshots/settings-layouts.png" alt="Settings, Layouts tab: nine layouts with a Window Mode each, and app routing"> | <img src="docs/screenshots/settings-wheel.png" alt="Settings, Snap Wheel tab: the wheel and a palette of actions to drag onto its outer slots"> |
 | <img src="docs/screenshots/recipe.png" alt="The Recipe editor: a Markdown recipe on the left, the planned layout for each display on the right"> | <img src="docs/screenshots/settings-shortcuts.png" alt="Settings, Shortcuts tab: every shortcut with a recorder, and the ANSI or ISO keyboard choice"> |
-| <img src="docs/screenshots/first-run.png" alt="The welcome window: grant Accessibility, try ⌥1 and ⌥2, open the Snap Wheel"> | <img src="docs/screenshots/about.png" alt="The About window: Bower's icon, version, Made by Matthew Truth, GitHub and website links"> |
+| <img src="docs/screenshots/settings-dock.png" alt="Settings, Dock tab: space between windows, gap handles, what happens when a window closes, and dragging options"> | <img src="docs/screenshots/settings-gestures.png" alt="Settings, Gestures tab: Snap Wheel gestures, swiping between layouts with three or four fingers, Mission Control and zoom"> |
+| <img src="docs/screenshots/settings-ai.png" alt="Settings, AI tab: Claude chosen as the provider, an API key field with a Get a key link, and the model claude-sonnet-4-5"> | <img src="docs/screenshots/first-run.png" alt="The welcome window: grant Accessibility, try ⌥1 and ⌥2, open the Snap Wheel, and two optional steps"> |
+| <img src="docs/screenshots/about.png" alt="The About window: Bower's icon, version, Made by Matthew Truth, GitHub and website links"> | |
 
 ## Shortcuts
 
@@ -54,6 +62,15 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 | ⌃⌥Space, middle-click, or a three-finger tap | Snap Wheel |
 | ⌥↑ | Layouts Bar |
 | ⌃⌥S | Save the current workspace |
+| ⌃⌥O | Overview: every window on every display |
+| ⌃⌥= / ⌃⌥- | Step in / out a level |
+| ⌃⌥Z | Show the focused window on its own |
+| ⌃⌥[ / ⌃⌥] | Go back / forward |
+| ⌃⌥1 – ⌃⌥9, ⌃⌥⇧1 – ⌃⌥⇧9 | Go to / save a view |
+| ⌃⌥H | Show or hide the Desktop tile (Dock mode) |
+| ⌃⌥A | Arrange every window into tiles (Dock mode) |
+| ⌃⌥N | Split with a new Finder window (Dock mode) |
+| ⌃⌥L | Float or dock the focused window (Dock mode) |
 
 Every shortcut can be changed or cleared in Settings › Shortcuts. A snap shortcut shows where the window will land while you hold it, and moves the window when you let go.
 
@@ -74,7 +91,13 @@ A Recipe is a Markdown file that describes your desk:
 
 Type `@` for running apps and displays. **Preview** asks a model for a plan and draws it per display; **Apply** names the layouts, moves each app's windows into them and routes the apps so new windows follow. Nothing moves until you press Apply.
 
-Bower talks to any OpenAI-compatible endpoint: [Ollama](https://ollama.com) and LM Studio on your Mac, or a hosted one. Set it up in Settings › AI. With a local model, nothing leaves your Mac. An API key, if you use one, is stored in your login Keychain. Recipes live in `~/Library/Application Support/Bower/Recipes/`.
+Pick a provider in Settings › AI:
+
+- **Ollama** or **LM Studio** on your Mac. Nothing leaves it.
+- **Claude** or **OpenAI** with your own API key ("Get a key" links to each console). Bower picks a sensible model; change it from the list.
+- **Other**: any OpenAI-compatible endpoint, such as OpenRouter or llama.cpp.
+
+Each provider's key is stored separately in your login Keychain, never in Bower's settings file. A recipe is sent only to the provider you picked, and only when you press Preview. Recipes live in `~/Library/Application Support/Bower/Recipes/`.
 
 ## How hiding works
 
@@ -84,11 +107,13 @@ Bower works on the Space you're in. macOS only shows it that Space's windows, so
 
 ## Languages
 
-English, Persian, Japanese, German, French, Spanish, Brazilian Portuguese and Italian, following your Mac's language. Persian is laid out right to left; key combinations stay left to right. Translations live in `Sources/Localizable.xcstrings`; `docs/import-translations.py` checks and merges new ones.
+English, Persian, Japanese, German, French, Spanish, Brazilian Portuguese, Italian and Simplified Chinese, following your Mac's language. Persian is laid out right to left; key combinations stay left to right. Translations live in `Sources/Localizable.xcstrings`; `docs/import-translations.py` checks and merges new ones.
 
 ## Known limits
 
-- AI Recipes are tested against a stand-in OpenAI-compatible endpoint, not yet against a real model. How well a plan comes back depends on the model you pick.
+- AI Recipes are tested against stand-in endpoints for both request shapes (OpenAI-compatible and Claude's), not yet against every real model. How well a plan comes back depends on the model you pick.
+- Zoom moves in steps (in, out, one window, a rectangle), not as a smooth, continuous zoom.
+- Translations beyond English and Persian were made with AI and haven't been read by native speakers yet.
 
 ## Your data
 

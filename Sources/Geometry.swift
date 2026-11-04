@@ -115,6 +115,8 @@ enum WheelGeometry {
         let r0: CGFloat, r1: CGFloat
         static func layouts(_ parent: Int) -> Arc { Arc(parent: parent, count: 9, step: 15, r0: 154, r1: 196) }
         static func three(_ parent: Int) -> Arc { Arc(parent: parent, count: 3, step: 30, r0: 154, r1: 206) }
+        /// One segment per Window Mode.
+        static func modes(_ parent: Int) -> Arc { Arc(parent: parent, count: WindowMode.allCases.count, step: 26, r0: 154, r1: 206) }
 
         func angle(_ i: Int) -> CGFloat {
             WheelGeometry.angle(parent) + rad((CGFloat(i) - CGFloat(count - 1) / 2) * step)
