@@ -134,6 +134,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // A diagnostics run (-dumpAX, -dumpLayout) only reads and quits, so it leaves the running copy alone.
         // exit, not terminate: the quit routine would unpark the running copy's windows and give back its shortcuts.
         if Diagnostics.handleLaunchArguments(store: store, engine: engine) { exit(0) }
+        // Hosting the unit tests: leave the running copy, its windows and its shortcuts alone.
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil { return }
         Diagnostics.quitOtherCopies()
         Log.info("PERMISSIONS accessibility=\(AX.trusted) screen-recording=\(Capture.allowed)")
         if AX.trusted { start() } else { waitForAccess() }
