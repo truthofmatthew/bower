@@ -592,7 +592,7 @@ private struct ShortcutsTab: View {
                         .frame(width: 345)
                     VStack(alignment: .leading, spacing: 8) {
                         group("Snapping")
-                        group("Zoom")
+                        group("Expand")
                         group("Dock")
                         HStack {
                             Spacer()

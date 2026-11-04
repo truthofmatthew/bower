@@ -181,7 +181,7 @@ struct OverviewView: View {
             VStack(spacing: 18) {
                 topBar
                 GeometryReader { geo in desk(in: geo.size) }
-                Text("Click a window to go to it  ·  Drag a rectangle to zoom to it  ·  ⌥-drag to rearrange  ·  Esc to close")
+                Text("Click a window to go to it  ·  Drag a rectangle to expand it  ·  ⌥-drag to rearrange  ·  Esc to close")
                     .font(.system(size: 12)).foregroundStyle(.white.opacity(0.75))
             }
             .padding(.horizontal, 48).padding(.top, 36).padding(.bottom, 24)

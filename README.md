@@ -18,7 +18,7 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
   - **Bento Box**: auto-tiled; it retiles the moment a window opens or closes.
   - **Tabs**: windows from any app share a pane under a tab strip. Drag a tab to the pane's right edge to split it into two groups, or onto the other strip to move it. ⌃Tab cycles tabs in the focused group.
   - **Dock**: windows sit side by side and never overlap. Drag a title bar to another window's edge to dock it there, or onto its middle to make a tab group. Drag the gaps to resize. The green button floats or docks a window; double-clicking a title bar shows it on its own.
-- **Overview and zoom** (⌃⌥O, or pinch with ⌥): every window on every display, with your layouts along the top. Click one to go to it, ⌥-drag to rearrange, or drag a rectangle to zoom to it. ⌃⌥= and ⌃⌥- step in and out; ⌃⌥[ and ⌃⌥] go back and forward.
+- **Overview and Expand** (⌃⌥O, or pinch in): every window on every display, with your layouts along the top. Click one to go to it, ⌥-drag to rearrange, or drag a rectangle to expand it. In Dock mode, ⌃⌥= (or ⌥-pinch out) expands part of the layout to fill the screen, and ⌃⌥- goes back a level; ⌃⌥[ and ⌃⌥] go back and forward.
 - **Saved views**: ⌃⌥⇧1–9 saves what you're looking at, ⌃⌥1–9 brings it back.
 - **Gestures**: swipe with three or four fingers to move between layouts (Bower takes the swipe from macOS so both don't happen; hold fn for macOS's own), and optionally show Bower's overview instead of Mission Control.
 - **Snapping** with a live preview: halves, quarters, thirds, two thirds, maximize.
@@ -39,7 +39,7 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 | --- | --- |
 | <img src="docs/screenshots/settings-layouts.png" alt="Settings, Layouts tab: nine layouts with a Window Mode each, and app routing"> | <img src="docs/screenshots/settings-wheel.png" alt="Settings, Snap Wheel tab: the wheel and a palette of actions to drag onto its outer slots"> |
 | <img src="docs/screenshots/recipe.png" alt="The Recipe editor: a Markdown recipe on the left, the planned layout for each display on the right"> | <img src="docs/screenshots/settings-shortcuts.png" alt="Settings, Shortcuts tab: every shortcut with a recorder, and the ANSI or ISO keyboard choice"> |
-| <img src="docs/screenshots/settings-dock.png" alt="Settings, Dock tab: space between windows, gap handles, what happens when a window closes, and dragging options"> | <img src="docs/screenshots/settings-gestures.png" alt="Settings, Gestures tab: Snap Wheel gestures, swiping between layouts with three or four fingers, Mission Control and zoom"> |
+| <img src="docs/screenshots/settings-dock.png" alt="Settings, Dock tab: space between windows, gap handles, what happens when a window closes, and dragging options"> | <img src="docs/screenshots/settings-gestures.png" alt="Settings, Gestures tab: swiping between layouts with three or four fingers, Mission Control, and pinching or ⌘⇧-dragging to expand"> |
 | <img src="docs/screenshots/settings-ai.png" alt="Settings, AI tab: Claude chosen as the provider, an API key field with a Get a key link, and the model claude-sonnet-4-5"> | <img src="docs/screenshots/first-run.png" alt="The welcome window: grant Accessibility, try ⌥1 and ⌥2, open the Snap Wheel, and two optional steps"> |
 | <img src="docs/screenshots/about.png" alt="The About window: Bower's icon, version, Made by Matthew Truth, GitHub and website links"> | |
 
@@ -63,7 +63,7 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 | ⌥↑ | Layouts Bar |
 | ⌃⌥S | Save the current workspace |
 | ⌃⌥O | Overview: every window on every display |
-| ⌃⌥= / ⌃⌥- | Step in / out a level |
+| ⌃⌥= / ⌃⌥- | Expand a level / back a level |
 | ⌃⌥Z | Show the focused window on its own |
 | ⌃⌥[ / ⌃⌥] | Go back / forward |
 | ⌃⌥1 – ⌃⌥9, ⌃⌥⇧1 – ⌃⌥⇧9 | Go to / save a view |
@@ -112,7 +112,7 @@ English, Persian, Japanese, German, French, Spanish, Brazilian Portuguese, Itali
 ## Known limits
 
 - AI Recipes are tested against stand-in endpoints for both request shapes (OpenAI-compatible and Claude's), not yet against every real model. How well a plan comes back depends on the model you pick.
-- Zoom moves in steps (in, out, one window, a rectangle), not as a smooth, continuous zoom.
+- Expand moves in steps (a level, one window, a rectangle), not as a smooth, continuous change.
 - Translations beyond English and Persian were made with AI and haven't been read by native speakers yet.
 
 ## Your data

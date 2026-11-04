@@ -31,6 +31,31 @@ final class RenderShots: XCTestCase {
             try rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: out).appendingPathComponent("first-run-dark.png"))
         }
         win.orderOut(nil)
+
+        // A recipe with its preview, as the AI returns it.
+        engine.setAI(AISettings(preset: .ollama, endpoint: AIPreset.ollama.endpoint, model: "llama3.2"))
+        let recipe = RecipeModel(name: nil, engine: engine)
+        recipe.name = "Morning desk"
+        recipe.text = "## Projects & Layouts\n- Dev — @Safari on @main monitor\n- Comms — @Messages on @main monitor\n\n## Window modes\n- @main monitor uses Bento Box\n"
+        recipe.phase = .ready(RecipePlan(
+            layouts: [.init(number: 3, name: "Dev", windows: [.init(app: "Safari", display: "main monitor")]),
+                      .init(number: 4, name: "Comms", windows: [.init(app: "Messages", display: "main monitor")])],
+            modes: [.init(display: "main monitor", mode: "bento")]))
+        try snapshot(RecipeEditorView(model: recipe) {}, size: CGSize(width: 1020, height: 604), to: out, name: "recipe-dark.png")
+    }
+
+    @MainActor
+    private func snapshot(_ view: some View, size: CGSize, to out: String, name: String) throws {
+        let host = NSHostingView(rootView: view.environment(\.colorScheme, .dark))
+        let win = NSWindow(contentRect: CGRect(origin: .zero, size: size), styleMask: [.borderless], backing: .buffered, defer: false)
+        win.appearance = NSAppearance(named: .darkAqua)
+        win.contentView = host
+        win.orderBack(nil)
+        RunLoop.main.run(until: Date().addingTimeInterval(0.5))
+        guard let rep = host.bitmapImageRepForCachingDisplay(in: host.bounds) else { return }
+        host.cacheDisplay(in: host.bounds, to: rep)
+        try rep.representation(using: .png, properties: [:])?.write(to: URL(fileURLWithPath: out).appendingPathComponent(name))
+        win.orderOut(nil)
     }
 
     @MainActor

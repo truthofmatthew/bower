@@ -229,7 +229,9 @@ final class HostedWindow: NSWindow {
         isReleasedWhenClosed = false
         collectionBehavior = [.moveToActiveSpace]
         if hideButtons { [.closeButton, .miniaturizeButton, .zoomButton].forEach { standardWindowButton($0)?.isHidden = true } }
-        let host = NSHostingView(rootView: content())
+        // Without window buttons nothing needs the titlebar's strip, so the design starts at the very top; otherwise
+        // SwiftUI keeps that strip free and the bottom of a fixed-height design is cut off.
+        let host = NSHostingView(rootView: content().ignoresSafeArea(.container, edges: hideButtons ? .top : []))
         // With the content under the titlebar, the window is exactly the design's size; left to itself the hosting
         // view would size the content area to fit and the titlebar would be added on top.
         if bareTitlebar { host.sizingOptions = [] }

@@ -261,7 +261,7 @@ extension Engine {
         }
         guard let z = dockLayout(s).zoom else { return }
         setZoom(s, z.isEmpty ? nil : Array(z.dropLast()).nilIfEmptyRoot)
-        onHUD(String(localized: "Zoomed."))
+        onHUD(dockLayout(s).zoom == nil ? String(localized: "All windows.") : String(localized: "Back a level."))
     }
 
     /// In a level, toward the focused window (or the one under the pointer).
@@ -276,13 +276,13 @@ extension Engine {
         guard mode(of: s) == .dock else { if let w, live.framedFrom[w.key] == nil { frameToggle(w) }; return }
         let d = dockLayout(s)
         guard let k = w?.key ?? d.root.keys.first, let leaf = d.root.path(of: k) else {
-            onHUD(String(localized: "No windows to zoom into."))
+            onHUD(String(localized: "No windows to expand."))
             return
         }
         let z = d.zoom ?? []
-        guard leaf.count > z.count else { onHUD(String(localized: "Zoomed in all the way.")); return }
+        guard leaf.count > z.count else { onHUD(String(localized: "Expanded all the way.")); return }
         setZoom(s, Array(leaf.prefix(z.count + 1)))
-        onHUD(String(localized: "Zoomed."))
+        onHUD(String(localized: "Expanded."))
     }
 
     /// Everything: the whole tree on every display, and the overview.
@@ -309,7 +309,7 @@ extension Engine {
             setZoom(s, p.isEmpty ? nil : p)
         }
         onDid("marquee")
-        onHUD(String(localized: "Zoomed to fit."))
+        onHUD(String(localized: "Expanded to fit."))
     }
 
     var focusedScreen: NSScreen? { AX.focusedWindow().flatMap(screen(of:)) ?? NSScreen.underMouse }

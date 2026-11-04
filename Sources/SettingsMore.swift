@@ -238,14 +238,14 @@ struct GesturesTab: View {
                             .accessibilityLabel("Show Bower's overview instead of Mission Control")
                     }
                 }
-                GroupHeading(text: "Zoom")
+                GroupHeading(text: "Expand")
                 FormGroup {
-                    r.toggle("Pinch to zoom", "Pinch in to step out a level or see everything; pinch out to step in.", \.pinchZoom, first: true)
+                    r.toggle("Pinch to expand", "Pinch out to expand toward your window; pinch in to go back a level or see everything.", \.pinchZoom, first: true)
                     r.menu("Pinching", nil, \.pinchNeedsOption, [(true, String(localized: "With ⌥ anywhere, or on bare desktop")),
                                                                   (false, String(localized: "Anywhere, without ⌥"))])
                     r.slider("Pan speed", "Hold ⌥ and pan with two fingers to move to the neighbouring window.", \.panSpeed, 0.5...4, step: 0.1, format: times)
                         .level(.advanced, store)
-                    r.toggle("⌘⇧-drag a rectangle to zoom to what it frames", "⌘⌥⇧ works too; Esc cancels.", \.marqueeZoom)
+                    r.toggle("⌘⇧-drag a rectangle to expand what it frames", "⌘⌥⇧ works too; Esc cancels.", \.marqueeZoom)
                 }
             }
             .padding(.bottom, 8)

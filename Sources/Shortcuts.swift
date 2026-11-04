@@ -36,8 +36,8 @@ enum ShortcutID: String, CaseIterable, Codable {
         case .maximize: String(localized: "Maximize")
         case .retile: String(localized: "Retile display")
         case .everything: String(localized: "Show the overview")
-        case .stepIn: String(localized: "Step in a level")
-        case .stepOut: String(localized: "Step out a level")
+        case .stepIn: String(localized: "Expand a level")
+        case .stepOut: String(localized: "Back a level")
         case .frame: String(localized: "Frame the focused window on its own")
         case .back: String(localized: "Go back")
         case .forward: String(localized: "Go forward")
@@ -55,7 +55,7 @@ enum ShortcutID: String, CaseIterable, Codable {
         case .wheel, .layoutsBar: "Overlays"
         case .switchLayout, .sendLayout, .saveWorkspace, .cycleLayouts, .emptyLayout: "Layouts"
         case .focus, .nextTab: "Windows"
-        case .everything, .stepIn, .stepOut, .frame, .back, .forward, .goView, .saveView: "Zoom"
+        case .everything, .stepIn, .stepOut, .frame, .back, .forward, .goView, .saveView: "Expand"
         case .desktop, .arrange, .split, .float: "Dock"
         default: "Snapping"
         }
@@ -67,7 +67,7 @@ enum ShortcutID: String, CaseIterable, Codable {
         case "Overlays": String(localized: "Snap Wheel and Layouts Bar")
         case "Layouts": String(localized: "Layouts")
         case "Windows": String(localized: "Windows")
-        case "Zoom": String(localized: "Views and zoom")
+        case "Expand": String(localized: "Views and expand")
         case "Dock": String(localized: "Dock mode")
         default: String(localized: "Snapping")
         }

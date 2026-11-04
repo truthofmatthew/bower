@@ -32,7 +32,7 @@ final class Lessons: ObservableObject {
 
     static let more: [Step] = [
         Step(id: "group", title: String(localized: "Make a tab group"), text: String(localized: "Drag a window onto the middle of another and pause a moment. Let go, and they share a strip of tabs.")),
-        Step(id: "marquee", title: String(localized: "Zoom to a rectangle"), text: String(localized: "Hold ⌘⇧ and drag a rectangle around a few windows. The view zooms to fit them.")),
+        Step(id: "marquee", title: String(localized: "Expand to a rectangle"), text: String(localized: "Hold ⌘⇧ and drag a rectangle around a few windows. They expand to fill the screen.")),
         Step(id: "saveView", title: String(localized: "Save a view"), text: String(localized: "Press ⌃⌥⇧ and a number to save what you're looking at; ⌃⌥ and the number brings it back.")),
         Step(id: "back", title: String(localized: "Go back and forward"), text: String(localized: "Press ⌃⌥[ to go back to where you were, ⌃⌥] to go forward.")),
         Step(id: "swipe", title: String(localized: "Swipe between layouts"), text: String(localized: "Turn it on in Settings › Gestures, then swipe sideways with three fingers."))
@@ -41,10 +41,11 @@ final class Lessons: ObservableObject {
     /// New in this version, newest first.
     static let whatsNew: [Step] = [
         Step(id: "new-dock", title: String(localized: "Dock mode"), text: String(localized: "A new Window Mode where windows never overlap. Drag a window to another's edge to dock it; drag the gaps to resize.")),
-        Step(id: "new-zoom", title: String(localized: "Zoom and the overview"), text: String(localized: "Step in and out of your arrangement, frame one window, and see every window at once with ⌃⌥O.")),
+        Step(id: "new-zoom", title: String(localized: "Expand and the overview"), text: String(localized: "Expand part of your arrangement to fill the screen, frame one window, and see every window at once with ⌃⌥O.")),
         Step(id: "new-swipe", title: String(localized: "Swipes that don't fight macOS"), text: String(localized: "Moving between layouts now takes the swipe from macOS instead of both happening. Hold fn for macOS's own.")),
         Step(id: "new-views", title: String(localized: "Saved views and history"), text: String(localized: "Save a view with ⌃⌥⇧1–9, come back with ⌃⌥1–9, and go back and forward like a browser.")),
-        Step(id: "new-links", title: String(localized: "Commands by link"), text: String(localized: "Run Bower from Raycast, Alfred, Shortcuts or a script with bower:// links."))
+        Step(id: "new-links", title: String(localized: "Commands by link"), text: String(localized: "Run Bower from Raycast, Alfred, Shortcuts or a script with bower:// links.")),
+        Step(id: "new-ai", title: String(localized: "Your own AI"), text: String(localized: "Recipes can use Claude or OpenAI with your own key, or a model on this Mac. Settings › AI."))
     ]
 
     var steps: [Step] {
@@ -146,7 +147,7 @@ private struct LessonCard: View {
                 Text(lessons.course == .gettingStarted ? String(localized: "That's the basics") : String(localized: "All done"))
                     .font(.system(size: 14, weight: .semibold))
                 Text(lessons.course == .gettingStarted
-                     ? String(localized: "Keep going with tab groups, zooming to a rectangle and more, the same way. Or stop here: Bower's menu › Help brings this back.")
+                     ? String(localized: "Keep going with tab groups, expanding to a rectangle and more, the same way. Or stop here: Bower's menu › Help brings this back.")
                      : String(localized: "Shortcuts, Settings and commands by link are in the guide."))
                     .font(.system(size: 12)).fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)

@@ -3261,6 +3261,58 @@
         }
       }
     },
+    "All windows.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Fenster."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las ventanas."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همه‌ی پنجره‌ها."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toutes les fenêtres."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutte le finestre."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すべてのウインドウ。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas as janelas."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部窗口。"
+          }
+        }
+      }
+    },
     "Allowed": {
       "localizations": {
         "de": {
@@ -4667,6 +4719,110 @@
           "stringUnit": {
             "state": "translated",
             "value": "返回"
+          }
+        }
+      }
+    },
+    "Back a level": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Ebene zurück"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver un nivel"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه سطح برگرد"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revenir d’un niveau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torna indietro di un livello"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1レベル戻る"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voltar um nível"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返回一级"
+          }
+        }
+      }
+    },
+    "Back a level.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Ebene zurück."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un nivel atrás."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه سطح برگشت."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un niveau en arrière."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indietro di un livello."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1レベル戻りました。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um nível atrás."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已返回一级。"
           }
         }
       }
@@ -6447,54 +6603,54 @@
         }
       }
     },
-    "Click a window to go to it  ·  Drag a rectangle to zoom to it  ·  ⌥-drag to rearrange  ·  Esc to close": {
+    "Click a window to go to it  ·  Drag a rectangle to expand it  ·  ⌥-drag to rearrange  ·  Esc to close": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Klicke auf ein Fenster, um dorthin zu gehen  ·  Zieh ein Rechteck auf, um es heranzuzoomen  ·  ⌥-Ziehen zum Umordnen  ·  Esc zum Schließen"
+            "value": "Klicke auf ein Fenster, um dorthin zu gehen  ·  Zieh ein Rechteck auf, um es auszubreiten  ·  ⌥-Ziehen zum Umordnen  ·  Esc zum Schließen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Haz clic en una ventana para ir a ella  ·  Arrastra un rectángulo para hacer zoom  ·  ⌥-arrastra para reorganizar  ·  Esc para cerrar"
+            "value": "Haz clic en una ventana para ir a ella  ·  Arrastra un rectángulo para expandirlo  ·  ⌥-arrastra para reorganizar  ·  Esc para cerrar"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "رو یه پنجره کلیک کن تا بری سراغش  ·  یه مستطیل بکش تا روش زوم شه  ·  با ⁦⌥⁩-کشیدن جابه‌جا کن  ·  Esc یعنی ببند"
+            "value": "رو یه پنجره کلیک کن تا بری سراغش  ·  یه مستطیل بکش تا گسترش پیدا کنه  ·  با ⁦⌥⁩-کشیدن جابه‌جا کن  ·  Esc یعنی ببند"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cliquez sur une fenêtre pour y aller  ·  Tracez un rectangle pour zoomer dessus  ·  ⌥-glisser pour réorganiser  ·  Esc pour fermer"
+            "value": "Cliquez sur une fenêtre pour y aller  ·  Tracez un rectangle pour le déployer  ·  ⌥-glisser pour réorganiser  ·  Esc pour fermer"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fai clic su una finestra per andarci  ·  Trascina un rettangolo per ingrandirlo  ·  ⌥-trascina per riordinare  ·  Esc per chiudere"
+            "value": "Fai clic su una finestra per andarci  ·  Trascina un rettangolo per espanderlo  ·  ⌥-trascina per riordinare  ·  Esc per chiudere"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ウインドウをクリックして移動  ·  矩形をドラッグしてズーム  ·  ⌥-ドラッグで並べ替え  ·  Escで閉じる"
+            "value": "ウインドウをクリックして移動  ·  矩形をドラッグして展開  ·  ⌥-ドラッグで並べ替え  ·  Escで閉じる"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clique em uma janela para ir até ela  ·  Arraste um retângulo para dar zoom nele  ·  ⌥-arraste para reorganizar  ·  Esc para fechar"
+            "value": "Clique em uma janela para ir até ela  ·  Arraste um retângulo para expandi-lo  ·  ⌥-arraste para reorganizar  ·  Esc para fechar"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "点按窗口即可前往  ·  拖出矩形即可缩放到该区域  ·  按住 ⌥ 拖移可重新排列  ·  按 Esc 关闭"
+            "value": "点按窗口即可前往  ·  拖出矩形即可展开该区域  ·  按住 ⌥ 拖移可重新排列  ·  按 Esc 关闭"
           }
         }
       }
@@ -9012,6 +9168,422 @@
           "stringUnit": {
             "state": "translated",
             "value": "全部"
+          }
+        }
+      }
+    },
+    "Expand": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausbreiten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گسترش"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espandi"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展開"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展开"
+          }
+        }
+      }
+    },
+    "Expand a level": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Ebene ausbreiten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir un nivel"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه سطح گسترش بده"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployer d’un niveau"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espandi di un livello"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1レベル展開"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir um nível"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展开一级"
+          }
+        }
+      }
+    },
+    "Expand and the overview": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausbreiten und die Übersicht"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir y la vista general"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گسترش و نمای کلی"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déploiement et vue d’ensemble"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espansione e panoramica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展開とオーバービュー"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir e a visão geral"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展开和概览"
+          }
+        }
+      }
+    },
+    "Expand part of your arrangement to fill the screen, frame one window, and see every window at once with ⌃⌥O.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breite einen Teil deiner Anordnung über den Bildschirm aus, stell ein Fenster frei und sieh mit ⌃⌥O alle Fenster auf einmal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expande parte de tu distribución hasta llenar la pantalla, encuadra una ventana y ve todas las ventanas a la vez con ⌃⌥O."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "یه بخش از چینشت رو گسترش بده تا کل صفحه رو بگیره، یه پنجره رو تکی ببین، و با ⁦⌃⌥O⁩ همه‌ی پنجره‌ها رو یه‌جا ببین."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployez une partie de votre agencement sur tout l’écran, cadrez une fenêtre seule et voyez toutes les fenêtres d’un coup avec ⌃⌥O."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espandi una parte della tua disposizione a tutto schermo, inquadra una finestra e vedi tutte le finestre insieme con ⌃⌥O."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置の一部を画面いっぱいに展開したり、ウインドウを1つだけ単独表示したり、⌃⌥Oですべてのウインドウを一度に見たりできます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expanda parte da sua disposição para preencher a tela, enquadre uma janela e veja todas as janelas de uma vez com ⌃⌥O."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将排列的一部分展开到整个屏幕，单独显示一个窗口，并用 ⌃⌥O 一次查看所有窗口。"
+          }
+        }
+      }
+    },
+    "Expand to a rectangle": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf ein Rechteck ausbreiten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir a un rectángulo"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گسترش به یه مستطیل"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployer un rectangle"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espandi un rettangolo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "矩形に展開"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandir para um retângulo"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展开到矩形"
+          }
+        }
+      }
+    },
+    "Expanded all the way.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ganz ausgebreitet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya está expandido al máximo."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "تا آخر گسترش داده شده."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployé au maximum."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Già espanso al massimo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これ以上展開できません。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Já está expandido ao máximo."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已展开到最大。"
+          }
+        }
+      }
+    },
+    "Expanded to fit.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passend ausgebreitet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandido para encajar."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "به اندازه گسترش داده شد."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployé pour tenir."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espanso per adattarsi."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "範囲に合わせて展開しました。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandido para caber."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已展开到合适大小。"
+          }
+        }
+      }
+    },
+    "Expanded.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausgebreitet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandido."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "گسترش داده شد."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Déployé."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espanso."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展開しました。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expandido."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已展开。"
           }
         }
       }
@@ -12405,54 +12977,54 @@
         }
       }
     },
-    "Hold ⌘⇧ and drag a rectangle around a few windows. The view zooms to fit them.": {
+    "Hold ⌘⇧ and drag a rectangle around a few windows. They expand to fill the screen.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Halte ⌘⇧ und zieh ein Rechteck um ein paar Fenster. Die Ansicht zoomt passend darauf."
+            "value": "Halte ⌘⇧ und zieh ein Rechteck um ein paar Fenster. Sie breiten sich über den ganzen Bildschirm aus."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mantén ⌘⇧ y arrastra un rectángulo alrededor de unas cuantas ventanas. La vista se ajusta para mostrarlas."
+            "value": "Mantén ⌘⇧ y arrastra un rectángulo alrededor de unas ventanas. Se expanden hasta llenar la pantalla."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "‏⁦⌘⇧⁩ رو نگه دار و دور چندتا پنجره یه مستطیل بکش. نما زوم می‌کنه تا همه‌شون جا بشن."
+            "value": "⁦⌘⇧⁩ رو نگه دار و دور چندتا پنجره یه مستطیل بکش. گسترش پیدا می‌کنن تا کل صفحه رو بگیرن."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maintenez ⌘⇧ et tracez un rectangle autour de quelques fenêtres. La vue zoome pour les cadrer."
+            "value": "Maintenez ⌘⇧ et tracez un rectangle autour de quelques fenêtres. Elles se déploient pour remplir l’écran."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tieni premuto ⌘⇧ e trascina un rettangolo attorno ad alcune finestre. La vista si ingrandisce per contenerle."
+            "value": "Tieni premuto ⌘⇧ e trascina un rettangolo attorno ad alcune finestre. Si espandono fino a riempire lo schermo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "⌘⇧を押したまま、いくつかのウインドウを囲むように矩形をドラッグします。それらが収まるようにズームします。"
+            "value": "⌘⇧を押しながら、いくつかのウインドウを囲むように矩形をドラッグします。それらが画面いっぱいに展開されます。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Segure ⌘⇧ e arraste um retângulo em volta de algumas janelas. A vista se ajusta para mostrá-las."
+            "value": "Segure ⌘⇧ e arraste um retângulo em volta de algumas janelas. Elas se expandem para preencher a tela."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "按住 ⌘⇧ 并围绕几个窗口拖出矩形，视图会缩放以容纳它们。"
+            "value": "按住 ⌘⇧ 并围绕几个窗口拖出矩形。它们会展开并填满屏幕。"
           }
         }
       }
@@ -13238,54 +13810,54 @@
         }
       }
     },
-    "Keep going with tab groups, zooming to a rectangle and more, the same way. Or stop here: Bower's menu › Help brings this back.": {
+    "Keep going with tab groups, expanding to a rectangle and more, the same way. Or stop here: Bower's menu › Help brings this back.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mach auf die gleiche Weise mit Tab-Gruppen, Zoomen auf ein Rechteck und mehr weiter. Oder hör hier auf: Bower-Menü › Hilfe holt das zurück."
+            "value": "Mach auf die gleiche Weise mit Tab-Gruppen, Ausbreiten auf ein Rechteck und mehr weiter. Oder hör hier auf: Bower-Menü › Hilfe holt das zurück."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sigue con los grupos de pestañas, el zoom a un rectángulo y más, de la misma forma. O para aquí: menú de Bower › Ayuda lo vuelve a mostrar."
+            "value": "Sigue con los grupos de pestañas, expandir a un rectángulo y más, de la misma forma. O para aquí: menú de Bower › Ayuda lo vuelve a mostrar."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "همین‌طوری با گروه زبانه‌ها، زوم روی یه مستطیل و چیزای دیگه ادامه بده. یا همین‌جا تمومش کن: منوی Bower › راهنما دوباره اینو میاره."
+            "value": "همین‌طوری با گروه زبانه‌ها، گسترش به یه مستطیل و چیزای دیگه ادامه بده. یا همین‌جا تمومش کن: منوی Bower › راهنما دوباره اینو میاره."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continuez de la même façon avec les groupes d’onglets, le zoom sur un rectangle et plus encore. Ou arrêtez-vous ici : menu de Bower › Aide le rouvre."
+            "value": "Continuez de la même façon avec les groupes d’onglets, le déploiement d’un rectangle et plus encore. Ou arrêtez-vous ici : menu de Bower › Aide le rouvre."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continua con i gruppi di pannelli, lo zoom su un rettangolo e altro, allo stesso modo. Oppure fermati qui: menu di Bower › Aiuto lo riapre."
+            "value": "Continua con i gruppi di pannelli, l’espansione di un rettangolo e altro, allo stesso modo. Oppure fermati qui: menu di Bower › Aiuto lo riapre."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "タブグループや矩形へのズームなども、同じように続けて学べます。ここで終えても、Bowerのメニュー › ヘルプでいつでもまた表示できます。"
+            "value": "タブグループや矩形への展開なども、同じように続けて学べます。ここで終えても、Bowerのメニュー › ヘルプでいつでもまた表示できます。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continue com grupos de abas, zoom em um retângulo e mais, do mesmo jeito. Ou pare aqui: menu do Bower › Ajuda traz isto de volta."
+            "value": "Continue com grupos de abas, expandir para um retângulo e mais, do mesmo jeito. Ou pare aqui: menu do Bower › Ajuda traz isto de volta."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "用同样的方式继续了解标签页组、缩放到矩形等功能。或者就此停下：Bower 菜单 › 帮助可再次打开此内容。"
+            "value": "用同样的方式继续了解标签页组、展开到矩形等功能。或者就此停下：Bower 菜单 › 帮助可再次打开此内容。"
           }
         }
       }
@@ -17699,54 +18271,54 @@
         }
       }
     },
-    "No windows to zoom into.": {
+    "No windows to expand.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keine Fenster zum Hineinzoomen."
+            "value": "Keine Fenster zum Ausbreiten."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No hay ventanas para acercar."
+            "value": "No hay ventanas para expandir."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "پنجره‌ای برای زوم نیست."
+            "value": "پنجره‌ای برای گسترش نیست."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucune fenêtre sur laquelle zoomer."
+            "value": "Aucune fenêtre à déployer."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nessuna finestra su cui zoomare."
+            "value": "Nessuna finestra da espandere."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ズームできるウインドウがありません。"
+            "value": "展開できるウインドウがありません。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Não há janelas para aproximar."
+            "value": "Não há janelas para expandir."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "没有可放大的窗口。"
+            "value": "没有可展开的窗口。"
           }
         }
       }
@@ -20044,106 +20616,106 @@
         }
       }
     },
-    "Pinch in to step out a level or see everything; pinch out to step in.": {
+    "Pinch out to expand toward your window; pinch in to go back a level or see everything.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zusammenziehen, um eine Ebene heraus zu gehen oder alles zu sehen; auseinanderziehen, um hineinzugehen."
+            "value": "Auseinanderziehen breitet zu deinem Fenster hin aus; zusammenziehen geht eine Ebene zurück oder zeigt alles."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Junta los dedos para alejarte un nivel o verlo todo; sepáralos para acercarte un nivel."
+            "value": "Separa los dedos para expandir hacia tu ventana; júntalos para volver un nivel o verlo todo."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "انگشت‌ها رو جمع کن تا یه سطح بیای بیرون یا همه‌چی رو ببینی؛ باز کن تا یه سطح بری تو."
+            "value": "انگشت‌ها رو باز کن تا سمت پنجره‌ات گسترش بده؛ جمع کن تا یه سطح برگردی یا همه‌چی رو ببینی."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pincez pour remonter d’un niveau ou tout voir ; écartez pour descendre."
+            "value": "Écartez pour déployer vers votre fenêtre ; pincez pour revenir d’un niveau ou tout voir."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avvicina le dita per uscire di un livello o vedere tutto; allontanale per entrare di un livello."
+            "value": "Allontana le dita per espandere verso la tua finestra; avvicinale per tornare indietro di un livello o vedere tutto."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ピンチインで1レベル外側へ、またはすべてを表示。ピンチアウトで1レベル内側へ。"
+            "value": "ピンチアウトで操作中のウインドウに向けて展開。ピンチインで1レベル戻るか、すべてを表示。"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Junte os dedos para afastar um nível ou ver tudo; afaste os dedos para aproximar um nível."
+            "value": "Afaste os dedos para expandir em direção à sua janela; junte-os para voltar um nível ou ver tudo."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "双指捏合可退出一级或查看全部；双指张开可进入一级。"
+            "value": "双指张开可朝当前窗口展开；双指捏合可返回一级或查看全部。"
           }
         }
       }
     },
-    "Pinch to zoom": {
+    "Pinch to expand": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zum Zoomen zusammenziehen"
+            "value": "Zum Ausbreiten zusammenziehen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pellizcar para hacer zoom"
+            "value": "Pellizca para expandir"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "زوم با جمع و باز کردن انگشت‌ها"
+            "value": "با دو انگشت گسترش بده"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pincer pour zoomer"
+            "value": "Pincer pour déployer"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pizzica per lo zoom"
+            "value": "Pizzica per espandere"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ピンチでズーム"
+            "value": "ピンチで展開"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pinçar para zoom"
+            "value": "Pince para expandir"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "捏合缩放"
+            "value": "捏合以展开"
           }
         }
       }
@@ -21809,6 +22381,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "配方只会发送到此端点。使用 Ollama 或 LM Studio 时，任何内容都不会离开你的 Mac。"
+          }
+        }
+      }
+    },
+    "Recipes can use Claude or OpenAI with your own key, or a model on this Mac. Settings › AI.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rezepte können Claude oder OpenAI mit deinem eigenen Schlüssel nutzen, oder ein Modell auf diesem Mac. Einstellungen › KI."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las recetas pueden usar Claude u OpenAI con tu propia clave, o un modelo en este Mac. Ajustes › IA."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "دستورها می‌تونن با کلید خودت از Claude یا OpenAI استفاده کنن، یا از یه مدل روی همین مک. تنظیمات › هوش مصنوعی."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les recettes peuvent utiliser Claude ou OpenAI avec votre propre clé, ou un modèle sur ce Mac. Réglages › IA."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le ricette possono usare Claude o OpenAI con la tua chiave, oppure un modello su questo Mac. Impostazioni › IA."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レシピでは、自分のキーで Claude や OpenAI を、またはこのMac上のモデルを使えます。設定 › AI。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As receitas podem usar Claude ou OpenAI com sua própria chave, ou um modelo neste Mac. Ajustes › IA."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配方可以用你自己的密钥使用 Claude 或 OpenAI，或者使用这台 Mac 上的模型。设置 › AI。"
           }
         }
       }
@@ -26530,162 +27154,6 @@
         }
       }
     },
-    "Step in a level": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eine Ebene hinein"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acercarse un nivel"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یه سطح برو تو"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Descendre d’un niveau"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entra di un livello"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1レベル内側へ"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aproximar um nível"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "进入一级"
-          }
-        }
-      }
-    },
-    "Step in and out of your arrangement, frame one window, and see every window at once with ⌃⌥O.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geh in deiner Anordnung Ebenen hinein und heraus, stell ein Fenster frei und sieh mit ⌃⌥O alle Fenster auf einmal."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Acércate y aléjate de tu distribución, encuadra una ventana y ve todas las ventanas a la vez con ⌃⌥O."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تو چینشت برو تو و بیا بیرون، یه پنجره رو تکی ببین، و با ⁦⌃⌥O⁩ همه‌ی پنجره‌ها رو یه‌جا ببین."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Descendez et remontez d’un niveau dans votre agencement, cadrez une fenêtre seule et voyez toutes les fenêtres d’un coup avec ⌃⌥O."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entra ed esci dalla tua disposizione, inquadra una finestra e vedi tutte le finestre insieme con ⌃⌥O."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "配置の内側・外側へ移動したり、ウインドウを1つだけ単独表示したり、⌃⌥Oですべてのウインドウを一度に見たりできます。"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aproxime e afaste sua disposição, enquadre uma janela e veja todas as janelas de uma vez com ⌃⌥O."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "在排列中逐级进入和退出，单独显示一个窗口，并用 ⌃⌥O 一次查看所有窗口。"
-          }
-        }
-      }
-    },
-    "Step out a level": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eine Ebene heraus"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alejarse un nivel"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یه سطح بیا بیرون"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Remonter d’un niveau"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esci di un livello"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1レベル外側へ"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afastar um nível"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "退出一级"
-          }
-        }
-      }
-    },
     "Stored in your login Keychain, never in Bower's settings file.": {
       "localizations": {
         "de": {
@@ -30447,54 +30915,54 @@
         }
       }
     },
-    "Views and zoom": {
+    "Views and expand": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ansichten und Zoom"
+            "value": "Ansichten und Ausbreiten"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vistas y zoom"
+            "value": "Vistas y expandir"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "نماها و زوم"
+            "value": "نماها و گسترش"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vues et zoom"
+            "value": "Vues et déploiement"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Viste e zoom"
+            "value": "Viste ed espansione"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ビューとズーム"
+            "value": "ビューと展開"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vistas e zoom"
+            "value": "Vistas e expandir"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "视图和缩放"
+            "value": "视图和展开"
           }
         }
       }
@@ -32477,6 +32945,58 @@
         }
       }
     },
+    "Your own AI": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine eigene KI"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu propia IA"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هوش مصنوعی خودت"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre propre IA"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua IA"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分のAI"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sua própria IA"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你自己的 AI"
+          }
+        }
+      }
+    },
     "Your two front windows share the screen, half each.": {
       "localizations": {
         "de": {
@@ -32525,318 +33045,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "最前面的两个窗口平分屏幕。"
-          }
-        }
-      }
-    },
-    "Zoom": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زوم"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ズーム"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "缩放"
-          }
-        }
-      }
-    },
-    "Zoom and the overview": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom und die Übersicht"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El zoom y la vista general"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زوم و نمای کلی"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom et vue d’ensemble"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom e panoramica"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ズームとオーバービュー"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom e a visão geral"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "缩放和总览"
-          }
-        }
-      }
-    },
-    "Zoom to a rectangle": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auf ein Rechteck zoomen"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom a un rectángulo"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زوم روی یه مستطیل"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoomer sur un rectangle"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom su un rettangolo"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "矩形にズーム"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom em um retângulo"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "缩放到矩形"
-          }
-        }
-      }
-    },
-    "Zoomed in all the way.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ganz hineingezoomt."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ya está al máximo de zoom."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تا آخر زوم شده."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom au maximum."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom già al massimo."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "これ以上ズームインできません。"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom já está no máximo."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已放大到最大。"
-          }
-        }
-      }
-    },
-    "Zoomed to fit.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passend gezoomt."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom ajustado."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زوم شد تا جا بشه."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom ajusté."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Adattato."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "収まるようにズームしました。"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ajustado para caber."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已缩放以适应。"
-          }
-        }
-      }
-    },
-    "Zoomed.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gezoomt."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom aplicado."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زوم شد."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom appliqué."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom eseguito."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ズームしました。"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zoom aplicado."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "已缩放。"
           }
         }
       }
@@ -34043,54 +34251,54 @@
         }
       }
     },
-    "⌘⇧-drag a rectangle to zoom to what it frames": {
+    "⌘⇧-drag a rectangle to expand what it frames": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mit ⌘⇧ ein Rechteck ziehen, um auf seinen Inhalt zu zoomen"
+            "value": "Mit ⌘⇧ ein Rechteck ziehen, um auszubreiten, was es umschließt"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "⌘⇧-arrastra un rectángulo para hacer zoom a lo que encuadra"
+            "value": "Arrastra un rectángulo con ⌘⇧ para expandir lo que encuadra"
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "با ⁦⌘⇧⁩-کشیدن یه مستطیل بکش تا روی چیزی که توشه زوم شه"
+            "value": "با ⁦⌘⇧⁩ یه مستطیل بکش تا هرچی توشه گسترش پیدا کنه"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "⌘⇧-glisser un rectangle pour zoomer sur son contenu"
+            "value": "⌘⇧-glisser un rectangle pour déployer ce qu’il entoure"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "⌘⇧-trascina un rettangolo per ingrandire ciò che inquadra"
+            "value": "Trascina un rettangolo con ⌘⇧ per espandere ciò che racchiude"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "⌘⇧-ドラッグで矩形を描き、囲んだ範囲にズーム"
+            "value": "⌘⇧-ドラッグで矩形を描き、囲んだ部分を展開"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "⌘⇧-arraste um retângulo para dar zoom no que ele enquadra"
+            "value": "Arraste um retângulo com ⌘⇧ para expandir o que ele enquadra"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "按住 ⌘⇧ 拖出矩形，缩放到框选的区域"
+            "value": "按住 ⌘⇧ 拖出矩形以展开框住的内容"
           }
         }
       }
