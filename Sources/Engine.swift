@@ -439,7 +439,11 @@ final class Engine {
     func setMode(_ m: WindowMode, for s: NSScreen) { setMode(m, display: s.uuid, layout: state.current) }
 
     func setMode(_ m: WindowMode, display uuid: String, layout n: Int) {
+        let was = state.layouts[n].modes[uuid] ?? .native
         store.update { $0.layouts[n].modes[uuid] = m }
+        if was == .dock, m != .dock { leaveDock(display: uuid, layout: n) }
+        // Leaving Tabs mode puts the tabs behind others back; that has to happen before the new mode arranges them.
+        if was == .tabs, m != .tabs, n == state.current { onWindowsChanged() }
         if m == .bento || m == .dock, n == state.current, let s = NSScreen.screens.first(where: { $0.uuid == uuid }) { arrange(s, toast: true) }
         if n == state.current { onWindowsChanged() }
         onChange()

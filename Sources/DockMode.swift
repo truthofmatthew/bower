@@ -197,6 +197,21 @@ extension Engine {
 
     func desktopShown(_ s: NSScreen) -> Bool { live.solved[s.uuid]?.desktop != nil }
 
+    /// A display leaving Dock mode: its expand step goes, and the windows Dock mode kept out of sight (expanded past,
+    /// a tab behind another, too small for their tile) come back where they were, for the next mode to arrange.
+    func leaveDock(display uuid: String, layout n: Int) {
+        store.update { $0.docks["\(n)|\(uuid)"]?.zoom = nil }
+        guard n == state.current, let s = NSScreen.screens.first(where: { $0.uuid == uuid }) else { return }
+        let wins = dockWindows(on: s)
+        for w in wins where live.dockHidden.contains(w.key) {
+            if let f = w.frame, isParked(f), let back = state.saved[w.key] { w.setFrame(back) }
+        }
+        live.dockHidden.subtract(wins.map(\.key))
+        CollapsedIcon.remove(wins.map(\.key), engine: self)
+        live.solved[s.uuid] = nil
+        DockChrome.shared.refresh(self)
+    }
+
     /// Show or hide the Desktop's own tile on this display in this layout.
     func toggleDesktop(_ s: NSScreen) {
         let k = dockKey(s)
@@ -713,6 +728,10 @@ final class CollapsedIcon {
             engine.frameToggle(w)
         }
         panel.contentView = v
+    }
+
+    static func remove(_ keys: [String], engine: Engine) {
+        for k in keys { engine.live.collapsed.removeValue(forKey: k)?.panel.orderOut(nil) }
     }
 
     static func sync(_ icons: [String: CGRect], wins: [Win], engine: Engine) {

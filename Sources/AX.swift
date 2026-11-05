@@ -260,20 +260,38 @@ enum AppLimits {
     /// The last size asked of each window, so a later ask makes an earlier check moot.
     private static var asks: [CGWindowID: CGSize] = [:]
 
-    static func learn(_ w: Win, asked: CGSize) {
+    static func learn(_ w: Win, asked: CGSize, again: Bool = false) {
         guard let b = w.bundleID else { return }
         asks[w.id] = asked
-        // A window just opened, or an app that's busy, can take a moment to resize: look a little later.
+        // A window just opened, or a busy app (Electron, Chrome), can take a while to resize: look a little later.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             guard asks[w.id] == asked else { return }
             asks[w.id] = nil
-            guard let got = w.frame?.size else { return }
+            guard let f = w.frame else { return }
+            var got = f.size
+            // macOS snaps a window that's nearly as tall (or wide) as the screen to all of it. That's no limit.
+            if let v = NSScreen.containing(ax: f)?.axVisibleFrame {
+                if got.height >= v.height - 2 { got.height = Swift.min(got.height, asked.height) }
+                if got.width >= v.width - 2 { got.width = Swift.min(got.width, asked.width) }
+            }
+            let refused = got.width > asked.width + 2 || got.height > asked.height + 2
+            // Still bigger the first time could just be slow: ask once more, and only a second refusal is a limit.
+            if refused, !again {
+                AX.set(w.el, kAXSizeAttribute, asked)
+                learn(w, asked: asked, again: true)
+                return
+            }
             let m = min[b] ?? .zero
             var n = m
             // Bigger than asked: that's as small as it goes. As asked: the limit, if any, is no more than that.
             n.width = got.width > asked.width + 2 ? max(m.width, got.width) : Swift.min(m.width, got.width)
             n.height = got.height > asked.height + 2 ? max(m.height, got.height) : Swift.min(m.height, got.height)
-            if n != m { min[b] = n }
+            if n != m {
+                min[b] = n
+                if n.width > m.width || n.height > m.height {
+                    Log.info("LIMIT \(b) at least \(Int(n.width))×\(Int(n.height)): asked \(Int(asked.width))×\(Int(asked.height)), got \(Int(got.width))×\(Int(got.height))")
+                }
+            }
         }
     }
 }
