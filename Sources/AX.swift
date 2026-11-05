@@ -260,7 +260,7 @@ enum AppLimits {
     static var min: [String: CGSize] = [:]
     /// The last size asked of each window, so a later ask makes an earlier check moot.
     private static var asks: [CGWindowID: CGSize] = [:]
-    /// A window turned out to need more room than it had: Dock mode makes room for it.
+    /// A window turned out to need more room than it had: Dock and Bento make room for it.
     static var onRaise: () -> Void = {}
 
     static func learn(_ w: Win, asked: CGSize, before: CGSize?, again: Bool = false) {

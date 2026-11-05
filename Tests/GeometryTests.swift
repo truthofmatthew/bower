@@ -96,4 +96,19 @@ final class TabsAndShortcutTests: XCTestCase {
         XCTAssertNil(back.wheelSlots[6])
         XCTAssertEqual(back.wheelSlots[5], .center)
     }
+
+    /// A window that can't fit its Bento tile gets the room it needs from the others; the shape stays.
+    func testBentoMakesRoomForMinimums() {
+        let r = CGRect(x: 0, y: 0, width: 1200, height: 800)
+        XCTAssertEqual(Bento.tiles(count: 3, in: r, mins: [nil, nil, nil]), Bento.tiles(count: 3, in: r))
+        let t = Bento.tiles(count: 3, in: r, mins: [CGSize(width: 700, height: 0), nil, CGSize(width: 400, height: 0)])
+        XCTAssertGreaterThanOrEqual(t[0].width, 700)
+        XCTAssertGreaterThanOrEqual(t[2].width, 400)
+        XCTAssertLessThanOrEqual(t[0].maxX, t[1].minX)
+        XCTAssertEqual(t[1].minX, t[2].minX, accuracy: 1)  // still a right column, one above the other
+        XCTAssertLessThanOrEqual(t[1].maxY, t[2].minY)
+        let five = Bento.tiles(count: 5, in: r, mins: [nil, CGSize(width: 500, height: 0), nil, nil, nil])
+        XCTAssertGreaterThanOrEqual(five[1].width, 500)
+        for (i, a) in five.enumerated() { for b in five[(i + 1)...] { XCTAssertEqual(a.intersection(b).area, 0, accuracy: 0.5) } }
+    }
 }

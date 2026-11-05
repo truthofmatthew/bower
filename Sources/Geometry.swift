@@ -96,6 +96,31 @@ enum Bento {
         }
         return out
     }
+
+    /// The same tiles, made to fit windows that can't go smaller than `mins` (by index; nil for no limit). The
+    /// even grid when everything fits it; otherwise the same shape, with room taken from tiles that can spare it.
+    static func tiles(count n: Int, in visible: CGRect, gap g: CGFloat = 6, mins: [CGSize?]) -> [CGRect] {
+        let even = tiles(count: n, in: visible, gap: g)
+        let fits = zip(even, mins).allSatisfy { t, m in m.map { $0.width <= t.width + 1 && $0.height <= t.height + 1 } ?? true }
+        guard !fits, n > 1 else { return even }
+        let key = { (i: Int) in DockNode.window(String(i)) }
+        let root: DockNode
+        if n == 2 {
+            root = .split(.h, [key(0), key(1)])
+        } else {
+            // Left column, then a top row of `cols` tiles over a bottom row whose last tile takes what's left.
+            let rest = n - 1, cols = (rest + 1) / 2, bottom = rest - cols
+            let top = DockNode.split(.h, (0..<cols).map { key(1 + $0) })
+            var bottomWeights = Array(repeating: 1.0, count: bottom)
+            bottomWeights[bottom - 1] += Double(cols - bottom)
+            let low = DockNode.split(.h, (0..<bottom).map { key(1 + cols + $0) }, weights: bottomWeights)
+            root = .split(.h, [key(0), .split(.v, [top, low])], weights: [1, Double(cols)])
+        }
+        var limits: [String: CGSize] = [:]
+        for (i, m) in mins.enumerated() { if let m { limits[String(i)] = m } }
+        let frames = root.solve(in: visible.insetBy(dx: g, dy: g), gap: g, mins: limits).frames
+        return (0..<n).map { frames[String($0)] ?? even[$0] }
+    }
 }
 
 /// Snap Wheel geometry from the component sheet, in the wheel panel's flipped coordinates.

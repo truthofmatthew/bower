@@ -515,7 +515,8 @@ final class Engine {
         let running = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
         let held = state.keepEmptySpace
             ? state.orphans.filter { $0.layout == state.current && $0.display == s.uuid && !running.contains($0.bundleID) }.count : 0
-        let tiles = Bento.tiles(count: wins.count + held, in: s.axVisibleFrame, gap: CGFloat(state.prefs.gap))
+        let tiles = Bento.tiles(count: wins.count + held, in: s.axVisibleFrame, gap: CGFloat(state.prefs.gap),
+                                mins: wins.map(\.minSize) + Array(repeating: nil, count: held))
         Motion.shared.apply(Array(zip(wins, tiles)), engine: self)
         if toast, !wins.isEmpty { onRetile(wins.count, s) }
     }
