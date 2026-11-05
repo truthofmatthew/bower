@@ -12,7 +12,7 @@ It's native Swift with no dependencies, no account and no telemetry. It needs on
 
 The UI follows the design canvas in [docs/design/](docs/design/); the plan is in [docs/DESIGN.md](docs/DESIGN.md).
 
-- **9 named layouts** across every display: switch instantly, send a window to another layout, route apps to layouts so their new windows land there.
+- **9 named layouts** across every display: switch instantly, send a window to another layout, route apps to layouts so their new windows land there. Browser profiles route on their own: with an Edge or Chrome window of a profile in front, Bower's menu › the app › New windows open in routes just that profile.
 - **Window Modes per display, per layout:**
   - **Native**: windows where you put them, with snapping.
   - **Bento Box**: auto-tiled; it retiles the moment a window opens or closes.

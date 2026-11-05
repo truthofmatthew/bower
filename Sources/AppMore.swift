@@ -60,16 +60,19 @@ extension AppDelegate {
         guard let app = NSWorkspace.shared.frontmostApplication, let id = app.bundleIdentifier,
               app.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
         let st = store.state
+        // A browser window of a profile ("… - Microsoft Edge - Product") routes that profile on its own.
+        let profile = AX.focusedWindow().flatMap { $0.bundleID == id ? profileName(of: $0.title, app: $0.appName) : nil }
+        let key = routeKey(id, profile: profile)
         let name = app.localizedName ?? AppInfo.name(id)
-        let top = NSMenuItem(title: name, action: nil, keyEquivalent: "")
+        let top = NSMenuItem(title: name + (profile.map { " · \($0)" } ?? ""), action: nil, keyEquivalent: "")
         top.image = app.icon.map { i in let c = i.copy() as! NSImage; c.size = NSSize(width: 16, height: 16); return c }
         let sub = NSMenu()
         sub.addItem(.sectionHeader(title: String(localized: "New windows open in")))
         for (i, l) in st.layouts.enumerated() {
             let it = item("\(i + 1)  \(l.name)", #selector(routeApp(_:)))
             it.tag = i
-            it.representedObject = id
-            it.state = st.routes[id] == i ? .on : .off
+            it.representedObject = key
+            it.state = st.routes[key] == i ? .on : .off
             sub.addItem(it)
         }
         sub.addItem(.separator())

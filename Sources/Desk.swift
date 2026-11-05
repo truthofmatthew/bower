@@ -206,6 +206,14 @@ func profileSuffix(of title: String, app: String) -> String? {
     title.range(of: " - \(app) - ", options: .backwards).map { String(title[$0.lowerBound...]) }
 }
 
+/// The browser profile a window's title ends with: "… - Microsoft Edge - Product" is "Product".
+func profileName(of title: String, app: String) -> String? {
+    profileSuffix(of: title, app: app).map { String($0.dropFirst(" - \(app) - ".count)) }.flatMap { $0.isEmpty ? nil : $0 }
+}
+
+/// What `routes` is keyed by: the app, or the app and one of its browser profiles ("com.microsoft.edgemac#Product").
+func routeKey(_ bundleID: String, profile: String? = nil) -> String { profile.map { "\(bundleID)#\($0)" } ?? bundleID }
+
 /// Same app, and the record's title ends with the window's profile.
 func sameProfile(_ w: Win, _ r: WindowRecord) -> Bool {
     r.bundleID == w.bundleID && profileSuffix(of: w.title, app: w.appName).map(r.title.hasSuffix) == true

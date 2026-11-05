@@ -253,9 +253,13 @@ final class HostedWindow: NSWindow {
 
 /// An app's name and icon from its bundle identifier, for rows that would otherwise show "com.apple.TextEdit".
 enum AppInfo {
-    static func url(_ id: String) -> URL? { NSWorkspace.shared.urlForApplication(withBundleIdentifier: id) }
+    static func url(_ id: String) -> URL? {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: String(id.split(separator: "#").first ?? Substring(id)))
+    }
 
     static func name(_ id: String) -> String {
+        // A browser profile's route: "Microsoft Edge · Product".
+        if let i = id.firstIndex(of: "#") { return "\(name(String(id[..<i]))) · \(id[id.index(after: i)...])" }
         if let n = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == id })?.localizedName { return n }
         if let u = url(id) {
             let b = Bundle(url: u)

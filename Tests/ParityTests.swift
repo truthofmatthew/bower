@@ -52,4 +52,11 @@ final class ParityTests: XCTestCase {
         st.orphans = [WindowRecord(bundleID: "a", title: "Secret plan.pages", layout: 0, frame: .zero)]
         XCTAssertFalse(Diagnostics.redacted(st).orphans[0].title.contains("Secret"))
     }
+
+    func testBrowserProfileRoutes() {
+        XCTAssertEqual(profileName(of: "Octabiz - Microsoft Edge - Product", app: "Microsoft Edge"), "Product")
+        XCTAssertNil(profileName(of: "New Tab - Microsoft Edge", app: "Microsoft Edge"))
+        XCTAssertEqual(routeKey("com.microsoft.edgemac", profile: "Product"), "com.microsoft.edgemac#Product")
+        XCTAssertEqual(routeKey("net.whatsapp.WhatsApp"), "net.whatsapp.WhatsApp")
+    }
 }

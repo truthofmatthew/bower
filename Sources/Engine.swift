@@ -90,7 +90,7 @@ final class Engine {
     /// or the layout that was showing while it opened.
     private func layout(of w: Win, defaultingTo fallback: Int) -> Int {
         if let n = state.assignment[w.key] { return n }
-        let n = w.bundleID.flatMap { state.routes[$0] } ?? fallback
+        let n = route(for: w) ?? fallback
         store.update { $0.assignment[w.key] = n }
         return n
     }
@@ -265,10 +265,22 @@ final class Engine {
         if let w = AX.focusedWindow() { send(w, to: n) }
     }
 
-    func route(bundleID: String, to n: Int?) {
-        store.update { $0.routes[bundleID] = n }
+    /// The layout a window's app routes to: its browser profile's route first, then the app's.
+    func route(for w: Win) -> Int? {
+        guard let b = w.bundleID else { return nil }
+        if let p = profileName(of: w.title, app: w.appName), let n = state.routes[routeKey(b, profile: p)] { return n }
+        return state.routes[b]
+    }
+
+    /// `key` is an app, or an app and profile (see `routeKey`); its open windows move there now.
+    func route(bundleID key: String, to n: Int?) {
+        store.update { $0.routes[key] = n }
         guard let n else { return onChange() }
-        for w in AX.windows() where w.bundleID == bundleID { send(w, to: n) }
+        let parts = key.split(separator: "#", maxSplits: 1).map(String.init)
+        for w in AX.windows() where w.bundleID == parts[0] {
+            if parts.count == 2, profileName(of: w.title, app: w.appName) != parts[1] { continue }
+            send(w, to: n)
+        }
     }
 
     func togglePin(_ s: NSScreen) {
@@ -349,7 +361,7 @@ final class Engine {
                 if r.layout == state.current || !state.hideOtherLayouts { w.setFrame(r.frame) } else { park(w, frame: r.frame) }
                 dockReturned(w, r)
             } else {
-                let n = w.bundleID.flatMap { state.routes[$0] } ?? state.current
+                let n = route(for: w) ?? state.current
                 store.update { $0.assignment[w.key] = n }
                 if n != state.current, state.hideOtherLayouts, !isParked(f) { park(w, frame: f) }
             }
