@@ -32,11 +32,12 @@ struct Win {
 
     func setFrame(_ r: CGRect) {
         AX.wrote(key)
+        let before = frame?.size
         // Position, size, position: a window can't grow past the screen edge before it has moved.
         AX.set(el, kAXPositionAttribute, r.origin)
         AX.set(el, kAXSizeAttribute, r.size)
         AX.set(el, kAXPositionAttribute, r.origin)
-        AppLimits.learn(self, asked: r.size)
+        AppLimits.learn(self, asked: r.size, before: before)
     }
 
     func move(to p: CGPoint) { AX.wrote(key); AX.set(el, kAXPositionAttribute, p) }
@@ -260,25 +261,25 @@ enum AppLimits {
     /// The last size asked of each window, so a later ask makes an earlier check moot.
     private static var asks: [CGWindowID: CGSize] = [:]
 
-    static func learn(_ w: Win, asked: CGSize, again: Bool = false) {
+    static func learn(_ w: Win, asked: CGSize, before: CGSize?, again: Bool = false) {
         guard let b = w.bundleID else { return }
         asks[w.id] = asked
         // A window just opened, or a busy app (Electron, Chrome), can take a while to resize: look a little later.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             guard asks[w.id] == asked else { return }
             asks[w.id] = nil
-            guard let f = w.frame else { return }
-            var got = f.size
-            // macOS snaps a window that's nearly as tall (or wide) as the screen to all of it. That's no limit.
-            if let v = NSScreen.containing(ax: f)?.axVisibleFrame {
-                if got.height >= v.height - 2 { got.height = Swift.min(got.height, asked.height) }
-                if got.width >= v.width - 2 { got.width = Swift.min(got.width, asked.width) }
+            guard var got = w.frame?.size else { return }
+            // A side still at its old length wasn't refused, it was ignored (a busy app, a change too small to
+            // take): no limit. A limit shows as a new length, bigger than asked.
+            if let before {
+                if abs(got.width - before.width) <= 1 { got.width = Swift.min(got.width, asked.width) }
+                if abs(got.height - before.height) <= 1 { got.height = Swift.min(got.height, asked.height) }
             }
             let refused = got.width > asked.width + 2 || got.height > asked.height + 2
             // Still bigger the first time could just be slow: ask once more, and only a second refusal is a limit.
             if refused, !again {
                 AX.set(w.el, kAXSizeAttribute, asked)
-                learn(w, asked: asked, again: true)
+                learn(w, asked: asked, before: before, again: true)
                 return
             }
             let m = min[b] ?? .zero
