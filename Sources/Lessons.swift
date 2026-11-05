@@ -45,6 +45,7 @@ final class Lessons: ObservableObject {
         Step(id: "new-swipe", title: String(localized: "Swipes that don't fight macOS"), text: String(localized: "Moving between layouts now takes the swipe from macOS instead of both happening. Hold fn for macOS's own.")),
         Step(id: "new-views", title: String(localized: "Saved views and history"), text: String(localized: "Save a view with ⌃⌥⇧1–9, come back with ⌃⌥1–9, and go back and forward like a browser.")),
         Step(id: "new-links", title: String(localized: "Commands by link"), text: String(localized: "Run Bower from Raycast, Alfred, Shortcuts or a script with bower:// links.")),
+        Step(id: "new-profiles", title: String(localized: "Browser profiles get their own layouts"), text: String(localized: "With an Edge or Chrome window in front, Bower's menu › the app › New windows open in routes just that profile.")),
         Step(id: "new-ai", title: String(localized: "Your own AI"), text: String(localized: "Recipes can use Claude or OpenAI with your own key, or a model on this Mac. Settings › AI."))
     ]
 

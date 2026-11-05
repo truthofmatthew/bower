@@ -5875,6 +5875,58 @@
         }
       }
     },
+    "Browser profiles get their own layouts": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Browserprofile bekommen eigene Layouts"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los perfiles del navegador tienen sus propias distribuciones"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "هر پروفایل مرورگر چیدمان خودشو داره"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les profils du navigateur ont leurs propres dispositions"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I profili del browser hanno le loro disposizioni"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブラウザのプロファイルごとにレイアウト"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perfis do navegador ganham seus próprios layouts"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "浏览器配置文件各有布局"
+          }
+        }
+      }
+    },
     "Cancel": {
       "localizations": {
         "de": {
@@ -32317,6 +32369,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "允许“录屏与系统录音”后，总览和移动中的窗口会显示其真实内容：仅为静态图像，绝不录制或保存。未允许时，窗口显示为其应用的颜色和图标。"
+          }
+        }
+      }
+    },
+    "With an Edge or Chrome window in front, Bower's menu › the app › New windows open in routes just that profile.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ist ein Edge- oder Chrome-Fenster vorne, leitet Bower-Menü › die App › Neue Fenster öffnen in nur dieses Profil weiter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con una ventana de Edge o Chrome delante, menú de Bower › la app › Las ventanas nuevas se abren en asigna solo ese perfil."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "وقتی یه پنجره‌ی Edge یا Chrome جلوئه، منوی Bower › اون برنامه › «پنجره‌های جدید باز می‌شن تو» فقط همون پروفایل رو می‌فرسته."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avec une fenêtre Edge ou Chrome au premier plan, menu de Bower › l’app › Les nouvelles fenêtres s’ouvrent dans n’oriente que ce profil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con una finestra di Edge o Chrome in primo piano, menu di Bower › l’app › Le nuove finestre si aprono in indirizza solo quel profilo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EdgeやChromeのウインドウが前面にあるとき、Bowerのメニュー › アプリ › 新しいウインドウの表示先 で、そのプロファイルだけを振り分けられます。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Com uma janela do Edge ou Chrome na frente, menu do Bower › o app › Novas janelas abrem em direciona só esse perfil."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当 Edge 或 Chrome 窗口在最前面时，Bower 菜单 › 该 App › 新窗口打开于 只会安排这个配置文件。"
           }
         }
       }

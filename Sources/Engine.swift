@@ -352,20 +352,22 @@ final class Engine {
     func windowsChanged() {
         prune()
         let wins = AX.windows()
-        var putBack = 0
+        var putBack = 0, parkedNew = false
         for w in wins where state.assignment[w.key] == nil {
             guard let f = w.frame, !isPinned(f) else { continue }
             if let r = takeReturning(w) {
                 putBack += 1
                 store.update { $0.assignment[w.key] = r.layout }
-                if r.layout == state.current || !state.hideOtherLayouts { w.setFrame(r.frame) } else { park(w, frame: r.frame) }
+                if r.layout == state.current || !state.hideOtherLayouts { w.setFrame(r.frame) } else { park(w, frame: r.frame); parkedNew = true }
                 dockReturned(w, r)
             } else {
                 let n = route(for: w) ?? state.current
                 store.update { $0.assignment[w.key] = n }
-                if n != state.current, state.hideOtherLayouts, !isParked(f) { park(w, frame: f) }
+                if n != state.current, state.hideOtherLayouts, !isParked(f) { park(w, frame: f); parkedNew = true }
             }
         }
+        // Browsers place a window they've just opened a moment after showing it, back on screen; park it again.
+        if parkedNew { for t in [0.5, 1.5, 3.0] { DispatchQueue.main.asyncAfter(deadline: .now() + t) { [weak self] in self?.reparkStrays() } } }
         if putBack > 0 { onPutBack(putBack) }
         updateRecords(wins)
         let visible = Set(wins.filter { w in w.frame.map { !isParked($0) } ?? false }.map(\.key))
