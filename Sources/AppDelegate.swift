@@ -556,8 +556,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             window.isReleasedWhenClosed = false
             window.collectionBehavior = [.moveToActiveSpace]
             [.miniaturizeButton, .zoomButton].forEach { window.standardWindowButton($0)?.isHidden = true }
-            window.center()
             aboutWindow = window
+        }
+        // Dead centre of the screen in use, every time: AppKit's center() sits a little high, and only runs once.
+        if let w = aboutWindow, let v = (NSScreen.underMouse ?? NSScreen.main)?.visibleFrame {
+            // A new window isn't sized to its content yet; size it first, or it centres as if it were empty.
+            if let size = w.contentViewController?.view.fittingSize, size.width > 0 { w.setContentSize(size) }
+            w.setFrameOrigin(NSPoint(x: (v.midX - w.frame.width / 2).rounded(), y: (v.midY - w.frame.height / 2).rounded()))
         }
         NSApp.activate()
         aboutWindow?.makeKeyAndOrderFront(nil)
