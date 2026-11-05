@@ -239,7 +239,22 @@ struct DockNode: Codable, Equatable {
     }
 
     /// Lays the tree out in `rect`, with `gap` points between neighbours. Frames are whole points.
-    func solve(in rect: CGRect, gap: CGFloat, path: [Int] = []) -> Solved {
+    /// The least length this part needs along `axis`, from its windows' smallest sizes.
+    func minLength(_ axis: DockAxis, _ mins: [String: CGSize]) -> CGFloat {
+        let own: (String?) -> CGFloat = { k in k.flatMap { mins[$0] }.map { axis == .h ? $0.width : $0.height } ?? 0 }
+        switch kind {
+        case .window: return own(key)
+        case .desktop: return 0
+        case .tabs: return children.map { own($0.key) }.max() ?? 0
+        case .split:
+            let each = children.map { $0.minLength(axis, mins) }
+            return self.axis == axis ? each.reduce(0, +) : each.max() ?? 0
+        }
+    }
+
+    /// `mins`: each window's smallest size. A part given less than its windows need takes it from its neighbours,
+    /// in proportion to their shares and never below what they need; when it can't all fit, shares stay as they are.
+    func solve(in rect: CGRect, gap: CGFloat, path: [Int] = [], mins: [String: CGSize] = [:]) -> Solved {
         var out = Solved()
         switch kind {
         case .window:
@@ -253,14 +268,30 @@ struct DockNode: Codable, Equatable {
             let length = axis == .h ? rect.width : rect.height
             let usable = max(length - gap * CGFloat(children.count - 1), 0)
             let total = weights.reduce(0, +)
+            let share = children.indices.map { CGFloat(total > 0 ? weights[$0] / total : 1 / Double(children.count)) }
+            var sizes = share.map { usable * $0 }
+            let need = children.map { $0.minLength(axis, mins) }
+            if !mins.isEmpty, need.reduce(0, +) <= usable {
+                var held = Set<Int>()
+                for _ in children.indices {
+                    let free = children.indices.filter { !held.contains($0) }
+                    let left = usable - held.map { need[$0] }.reduce(0, +)
+                    let freeShare = free.map { share[$0] }.reduce(0, +)
+                    for i in free { sizes[i] = freeShare > 0 ? left * share[i] / freeShare : left / CGFloat(free.count) }
+                    let short = free.filter { sizes[$0] < need[$0] }
+                    if short.isEmpty { break }
+                    held.formUnion(short)
+                }
+                for i in held { sizes[i] = need[i] }
+            }
             var pos = axis == .h ? rect.minX : rect.minY
             for (i, c) in children.enumerated() {
-                let size = (usable * CGFloat(total > 0 ? weights[i] / total : 1 / Double(children.count))).rounded()
+                let size = sizes[i].rounded()
                 let isLast = i == children.count - 1
                 let end = isLast ? (axis == .h ? rect.maxX : rect.maxY) : pos + size
                 let r = axis == .h ? CGRect(x: pos, y: rect.minY, width: end - pos, height: rect.height)
                                    : CGRect(x: rect.minX, y: pos, width: rect.width, height: end - pos)
-                let sub = c.solve(in: r, gap: gap, path: path + [i])
+                let sub = c.solve(in: r, gap: gap, path: path + [i], mins: mins)
                 out.frames.merge(sub.frames) { a, _ in a }
                 out.desktop = out.desktop ?? sub.desktop
                 out.seams += sub.seams

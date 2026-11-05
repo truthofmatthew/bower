@@ -225,7 +225,7 @@ final class Engine {
         // In Dock mode a window's place is its tile in the whole tree, even while it's parked (zoomed past, a tab
         // behind another, too small for its tile).
         let tiles = state.layouts[n].modes[s.uuid] == .dock
-            ? state.docks[dockKey(s, layout: n)]?.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap)).frames ?? [:]
+            ? state.docks[dockKey(s, layout: n)]?.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap), mins: dockMins).frames ?? [:]
             : [:]
         return AX.windows().compactMap { w in
             guard let f = w.frame, (state.assignment[w.key] ?? state.current) == n else { return nil }

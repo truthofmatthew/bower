@@ -326,7 +326,7 @@ final class Minimap {
         guard engine.mode(of: s) == .dock else { return }
         let d = engine.dockLayout(s)
         let r = engine.dockRect(s)
-        let solved = d.root.solve(in: r, gap: CGFloat(engine.state.prefs.gap))
+        let solved = d.root.solve(in: r, gap: CGFloat(engine.state.prefs.gap), mins: engine.dockMins)
         let zoomKeys = Set(d.zoom.flatMap { d.root[$0]?.keys } ?? d.root.keys)
         let focused = AX.focusedWindow()?.key
         let size = CGSize(width: 180, height: 180 * r.height / max(r.width, 1))

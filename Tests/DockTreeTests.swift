@@ -100,4 +100,20 @@ final class DockTreeTests: XCTestCase {
         let t = DockNode.split(.v, [.window("a"), DockNode(kind: .tabs, children: [.window("b"), .window("c")], selected: 1)])
         XCTAssertEqual(try JSONDecoder().decode(DockNode.self, from: JSONEncoder().encode(t)), t)
     }
+
+    /// Three even columns of 1000: a window that needs 600 takes it from its neighbours, the Desktop's first,
+    /// and nobody goes below what they need. When it can't all fit, the shares stay even.
+    func testMinimumSizesMakeRoom() {
+        let t = DockNode.split(.h, [.window("claude"), .window("edge"), .desktop])
+        let s = t.solve(in: screen, gap: 0, mins: ["claude": CGSize(width: 600, height: 0), "edge": CGSize(width: 300, height: 0)])
+        XCTAssertEqual(s.frames["claude"]?.width, 600)
+        XCTAssertGreaterThanOrEqual(s.frames["edge"]?.width ?? 0, 300)
+        XCTAssertGreaterThan(s.desktop?.width ?? 0, 0)
+        noOverlap(s)
+        let tooBig = t.solve(in: screen, gap: 0, mins: ["claude": CGSize(width: 800, height: 0), "edge": CGSize(width: 300, height: 0)])
+        XCTAssertEqual(tooBig.frames["claude"]?.width ?? 0, 333, accuracy: 1)
+        // Across the axis, a column needs as much as its widest window.
+        let cols = DockNode.split(.h, [.split(.v, [.window("a"), .window("b")]), .window("c")])
+        XCTAssertEqual(cols.solve(in: screen, gap: 0, mins: ["b": CGSize(width: 700, height: 0)]).frames["a"]?.width, 700)
+    }
 }

@@ -33,6 +33,9 @@ extension Engine {
     func ignores(_ w: Win) -> Bool { w.bundleID.map(state.prefs.ignoredApps.contains) ?? false }
 
     /// The area windows are laid out in: the visible frame, less the gap round the edge.
+    /// Each window's smallest size, as its app showed it, for the tree to make room.
+    var dockMins: [String: CGSize] { state.records.compactMapValues { AppLimits.min[$0.bundleID] } }
+
     func dockRect(_ s: NSScreen) -> CGRect {
         let g = CGFloat(state.prefs.gap)
         return s.axVisibleFrame.insetBy(dx: g, dy: g)
@@ -78,7 +81,7 @@ extension Engine {
                 d.root = .grid(wins.filter { !d.floating.contains($0.key) }.map(\.key))
             }
             for w in wins where !d.root.keys.contains(w.key) && !d.floating.contains(w.key) {
-                let frames = d.root.solve(in: rect, gap: gap).frames
+                let frames = d.root.solve(in: rect, gap: gap, mins: dockMins).frames
                 let beside = focused.flatMap { frames[$0] != nil ? $0 : nil } ?? d.root.keys.last
                 d.root.add(w.key, beside: beside, frames: frames)
             }
@@ -102,9 +105,9 @@ extension Engine {
         let d = dockLayout(s)
         let wins = wins ?? dockWindows(on: s)
         let rect = dockRect(s), gap = CGFloat(state.prefs.gap)
-        let full = d.root.solve(in: rect, gap: gap)
+        let full = d.root.solve(in: rect, gap: gap, mins: dockMins)
         let zoomed = d.zoom.flatMap { d.root[$0] }
-        let shown = zoomed?.solve(in: rect, gap: gap) ?? full
+        let shown = zoomed?.solve(in: rect, gap: gap, mins: dockMins) ?? full
         live.solved[s.uuid] = shown
         let behind = d.root.backgroundTabs
         var moves: [(Win, CGRect)] = []
@@ -314,7 +317,7 @@ extension Engine {
     func zoom(to rect: CGRect) {
         for s in NSScreen.screens where mode(of: s) == .dock && s.axFrame.intersects(rect) {
             let d = dockLayout(s)
-            let solved = d.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap))
+            let solved = d.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap), mins: dockMins)
             let inside = solved.frames.filter { rect.intersects($0.value) }.map(\.key)
             guard let first = inside.first, var p = d.root.path(of: first) else { continue }
             for k in inside.dropFirst() {
@@ -334,7 +337,7 @@ extension Engine {
     func neighbour(_ dir: Direction) {
         guard let s = focusedScreen, mode(of: s) == .dock, let w = AX.focusedWindow() else { return focusNeighbour(dir) }
         let d = dockLayout(s)
-        let all = d.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap)).frames
+        let all = d.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap), mins: dockMins).frames
         guard let from = all[w.key] else { return focusNeighbour(dir) }
         let next = all.filter { $0.key != w.key && !d.root.backgroundTabs.contains($0.key) }.compactMap { k, f -> (String, CGFloat)? in
             let dx = f.midX - from.midX, dy = f.midY - from.midY
@@ -554,13 +557,13 @@ final class DockDrag {
             return
         }
         let t = engine.trial(original, key: w.key, target: target)
-        let solved = t.root.solve(in: rect, gap: gap)
+        let solved = t.root.solve(in: rect, gap: gap, mins: engine.dockMins)
         if engine.state.prefs.previewDrags, let f = solved.frames[w.key] { preview.show(f) }
         if engine.state.prefs.reflowWhileDragging { reflow(t, except: w.key, s: s) }
     }
 
     private func reflow(_ d: DockLayout, except key: String, s: NSScreen) {
-        let solved = d.root.solve(in: engine.dockRect(s), gap: CGFloat(engine.state.prefs.gap))
+        let solved = d.root.solve(in: engine.dockRect(s), gap: CGFloat(engine.state.prefs.gap), mins: engine.dockMins)
         let wins = engine.dockWindows(on: s).filter { $0.key != key }
         Motion.shared.apply(wins.compactMap { w in solved.frames[w.key].map { (w, $0) } }, engine: engine)
     }

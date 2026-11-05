@@ -260,6 +260,8 @@ enum AppLimits {
     static var min: [String: CGSize] = [:]
     /// The last size asked of each window, so a later ask makes an earlier check moot.
     private static var asks: [CGWindowID: CGSize] = [:]
+    /// A window turned out to need more room than it had: Dock mode makes room for it.
+    static var onRaise: () -> Void = {}
 
     static func learn(_ w: Win, asked: CGSize, before: CGSize?, again: Bool = false) {
         guard let b = w.bundleID else { return }
@@ -291,6 +293,7 @@ enum AppLimits {
                 min[b] = n
                 if n.width > m.width || n.height > m.height {
                     Log.info("LIMIT \(b) at least \(Int(n.width))×\(Int(n.height)): asked \(Int(asked.width))×\(Int(asked.height)), got \(Int(got.width))×\(Int(got.height))")
+                    onRaise()
                 }
             }
         }

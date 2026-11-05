@@ -204,6 +204,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             return self.tabs.isInactiveTab(k) || self.engine.live.dockHidden.contains(k)
         }
         engine.onWindowsChanged = { [weak self] in self?.tabs.applyAll() }
+        AppLimits.onRaise = { [weak self] in
+            guard let engine = self?.engine else { return }
+            for s in NSScreen.screens where engine.mode(of: s) == .dock { engine.arrange(s) }
+        }
         keyTap.combo = { [weak self] in self?.store.state.combo(.nextTab) }
         keyTap.handle = { [weak self] in self?.tabs.cycleFocusedGroup() ?? false }
         keyTap.start()
