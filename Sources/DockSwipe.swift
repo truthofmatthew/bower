@@ -30,6 +30,9 @@ final class DockSwipe {
     private var source: CFRunLoopSource?
     private enum Owner { case undecided, bower, macOS }
     private var owner = Owner.macOS
+    /// When the swipe Bower took has ended, the last of its envelopes are still swallowed until then; after
+    /// that, gestures (pinches, rotations, smart zoom) go to apps again.
+    private var swallowUntil: Date?
     private var held: [CGEvent] = []
     private var progress = 0.0
     private var velocity = 0.0
@@ -83,11 +86,15 @@ final class DockSwipe {
             return Unmanaged.passUnretained(e)
         }
         // Gesture envelopes travel with whatever the swipe's owner decided.
-        if type == Self.gesture { return owner == .bower ? nil : Unmanaged.passUnretained(e) }
+        if type == Self.gesture {
+            let swiping = owner == .bower && (swallowUntil.map { Date() < $0 } ?? true)
+            return swiping ? nil : Unmanaged.passUnretained(e)
+        }
         guard type == Self.dockControl, e.getIntegerValueField(F.hidType) == Self.dockSwipe else { return Unmanaged.passUnretained(e) }
 
         let phase = e.getIntegerValueField(F.phase)
         if phase == 1 {
+            swallowUntil = nil
             held = []
             progress = 0
             velocity = 0
@@ -128,6 +135,7 @@ final class DockSwipe {
 
         if !vertical { DispatchQueue.main.async { [p = progress] in self.onProgress(p) } }
         if phase == 4 || phase == 8 {
+            swallowUntil = Date().addingTimeInterval(0.3)
             let p = progress, v = velocity, up = vertical
             DispatchQueue.main.async {
                 if phase == 8 { self.onProgress(0); return }
