@@ -448,7 +448,11 @@ private struct TabStripView: View {
                         ForEach(model.tabs) { t in
                             TabView_(tab: t, active: t.id == model.active, underline: t.id == model.active && model.focused, prefs: p,
                                      activate: { if let s = model.screen { controller.activate(t.id, on: s) } },
-                                     close: { controller.close(t.id) })
+                                     close: { controller.close(t.id) },
+                                     springOpen: {
+                                         // A file or link held over a tab, not one of Bower's own tabs being moved.
+                                         if controller.draggedKey() == nil, let s = model.screen { controller.activate(t.id, on: s) }
+                                     })
                                 .frame(width: w - CGFloat(p.tabSelectedChip ? p.tabChipMargin : 0))
                                 .onDrag {
                                     if let s = model.screen { controller.began(dragging: t.id, on: s) }
@@ -487,7 +491,11 @@ private struct TabView_: View {
     let prefs: Prefs
     let activate: () -> Void
     let close: () -> Void
+    /// Something dragged from another app (a file, a link) held over the tab opens it, so it can be dropped inside.
+    let springOpen: () -> Void
     @State private var hover = false
+    @State private var dropOver = false
+    @State private var spring: DispatchWorkItem?
 
     var body: some View {
         HStack(spacing: 6) {
@@ -512,6 +520,15 @@ private struct TabView_: View {
         .contentShape(Rectangle())
         .onTapGesture(perform: activate)
         .onHover { hover = $0 }
+        // Not plain text: that's how Bower's own tabs are dragged, and the strip takes those.
+        .onDrop(of: [.fileURL, .url, .image, .pdf, .movie, .audio, .rtf, .html, .vCard, .emailMessage], isTargeted: $dropOver) { _ in false }
+        .onChange(of: dropOver) { _, over in
+            spring?.cancel()
+            guard over, !active else { return }
+            let work = DispatchWorkItem(block: springOpen)
+            spring = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)  // as long as Finder's spring-loading
+        }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(active ? [.isButton, .isSelected] : .isButton)
         .accessibilityLabel(tab.title)

@@ -16,7 +16,7 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 - **Window Modes per display, per layout:**
   - **Native**: windows where you put them, with snapping.
   - **Bento Box**: auto-tiled; it retiles the moment a window opens or closes.
-  - **Tabs**: windows from any app share a pane under a tab strip. Drag a tab to the pane's right edge to split it into two groups, or onto the other strip to move it. ⌃Tab cycles tabs in the focused group.
+  - **Tabs**: windows from any app share a pane under a tab strip. Drag a tab to the pane's right edge to split it into two groups, or onto the other strip to move it. ⌃Tab cycles tabs in the focused group. Hold a file or link dragged from another app over a tab and that tab opens, so you can drop it inside.
   - **Dock**: windows sit side by side and never overlap. Drag a title bar to another window's edge to dock it there, or onto its middle to make a tab group. Drag the gaps to resize. The green button floats or docks a window; double-clicking a title bar shows it on its own.
 - **Overview and Expand** (⌃⌥O, or pinch in): every window on every display, with your layouts along the top. Click one to go to it, ⌥-drag to rearrange, or drag a rectangle to expand it. In Dock mode, ⌃⌥= (or ⌥-pinch out) expands part of the layout to fill the screen, and ⌃⌥- goes back a level; ⌃⌥[ and ⌃⌥] go back and forward.
 - **Saved views**: ⌃⌥⇧1–9 saves what you're looking at, ⌃⌥1–9 brings it back.
