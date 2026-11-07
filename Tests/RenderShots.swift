@@ -11,7 +11,7 @@ final class RenderShots: XCTestCase {
         let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         let store = Store(directory: dir)
         let engine = Engine(store: store)
-        engine.setPrefs { $0.showAdvanced = true }
+        engine.setPrefs { $0.showAdvanced = true; $0.focusRing = true }
         try render(store: store, engine: engine, tabs: SettingsView.Tab.allCases, to: out, suffix: "")
         // The AI tab as it looks with a hosted provider chosen.
         engine.setAI(AISettings(preset: .claude, endpoint: AIPreset.claude.endpoint, model: "claude-sonnet-4-5"))

@@ -38,7 +38,7 @@ extension Engine {
 
     func dockRect(_ s: NSScreen) -> CGRect {
         let g = CGFloat(state.prefs.gap)
-        return s.axVisibleFrame.insetBy(dx: g, dy: g)
+        return s.axUsableFrame.insetBy(dx: g, dy: g)
     }
 
     /// The current layout's windows that belong on display `s`, wherever they rest (parked ones by their saved frame).

@@ -76,7 +76,7 @@ final class Engine {
     private func unpark(_ w: Win) {
         if let f = state.saved[w.key] {
             w.setFrame(f)
-        } else if let v = NSScreen.main?.axVisibleFrame, let f = w.frame {
+        } else if let v = NSScreen.main?.axUsableFrame, let f = w.frame {
             w.setFrame(CGRect(x: v.midX - f.width / 2, y: v.midY - f.height / 2, width: f.width, height: f.height))
         }
     }
@@ -529,7 +529,7 @@ final class Engine {
         let running = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
         let held = state.keepEmptySpace
             ? state.orphans.filter { $0.layout == state.current && $0.display == s.uuid && !running.contains($0.bundleID) }.count : 0
-        let tiles = Bento.tiles(count: wins.count + held, in: s.axVisibleFrame, gap: CGFloat(state.prefs.gap),
+        let tiles = Bento.tiles(count: wins.count + held, in: s.axUsableFrame, gap: CGFloat(state.prefs.gap),
                                 mins: wins.map(\.minSize) + Array(repeating: nil, count: held))
         Motion.shared.apply(Array(zip(wins, tiles)), engine: self)
         if toast, !wins.isEmpty { onRetile(wins.count, s) }
@@ -539,7 +539,7 @@ final class Engine {
 
     func target(_ a: SnapAction, for w: Win) -> (frame: CGRect, screen: NSScreen)? {
         guard let f = w.frame, let s = NSScreen.containing(ax: f) else { return nil }
-        return (a.frame(in: s.axVisibleFrame), s)
+        return (a.frame(in: s.axUsableFrame), s)
     }
 
     func snap(_ w: Win, _ a: SnapAction) {

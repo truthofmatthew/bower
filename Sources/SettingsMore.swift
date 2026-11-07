@@ -100,6 +100,18 @@ struct DockTab: View {
                     r.toggle("A sole floating window takes the Desktop's space", "Only for a window that's the only one floating: it fills the Desktop's tile.", \.soleFloatTakesDesktop).level(.advanced, store)
                     r.toggle("Floating a window brings the Desktop back", "When the Desktop is hidden in this layout.", \.hiddenDesktopReturns).level(.advanced, store)
                 }
+                GroupHeading(text: "Keep space free")
+                FormGroup {
+                    FormRow(first: true) {
+                        Text("Bower stops short of these edges on every display, in every mode, leaving room for a widget bar or a dock of your own.")
+                            .font(.system(size: 11)).foregroundStyle(Palette.label2).fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    r.slider("Top", nil, \.reserveTop, 0...300, step: 10, format: pt)
+                    r.slider("Bottom", nil, \.reserveBottom, 0...300, step: 10, format: pt)
+                    r.slider("Left", nil, \.reserveLeft, 0...300, step: 10, format: pt)
+                    r.slider("Right", nil, \.reserveRight, 0...300, step: 10, format: pt)
+                }
             }
             .padding(.bottom, 8)
         }
@@ -263,6 +275,25 @@ struct AppearanceTab: View {
         let r = PrefRows(store: store, engine: engine)
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
+                GroupHeading(text: "Bower's windows")
+                FormGroup {
+                    r.menu("Appearance", "Settings, the welcome window, recipes and Bower's other windows.", \.appearance,
+                           [(BowerAppearance.automatic, String(localized: "Automatic")), (.light, String(localized: "Light")), (.dark, String(localized: "Dark"))],
+                           first: true)
+                }
+                GroupHeading(text: "Focused window")
+                FormGroup {
+                    r.toggle("Outline the focused window", "So you can tell at a glance which window your typing goes to.", \.focusRing, first: true)
+                    if store.state.prefs.focusRing {
+                        r.menu("Style", "With Reduce Transparency on, a glow shows as a line.", \.focusRingStyle,
+                               [(FocusRingStyle.outline, String(localized: "Line")), (.halo, String(localized: "Soft glow"))])
+                        FormRow {
+                            RowText(title: "Colour")
+                            RingSwatches(selected: store.state.prefs.focusRingColour) { c in engine.setPrefs { $0.focusRingColour = c } }
+                        }
+                        r.slider("Thickness", nil, \.focusRingWidth, 1...8, step: 1, format: pt)
+                    }
+                }
                 GroupHeading(text: "Moving windows")
                 FormGroup {
                     r.slider("Animation speed", "How fast windows move and fade. With Reduce Motion on in System Settings › Accessibility › Display, windows go straight to where they're going.",
@@ -319,6 +350,41 @@ struct AppearanceTab: View {
     }
 }
 
+/// The focus ring's colours as dots: Bower's accent first, then six of macOS's.
+private struct RingSwatches: View {
+    let selected: FocusRingColour
+    let set: (FocusRingColour) -> Void
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(FocusRingColour.allCases, id: \.self) { c in
+                Button { set(c) } label: {
+                    Circle().fill(Color(cgColor: FocusRing.colour(c))).frame(width: 16, height: 16)
+                        .overlay(Circle().strokeBorder(Palette.hair, lineWidth: 0.5))
+                        .padding(3)
+                        .overlay(Circle().strokeBorder(c == selected ? Palette.label2 : .clear, lineWidth: 1.5))
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Self.name(c))
+                .accessibilityAddTraits(c == selected ? [.isButton, .isSelected] : .isButton)
+            }
+        }
+    }
+
+    private static func name(_ c: FocusRingColour) -> String {
+        switch c {
+        case .accent: String(localized: "Bower's colour")
+        case .blue: String(localized: "Blue")
+        case .purple: String(localized: "Purple")
+        case .pink: String(localized: "Pink")
+        case .orange: String(localized: "Orange")
+        case .yellow: String(localized: "Yellow")
+        case .green: String(localized: "Green")
+        }
+    }
+}
+
 /// Menu bar controls, in order: drag to reorder, switch each on or off.
 private struct MenuControlsEditor: View {
     @ObservedObject var store: Store
@@ -364,7 +430,6 @@ struct GeneralMore: View {
     let engine: Engine
     var openReport: () -> Void = {}
     var openLessons: () -> Void = {}
-    @State private var conflicts = Conflict.active
     @State private var confirmReset = false
 
     var body: some View {
@@ -376,26 +441,16 @@ struct GeneralMore: View {
             r.menu("Arrange desktops as Bower first sees them", "Turn it on or off for the desktop you're on in Bower's menu › This Display.",
                    \.arrangeDesktops, [(ArrangeDesktops.all, String(localized: "All desktops")), (.firstOnly, String(localized: "First desktop only"))], first: true)
         }
-        GroupHeading(text: "macOS features")
-        FormGroup {
-            if conflicts.isEmpty {
+        // What fights Bower is listed under Mac setup at the top; this brings back what Bower turned off.
+        if !store.state.prefs.turnedOff.isEmpty {
+            GroupHeading(text: "macOS features")
+            FormGroup {
                 FormRow(first: true) {
-                    RowText(title: "No conflicts with macOS", sub: "None of macOS's own ways of moving windows is on, so nothing will fight Bower.")
-                    if !store.state.prefs.turnedOff.isEmpty {
-                        Button("Turn Back On") { Conflict.turnBackOn(engine); refresh() }.buttonStyle(BowerButton())
-                    }
-                }
-            } else {
-                FormRow(first: true) {
-                    RowText(title: "These would fight Bower", sub: "While Bower arranges your windows, they move or hide windows behind its back. You can turn them back on any time.")
-                    Button("Turn Them Off") { conflicts.forEach { $0.turnOff(engine) }; refresh() }.buttonStyle(BowerButton(primary: true))
-                }
-                ForEach(conflicts) { c in
-                    FormRow { RowText(verbatim: c.title, sub: c.what) }
+                    RowText(title: "Bower turned some of macOS's features off", sub: "Edge tiling, click wallpaper to reveal desktop or Stage Manager. Turn them back on before you remove Bower.")
+                    Button("Turn Back On") { Conflict.turnBackOn(engine) }.buttonStyle(BowerButton())
                 }
             }
         }
-        .onAppear(perform: refresh)
         GroupHeading(text: "Updates")
         FormGroup {
             r.toggle("Check for updates automatically", "Once a day, from GitHub. Off: Bower makes no network requests unless you set up an AI endpoint.", \.checkUpdates, first: true)
@@ -440,8 +495,6 @@ struct GeneralMore: View {
             p.desktopShown = keep.desktopShown; p.offSpaces = keep.offSpaces; p.onSpaces = keep.onSpaces; p.ignoredApps = keep.ignoredApps
         }
     }
-
-    private func refresh() { conflicts = Conflict.active }
 }
 
 extension Prefs {

@@ -108,7 +108,7 @@ extension Engine {
     }
 
     func perform(_ a: WheelAction, on w: Win?, screen s: NSScreen?) {
-        let visible = (w?.frame).flatMap { NSScreen.containing(ax: $0) }?.axVisibleFrame ?? s?.axVisibleFrame
+        let visible = (w?.frame).flatMap { NSScreen.containing(ax: $0) }?.axUsableFrame ?? s?.axUsableFrame
         switch a {
         case .maximize: if let w { snap(w, .maximize) }
         case .retile: if let s { retile(s) }
@@ -122,7 +122,7 @@ extension Engine {
         case .nextDisplay:
             guard let w, let f = w.frame, let from = NSScreen.containing(ax: f), NSScreen.screens.count > 1,
                   let i = NSScreen.screens.firstIndex(of: from) else { return }
-            let to = NSScreen.screens[(i + 1) % NSScreen.screens.count].axVisibleFrame, v = from.axVisibleFrame
+            let to = NSScreen.screens[(i + 1) % NSScreen.screens.count].axUsableFrame, v = from.axUsableFrame
             let sx = to.width / v.width, sy = to.height / v.height
             move(w, to: CGRect(x: to.minX + (f.minX - v.minX) * sx, y: to.minY + (f.minY - v.minY) * sy,
                                width: f.width * sx, height: f.height * sy).integral)
@@ -149,7 +149,7 @@ extension Engine {
             guard let f = w.frame, !isParked(f), NSScreen.containing(ax: f) == s else { return false }
             return (state.assignment[w.key] ?? state.current) == state.current
         }.sorted { (order.firstIndex(of: $0.id) ?? .max) < (order.firstIndex(of: $1.id) ?? .max) }
-        let v = s.axVisibleFrame
+        let v = s.axUsableFrame
         var frames: [CGRect] = []
         switch preset {
         case .split: frames = [SnapAction.leftHalf, .rightHalf].map { $0.frame(in: v) }

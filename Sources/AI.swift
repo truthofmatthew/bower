@@ -346,7 +346,7 @@ extension Engine {
         let parked = isParked(f)
         let current = parked ? state.saved[w.key] ?? f : f
         guard NSScreen.containing(ax: current) != s else { return }
-        let v = s.axVisibleFrame
+        let v = s.axUsableFrame
         let size = CGSize(width: min(current.width, v.width), height: min(current.height, v.height))
         let target = CGRect(x: v.midX - size.width / 2, y: v.midY - size.height / 2, width: size.width, height: size.height)
         if parked { store.update { $0.saved[w.key] = target } } else { w.setFrame(target) }
