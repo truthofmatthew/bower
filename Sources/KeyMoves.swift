@@ -44,7 +44,7 @@ extension Engine {
 
     private func moveBento(_ w: Win, _ dir: Direction, on s: NSScreen) {
         let wins = bentoWindows(on: s)
-        let tiles = Bento.tiles(count: wins.count, in: s.axVisibleFrame, gap: CGFloat(state.prefs.gap), mins: wins.map(\.minSize))
+        let tiles = Bento.tiles(count: wins.count, in: s.axUsableFrame, gap: CGFloat(state.prefs.gap), mins: wins.map(\.minSize))
         guard let i = wins.firstIndex(where: { $0.key == w.key }), tiles.indices.contains(i) else { return }
         let others = tiles.indices.filter { $0 != i }.map { ($0, tiles[$0]) }
         guard let j = Compass.nearest(from: tiles[i], others, dir) else {
@@ -94,7 +94,7 @@ extension Engine {
             return onHUD(String(localized: "Width \(Int((got * 100).rounded()))%."))
         }
         guard let fr = w.frame else { return }
-        let v = s.axVisibleFrame
+        let v = s.axUsableFrame
         guard let f = WidthCycle.next(from: Double(fr.width / v.width), wider: wider) else {
             return onHUD(wider ? String(localized: "As wide as it goes.") : String(localized: "As narrow as it goes."))
         }
@@ -111,7 +111,7 @@ extension Engine {
         guard let w = AX.focusedWindow(), let s = screen(of: w) else { return }
         if mode(of: s) == .dock, isDocked(w) { return toggleFloat(w) }
         guard let f = w.frame else { return }
-        move(w, to: WidthCycle.centred(f, in: s.axVisibleFrame))
+        move(w, to: WidthCycle.centred(f, in: s.axUsableFrame))
     }
 
     // MARK: Put back

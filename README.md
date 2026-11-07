@@ -22,6 +22,9 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 - **Saved views**: ⌃⌥⇧1–9 saves what you're looking at, ⌃⌥1–9 brings it back.
 - **Gestures**: swipe with three or four fingers to move between layouts (Bower takes the swipe from macOS so both don't happen; hold fn for macOS's own), and optionally show Bower's overview instead of Mission Control.
 - **Snapping** with a live preview: halves, quarters, thirds, two thirds, maximize.
+- **Moving and sizing from the keyboard**: ⌃⌥⇧ and an arrow swaps a window with its neighbour, ⌃⌥W / ⌃⌥⇧W step its width through ½, ⅔, 90% and full, ⌃⌥C centres it, ⌃⌥B puts windows back after an app moved them, and ⌃⌥M sends one to the other display. Focus (⌃⌥⌘ and an arrow) carries on to the next display at the edge, and H J K L work as arrows with the focus and move keys.
+- **Focus ring**: an optional line or soft glow around the window you're typing in (Settings › Appearance), where Bower's own windows can also be Light, Dark or Automatic.
+- **Keep space free** along any screen edge for a widget bar (Settings › Dock); browser extension popups and other small panels are left where the app puts them.
 - **Snap Wheel** (middle-click or ⌃⌥Space). Its outer ring is yours to arrange in Settings › Snap Wheel, with extra actions: Center, Almost Maximize, Next Display, Restore, Minimize, Hide Others, and the presets Split, Four Corners and Focus + Stack.
 - **Layouts Bar** (⌥↑): every layout and its windows; drag a window onto a layout.
 - **Workspaces**: save every layout, mode and window position under a name and load it later.
@@ -29,6 +32,7 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 - **AI Recipes**: describe your desk in Markdown and let a model plan it: Ollama or LM Studio on your Mac, or Claude or OpenAI with your own API key.
 - **Shortcuts**: every one can be rebound in Settings › Shortcuts, with an ISO keyboard preset and conflict warnings.
 - **`bower://` links**: `bower://layout/3`, `bower://everything`, `bower://mode/dock` and more, for Shortcuts, Raycast or scripts.
+- **Mac setup** at the top of Settings › General lists anything stopping a feature, with a button to the right switch.
 - **Gets out of macOS's way**: one button in Settings › General turns off edge tiling, click-wallpaper-to-show-desktop and Stage Manager, and another turns them back on.
 
 ## Screenshots
@@ -41,6 +45,7 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 | <img src="docs/screenshots/recipe.png" alt="The Recipe editor: a Markdown recipe on the left, the planned layout for each display on the right"> | <img src="docs/screenshots/settings-shortcuts.png" alt="Settings, Shortcuts tab: every shortcut with a recorder, and the ANSI or ISO keyboard choice"> |
 | <img src="docs/screenshots/settings-dock.png" alt="Settings, Dock tab: space between windows, gap handles, what happens when a window closes, and dragging options"> | <img src="docs/screenshots/settings-gestures.png" alt="Settings, Gestures tab: swiping between layouts with three or four fingers, Mission Control, and pinching or ⌘⇧-dragging to expand"> |
 | <img src="docs/screenshots/settings-ai.png" alt="Settings, AI tab: Claude chosen as the provider, an API key field with a Get a key link, and the model claude-sonnet-4-5"> | <img src="docs/screenshots/first-run.png" alt="The welcome window: grant Accessibility, try ⌥1 and ⌥2, open the Snap Wheel, and two optional steps"> |
+| <img src="docs/screenshots/settings-general.png" alt="Settings, General tab: Mac setup listing Screen Recording and macOS features that move windows, each with a button, then Bower's own options"> | <img src="docs/screenshots/settings-appearance.png" alt="Settings, Appearance tab: Light, Dark or Automatic for Bower's windows, and the focus ring with style, colour and thickness"> |
 | <img src="docs/screenshots/about.png" alt="The About window: Bower's icon, version, Made by Matthew Truth, GitHub and website links"> | |
 
 ## Shortcuts
@@ -57,7 +62,12 @@ The UI follows the design canvas in [docs/design/](docs/design/); the plan is in
 | ⌃⌥E / ⌃⌥T | First / last two thirds |
 | ⌃⌥↩ | Maximize |
 | ⌃⌥R | Retile the display (Bento Box) |
-| ⌃⌥⌘← → ↑ ↓ | Focus the window to the left / right / above / below |
+| ⌃⌥⌘← → ↑ ↓ (or H J K L) | Focus the window to the left / right / above / below, then the next display |
+| ⌃⌥⇧← → ↑ ↓ (or H J K L) | Swap the window with its neighbour that way |
+| ⌃⌥W / ⌃⌥⇧W | Wider / narrower: ½, ⅔, 90%, full |
+| ⌃⌥C | Centre the window |
+| ⌃⌥B | Put windows back in their places |
+| ⌃⌥M | Send the window to the next display |
 | ⌃Tab | Next tab in the focused group (Tabs Mode) |
 | ⌃⌥Space, middle-click, or a three-finger tap | Snap Wheel |
 | ⌥↑ | Layouts Bar |

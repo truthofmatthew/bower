@@ -40,13 +40,9 @@ final class Lessons: ObservableObject {
 
     /// New in this version, newest first.
     static let whatsNew: [Step] = [
-        Step(id: "new-dock", title: String(localized: "Dock mode"), text: String(localized: "A new Window Mode where windows never overlap. Drag a window to another's edge to dock it; drag the gaps to resize.")),
-        Step(id: "new-zoom", title: String(localized: "Expand and the overview"), text: String(localized: "Expand part of your arrangement to fill the screen, frame one window, and see every window at once with ⌃⌥O.")),
-        Step(id: "new-swipe", title: String(localized: "Swipes that don't fight macOS"), text: String(localized: "Moving between layouts now takes the swipe from macOS instead of both happening. Hold fn for macOS's own.")),
-        Step(id: "new-views", title: String(localized: "Saved views and history"), text: String(localized: "Save a view with ⌃⌥⇧1–9, come back with ⌃⌥1–9, and go back and forward like a browser.")),
-        Step(id: "new-links", title: String(localized: "Commands by link"), text: String(localized: "Run Bower from Raycast, Alfred, Shortcuts or a script with bower:// links.")),
-        Step(id: "new-profiles", title: String(localized: "Browser profiles get their own layouts"), text: String(localized: "With an Edge or Chrome window in front, Bower's menu › the app › New windows open in routes just that profile.")),
-        Step(id: "new-ai", title: String(localized: "Your own AI"), text: String(localized: "Recipes can use Claude or OpenAI with your own key, or a model on this Mac. Settings › AI."))
+        Step(id: "new-keys", title: String(localized: "Move and size from the keyboard"), text: String(localized: "⌃⌥⇧ and an arrow swaps a window with its neighbour. ⌃⌥W and ⌃⌥⇧W step its width through ½, ⅔, 90% and full.")),
+        Step(id: "new-ring", title: String(localized: "A ring on the window you're in"), text: String(localized: "Turn it on in Settings › Appearance, as a line or a soft glow.")),
+        Step(id: "new-space", title: String(localized: "Room for your own bars"), text: String(localized: "Keep space free along any screen edge in Settings › Dock. Mac setup, in Settings › General, shows anything stopping a feature."))
     ]
 
     var steps: [Step] {
