@@ -53,6 +53,39 @@ final class ParityTests: XCTestCase {
         XCTAssertEqual(p.gap, 12)
         XCTAssertEqual(p.tabStyle, .glass)
         XCTAssertEqual(p.returnWindows, .afterQuit)
+        // Settings added later decode from a file that predates them, and a bad value keeps its default.
+        XCTAssertFalse(p.focusRing)
+        XCTAssertEqual(p.focusRingStyle, .outline)
+        XCTAssertEqual(p.focusRingColour, .accent)
+        XCTAssertEqual(p.focusRingWidth, 3)
+        XCTAssertEqual(p.appearance, .automatic)
+        XCTAssertEqual(p.reserved, ReservedEdges())
+        let newer = #"{"focusRing": true, "focusRingColour": "teal", "appearance": "dark", "reserveLeft": 120}"#
+        let q = try JSONDecoder().decode(Prefs.self, from: Data(newer.utf8))
+        XCTAssertTrue(q.focusRing)
+        XCTAssertEqual(q.focusRingColour, .accent)
+        XCTAssertEqual(q.appearance, .dark)
+        XCTAssertEqual(q.reserved, ReservedEdges(left: 120))
+    }
+
+    /// Space kept free comes off the right edges (AX: top is minY), and never leaves too little to arrange into.
+    func testUsableArea() {
+        let v = CGRect(x: 0, y: 25, width: 1440, height: 875)
+        XCTAssertEqual(UsableArea.inset(v, by: ReservedEdges()), v)
+        XCTAssertEqual(UsableArea.inset(v, by: ReservedEdges(top: 40, bottom: 10, left: 100, right: 0)),
+                       CGRect(x: 100, y: 65, width: 1340, height: 825))
+        let squeezed = UsableArea.inset(v, by: ReservedEdges(top: 0, bottom: 0, left: 5000, right: 5000))
+        XCTAssertEqual(squeezed.width, UsableArea.minimum.width, accuracy: 1)
+        XCTAssertEqual(squeezed.midX, v.midX, accuracy: 1)
+        XCTAssertEqual(UsableArea.inset(v, by: ReservedEdges(top: -50)), v)
+    }
+
+    /// Extension popups float; anything with title-bar buttons, or bigger than a popup, is still arranged.
+    func testPopupsFloat() {
+        XCTAssertTrue(AX.looksLikePopup(size: CGSize(width: 380, height: 600), hasButtons: false))
+        XCTAssertFalse(AX.looksLikePopup(size: CGSize(width: 380, height: 600), hasButtons: true))
+        XCTAssertFalse(AX.looksLikePopup(size: CGSize(width: 240, height: 160), hasButtons: true))  // parked small
+        XCTAssertFalse(AX.looksLikePopup(size: CGSize(width: 1200, height: 800), hasButtons: false))  // a frameless app
     }
 
     func testRedactedHidesTitles() {

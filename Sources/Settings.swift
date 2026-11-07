@@ -137,6 +137,8 @@ private struct GeneralTab: View {
     var body: some View {
         ScrollView {
         VStack(alignment: .leading, spacing: 14) {
+            MacSetupGroup(store: store, engine: engine)
+            GroupHeading(text: "Bower")
             FormGroup {
                 FormRow(first: true) {
                     RowText(title: "Launch Bower at login")

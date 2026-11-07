@@ -137,6 +137,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         // Hosting the unit tests: leave the running copy, its windows and its shortcuts alone.
         if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil { return }
         Diagnostics.quitOtherCopies()
+        UsableArea.reserved = { [weak self] in self?.store.state.prefs.reserved ?? ReservedEdges() }
         Log.info("PERMISSIONS accessibility=\(AX.trusted) screen-recording=\(Capture.allowed)")
         if AX.trusted { start() } else { waitForAccess() }
         if !AX.trusted || !UserDefaults.standard.bool(forKey: Self.onboardedKey) { showFirstRun() } else { lessons.offerWhatsNew() }
@@ -148,6 +149,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let w = HostedWindow(title: String(localized: "Welcome to Bower"), size: CGSize(width: 640, height: 680), bareTitlebar: true) {
             FirstRunView(model: firstRun, close: { [weak self] in
                 UserDefaults.standard.set(true, forKey: Self.onboardedKey)
+                Haptic.done()
                 self?.firstRunWindow?.close()
                 self?.lessons.start(.gettingStarted)
             }, skip: { [weak self] in
@@ -191,6 +193,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] t in
             guard AX.trusted else { return }
             t.invalidate()
+            Haptic.done()
             self?.start()
         }
     }
@@ -269,6 +272,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             self.tabs.reveal(pid: pid)
         }
         engine.windowsChanged()  // windows that came back after a restart find their layouts
+        FocusRing.shared.start(engine: engine) { [weak self] in self?.overview.isOpen ?? false }
         // Display recovery: remember what's on each display, and react when one connects or disconnects.
         engine.snapshotDisplays()
         Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in self?.engine.snapshotDisplays() }
@@ -409,6 +413,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func refreshStatus() {
         menuStrip.refresh()
         applyPrefsIfChanged()
+        applyExtras()
         let st = store.state
         let n = st.current + 1
         let title: String

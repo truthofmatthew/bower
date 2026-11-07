@@ -112,7 +112,7 @@ final class OverviewModel: ObservableObject {
     }
 
     func load() {
-        let v = screen.axVisibleFrame
+        let v = screen.axUsableFrame
         items = engine.windows(in: layout, on: screen).map { w, f in
             Item(id: w.key, win: w, rect: CGRect(x: (f.minX - v.minX) / v.width, y: (f.minY - v.minY) / v.height,
                                                  width: f.width / v.width, height: f.height / v.height))
@@ -159,7 +159,7 @@ final class OverviewModel: ObservableObject {
 
     /// A rectangle drawn over the desk (0…1 units): zoom to the windows it frames.
     func zoom(to r: CGRect) {
-        let v = screen.axVisibleFrame
+        let v = screen.axUsableFrame
         let ax = CGRect(x: v.minX + r.minX * v.width, y: v.minY + r.minY * v.height, width: r.width * v.width, height: r.height * v.height)
         close()
         if layout != engine.state.current { engine.switchTo(layout) }
@@ -221,7 +221,7 @@ struct OverviewView: View {
     }
 
     private func desk(in size: CGSize) -> some View {
-        let v = model.screen.axVisibleFrame
+        let v = model.screen.axUsableFrame
         let scale = min(size.width / v.width, size.height / v.height)
         let deskSize = CGSize(width: v.width * scale, height: v.height * scale)
         return ZStack(alignment: .topLeading) {

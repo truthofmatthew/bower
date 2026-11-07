@@ -59,6 +59,19 @@ struct Prefs: Codable {
     var appColours = true
     var appColourAmount = 0.25
     var previewLook = PreviewLook.pictureUnderColour
+    /// A line or a soft glow round the focused window.
+    var focusRing = false
+    var focusRingStyle = FocusRingStyle.outline
+    var focusRingColour = FocusRingColour.accent
+    var focusRingWidth = 3.0
+    /// Light or dark for Bower's own windows; automatic follows macOS.
+    var appearance = BowerAppearance.automatic
+
+    // Space kept free along each screen edge (points), for a widget bar or a dock of your own.
+    var reserveTop = 0.0
+    var reserveBottom = 0.0
+    var reserveLeft = 0.0
+    var reserveRight = 0.0
 
     // Tab strips
     var tabStyle = TabStyle.material
@@ -106,6 +119,9 @@ enum PreviewLook: String, Codable, CaseIterable { case pictureUnderColour, colou
 enum ArrangeDesktops: String, Codable, CaseIterable { case firstOnly, all }
 enum TabStyle: String, Codable, CaseIterable { case material, glass, solid }
 enum ReturnWindows: String, Codable, CaseIterable { case never, afterQuit, alsoReopened }
+enum FocusRingStyle: String, Codable, CaseIterable { case outline, halo }
+enum FocusRingColour: String, Codable, CaseIterable { case accent, blue, purple, pink, orange, yellow, green }
+enum BowerAppearance: String, Codable, CaseIterable { case automatic, light, dark }
 
 /// Buttons Bower can put in the menu bar, in the order chosen.
 enum MenuControl: String, Codable, CaseIterable {
@@ -149,6 +165,9 @@ extension Prefs {
         r(.animationSpeed, &animationSpeed); r(.interruptAnimations, &interruptAnimations); r(.redrawWait, &redrawWait)
         r(.stretchPictures, &stretchPictures); r(.dimBehind, &dimBehind); r(.dimOpacity, &dimOpacity); r(.dimBlur, &dimBlur)
         r(.appColours, &appColours); r(.appColourAmount, &appColourAmount); r(.previewLook, &previewLook)
+        r(.focusRing, &focusRing); r(.focusRingStyle, &focusRingStyle); r(.focusRingColour, &focusRingColour)
+        r(.focusRingWidth, &focusRingWidth); r(.appearance, &appearance)
+        r(.reserveTop, &reserveTop); r(.reserveBottom, &reserveBottom); r(.reserveLeft, &reserveLeft); r(.reserveRight, &reserveRight)
         r(.tabStyle, &tabStyle); r(.tabSelectedChip, &tabSelectedChip); r(.tabChipMargin, &tabChipMargin); r(.tabInset, &tabInset)
         r(.tabPadding, &tabPadding); r(.tabTint, &tabTint); r(.tabStripLights, &tabStripLights); r(.tabCloseButtons, &tabCloseButtons)
         r(.tabCloseOnRight, &tabCloseOnRight); r(.tabGlassOpaqueWhenInactive, &tabGlassOpaqueWhenInactive); r(.tuckStrips, &tuckStrips)

@@ -40,7 +40,7 @@ final class TabsController {
 
     /// (strip, pane) for each group, in AX coordinates.
     func rects(_ s: NSScreen, groups n: Int) -> [(strip: CGRect, pane: CGRect)] {
-        let v = s.axVisibleFrame
+        let v = s.axUsableFrame
         let h = Self.stripHeight
         guard n == 2 else { return [(CGRect(x: v.minX, y: v.minY, width: v.width, height: h), CGRect(x: v.minX, y: v.minY + h, width: v.width, height: v.height - h))] }
         let w = ((v.width - 1) / 2).rounded(.down)

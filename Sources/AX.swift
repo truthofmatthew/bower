@@ -148,9 +148,23 @@ enum AX {
         guard _AXUIElementGetWindow(el, &id) == .success, id != 0,
               (value(el, kAXSubroleAttribute) as String?) == kAXStandardWindowSubrole,
               (value(el, kAXMinimizedAttribute) as Bool?) != true,
-              (value(el, "AXFullScreen") as Bool?) != true else { return nil }
+              (value(el, "AXFullScreen") as Bool?) != true, !isPopup(el) else { return nil }
         return Win(el: el, id: id, pid: pid, bundleID: app.bundleIdentifier,
                    appName: app.localizedName ?? "")
+    }
+
+    /// A browser extension's popup (Bitwarden, 1Password) and other small panels that call themselves standard
+    /// windows: no close or minimize button, and no bigger than a popup gets. They stay where their app put them,
+    /// never arranged. A window with its title-bar buttons is always a window, however small (parked ones are).
+    private static func isPopup(_ el: AXUIElement) -> Bool {
+        guard (value(el, kAXCloseButtonAttribute) as AXUIElement?) == nil,
+              (value(el, kAXMinimizeButtonAttribute) as AXUIElement?) == nil, let size: CGSize = value(el, kAXSizeAttribute) else { return false }
+        return looksLikePopup(size: size, hasButtons: false)
+    }
+
+    /// Chrome's extension popups are at most 800 × 600; a little room over that for the frame.
+    static func looksLikePopup(size: CGSize, hasButtons: Bool) -> Bool {
+        !hasButtons && size.width <= 820 && size.height <= 640
     }
 
     /// Every standard, non-minimized, non-fullscreen window of every regular app that isn't hidden.
