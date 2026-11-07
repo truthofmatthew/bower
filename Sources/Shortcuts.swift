@@ -12,7 +12,7 @@ struct Combo: Codable, Equatable, Hashable {
 enum ShortcutID: String, CaseIterable, Codable {
     case wheel, layoutsBar
     case switchLayout, sendLayout, saveWorkspace, cycleLayouts, emptyLayout
-    case focus, nextTab
+    case focus, moveWindow, wider, narrower, center, putBack, nextDisplay, nextTab
     case halvesLR, halvesTB, quarters, thirds, twoThirds, maximize, retile
     case everything, stepIn, stepOut, frame, back, forward, goView, saveView
     case desktop, arrange, split, float
@@ -27,6 +27,12 @@ enum ShortcutID: String, CaseIterable, Codable {
         case .cycleLayouts: String(localized: "Next layout")
         case .emptyLayout: String(localized: "Next empty layout")
         case .focus: String(localized: "Focus window left / right / up / down")
+        case .moveWindow: String(localized: "Move window left / right / up / down")
+        case .wider: String(localized: "Make window wider")
+        case .narrower: String(localized: "Make window narrower")
+        case .center: String(localized: "Center window")
+        case .putBack: String(localized: "Put windows back in place")
+        case .nextDisplay: String(localized: "Send window to the next display")
         case .nextTab: String(localized: "Next tab in group")
         case .halvesLR: String(localized: "Left / Right Half")
         case .halvesTB: String(localized: "Top / Bottom Half")
@@ -54,7 +60,7 @@ enum ShortcutID: String, CaseIterable, Codable {
         switch self {
         case .wheel, .layoutsBar: "Overlays"
         case .switchLayout, .sendLayout, .saveWorkspace, .cycleLayouts, .emptyLayout: "Layouts"
-        case .focus, .nextTab: "Windows"
+        case .focus, .moveWindow, .wider, .narrower, .center, .putBack, .nextDisplay, .nextTab: "Windows"
         case .everything, .stepIn, .stepOut, .frame, .back, .forward, .goView, .saveView: "Expand"
         case .desktop, .arrange, .split, .float: "Dock"
         default: "Snapping"
@@ -76,6 +82,10 @@ enum ShortcutID: String, CaseIterable, Codable {
     var sub: String? {
         switch self {
         case .nextTab: String(localized: "Within the focused tab group")
+        case .focus: String(localized: "H J K L work like the arrows. Past the last window, the display that way.")
+        case .moveWindow: String(localized: "Trades places with the window that way. H J K L work like the arrows.")
+        case .wider, .narrower: String(localized: "Steps through half, two thirds, 90% and the full width.")
+        case .putBack: String(localized: "For apps that move or resize their own windows.")
         case .goView: String(localized: "Hold the modifiers and press a number from 1 to 9.")
         case .saveView: String(localized: "Saves what you're looking at, to come back to with the number.")
         case .everything: String(localized: "Every window on every display, your layouts along the top.")
@@ -93,8 +103,8 @@ enum ShortcutID: String, CaseIterable, Codable {
         // ISO keyboards use the < key (left of Z) for Center Third.
         case .thirds: [kVK_ANSI_D, iso ? kVK_ANSI_Grave : kVK_ANSI_F, kVK_ANSI_G]
         case .twoThirds: [kVK_ANSI_E, kVK_ANSI_T]
-        // Order: left, right, up, down.
-        case .focus: [kVK_LeftArrow, kVK_RightArrow, kVK_UpArrow, kVK_DownArrow]
+        // Order: left, right, up, down, then H L K J for the same four (vi keys).
+        case .focus, .moveWindow: Self.directionKeys
         default: nil
         }
     }
@@ -111,6 +121,12 @@ enum ShortcutID: String, CaseIterable, Codable {
         case .emptyLayout: return Combo(key: kVK_ANSI_N, mods: optionKey)
         // ⌃⌥⌘ + arrows: ⌘⌥I and ⌘⌥J would take over browsers' developer tools.
         case .focus: return Combo(key: -1, mods: controlKey | optionKey | cmdKey)
+        case .moveWindow: return Combo(key: -1, mods: co | shiftKey)
+        case .wider: return Combo(key: kVK_ANSI_W, mods: co)
+        case .narrower: return Combo(key: kVK_ANSI_W, mods: co | shiftKey)
+        case .center: return Combo(key: kVK_ANSI_C, mods: co)
+        case .putBack: return Combo(key: kVK_ANSI_B, mods: co)
+        case .nextDisplay: return Combo(key: kVK_ANSI_M, mods: co)
         case .nextTab: return Combo(key: kVK_Tab, mods: controlKey)
         case .maximize: return Combo(key: kVK_Return, mods: co)
         case .retile: return Combo(key: kVK_ANSI_R, mods: co)
@@ -131,6 +147,10 @@ enum ShortcutID: String, CaseIterable, Codable {
     }
 
     var isGroup: Bool { defaultCombo.key == -1 }
+
+    /// The arrows, then H L K J. Key i goes the way `Heading.allCases[i % 4]` says.
+    static let directionKeys = [kVK_LeftArrow, kVK_RightArrow, kVK_UpArrow, kVK_DownArrow,
+                                kVK_ANSI_H, kVK_ANSI_L, kVK_ANSI_K, kVK_ANSI_J]
 }
 
 extension DeskState {
@@ -187,7 +207,13 @@ enum KeyNames {
     static func caps(_ id: ShortcutID, _ c: Combo, iso: Bool) -> [String] {
         let keys: String
         if let ks = id.keys(iso: iso) {
-            keys = [.switchLayout, .sendLayout, .goView, .saveView].contains(id) ? "1…9" : ks.map { key($0, iso: iso) }.joined(separator: " ")
+            if [.switchLayout, .sendLayout, .goView, .saveView].contains(id) {
+                keys = "1…9"
+            } else if ks == ShortcutID.directionKeys {
+                keys = "← → ↑ ↓  " + [kVK_ANSI_H, kVK_ANSI_J, kVK_ANSI_K, kVK_ANSI_L].map { key($0, iso: iso) }.joined(separator: " ")
+            } else {
+                keys = ks.map { key($0, iso: iso) }.joined(separator: " ")
+            }
         } else {
             keys = key(c.key, iso: iso)
         }
@@ -242,8 +268,10 @@ final class ShortcutCenter: ObservableObject {
                 let st = store.state
                 if id.isGroup, let other = ShortcutID.allCases.first(where: { $0 != id && $0.isGroup && st.combo($0)?.mods == mods
                                                                        && $0.keys(iso: st.isoKeyboard) == id.keys(iso: st.isoKeyboard) }) {
-                    // Two rows of numbers can't share modifiers.
-                    self.notice = String(localized: "\(KeyNames.modifiers(mods).joined()) with a number is \(other.title). Change that first.")
+                    // Two rows with the same keys (numbers, or arrows) can't share modifiers.
+                    self.notice = id.keys(iso: st.isoKeyboard) == Hotkeys.digitKeys
+                        ? String(localized: "\(KeyNames.modifiers(mods).joined()) with a number is \(other.title). Change that first.")
+                        : String(localized: "\(KeyNames.modifiers(mods).joined()) with the arrows is \(other.title). Change that first.")
                     NSSound.beep()
                     return nil
                 }

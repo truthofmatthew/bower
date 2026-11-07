@@ -174,11 +174,68 @@ struct DockNode: Codable, Equatable {
         if children.count == 1 { self = children[0] }
     }
 
-    /// Two windows trade places (⌥-drag in the overview).
+    /// The path of a key's own window node, down into its tab group if it has one.
+    func windowPath(of key: String) -> [Int]? {
+        if kind == .window { return self.key == key ? [] : nil }
+        for (i, c) in children.enumerated() { if let p = c.windowPath(of: key) { return [i] + p } }
+        return nil
+    }
+
+    /// Two windows trade places (⌥-drag in the overview, ⌃⌥⇧ and an arrow). Every tile keeps its size; a tab
+    /// trades its place in its group.
     mutating func swap(_ a: String, _ b: String) {
-        guard let pa = path(of: a), let pb = path(of: b), self[pa]?.kind == .window, self[pb]?.kind == .window else { return }
+        guard a != b, let pa = windowPath(of: a), let pb = windowPath(of: b) else { return }
         modify(pa) { $0.key = b }
         modify(pb) { $0.key = a }
+    }
+
+    /// Moves a tab one place along its group (`by` −1 or 1), still shown. False when it isn't a tab or is at the end.
+    @discardableResult
+    mutating func moveTab(_ key: String, by step: Int) -> Bool {
+        guard let p = path(of: key), let g = self[p], g.kind == .tabs, let i = g.children.firstIndex(where: { $0.key == key }),
+              g.children.indices.contains(i + step) else { return false }
+        modify(p) { t in
+            t.children.swapAt(i, i + step)
+            t.selected = i + step
+        }
+        return true
+    }
+
+    /// The nearest split along `axis` holding `key`, and which of its children holds it.
+    func column(of key: String, axis: DockAxis = .h) -> (split: [Int], index: Int)? {
+        guard let p = path(of: key) else { return nil }
+        for k in stride(from: p.count - 1, through: 0, by: -1) {
+            let parent = Array(p.prefix(k))
+            if let s = self[parent], s.kind == .split, s.axis == axis, s.children.count > 1 { return (parent, p[k]) }
+        }
+        return nil
+    }
+
+    /// The share of its row `key`'s column has (0…1), or nil when nothing sits beside it.
+    func columnShare(of key: String) -> Double? {
+        guard let (sp, i) = column(of: key), let s = self[sp] else { return nil }
+        let total = s.weights.reduce(0, +)
+        return total > 0 ? s.weights[i] / total : nil
+    }
+
+    /// Gives `key`'s column `fraction` of its row; the others share the rest by their weights. Each other column
+    /// keeps at least `minShare`, and what its windows need of a `length`-point row (from `mins`).
+    /// Returns the share it got, or nil when nothing sits beside it.
+    @discardableResult
+    mutating func setColumnShare(of key: String, to fraction: Double, length: CGFloat, mins: [String: CGSize] = [:],
+                                 minShare: Double = 0.05) -> Double? {
+        guard let (sp, i) = column(of: key), let s = self[sp] else { return nil }
+        let others = s.children.indices.filter { $0 != i }
+        let reserved = others.map { j in max(minShare, length > 0 ? Double(s.children[j].minLength(.h, mins) / length) : 0) }
+            .reduce(0, +)
+        let f = min(fraction, 1 - reserved)
+        guard f > 0 else { return nil }
+        let rest = others.map { s.weights[$0] }.reduce(0, +)
+        modify(sp) { s in
+            for j in others { s.weights[j] = rest > 0 ? s.weights[j] / rest * (1 - f) : (1 - f) / Double(others.count) }
+            s.weights[i] = f
+        }
+        return f
     }
 
     /// Makes `key` a tab of the leaf holding `onto` (dropping a window on the middle of another).

@@ -309,6 +309,20 @@ final class TabsController {
         return true
     }
 
+    /// Move window (⌃⌥⇧ and an arrow) in Tabs mode: the focused tab moves along its strip, left or up to go
+    /// earlier, right or down later. False when the focused window isn't in a Tabs mode group.
+    func shiftFocused(_ d: Heading) -> Bool {
+        guard let fw = AX.focusedWindow(), let s = screen(of: fw), engine.mode(of: s) == .tabs else { return false }
+        var tg = state(s)
+        guard let g = tg.groups.firstIndex(where: { $0.contains(fw.key) }), let i = tg.groups[g].firstIndex(of: fw.key) else { return false }
+        let j = i + (d == .left || d == .up ? -1 : 1)
+        guard tg.groups[g].indices.contains(j) else { return true }  // already at that end
+        tg.groups[g].swapAt(i, j)
+        save(tg, s)
+        apply(s)
+        return true
+    }
+
     /// Keeps the underline on the group holding the focused window.
     func focusChanged() {
         guard let fw = AX.focusedWindow(), let s = screen(of: fw), engine.mode(of: s) == .tabs else { return }

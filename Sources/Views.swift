@@ -62,11 +62,14 @@ extension Engine {
 ///     bower://everything      bower://back            bower://forward     bower://step-in
 ///     bower://step-out        bower://frame           bower://focus/left  bower://arrange
 ///     bower://arrange-all     bower://split           bower://desktop     bower://float
-///     bower://float-all       bower://retile          bower://settings
+///     bower://float-all       bower://retile          bower://settings    bower://move/left
+///     bower://width/wider     bower://width/narrower  bower://center      bower://put-back
+///     bower://next-display
 enum Command: Equatable {
     case layout(Int), send(Int), next, previous, snap(SnapAction), wheel, bar, mode(WindowMode)
     case workspace(String), saveWorkspace, view(Int), saveView(Int), everything, back, forward
     case stepIn, stepOut, frame, focus(String), arrange, arrangeAll, split, desktop, float, floatAll, retile, settings
+    case move(Heading), width(wider: Bool), center, putBack, nextDisplay
 
     init?(url: URL) {
         guard url.scheme == "bower" else { return nil }
@@ -101,6 +104,11 @@ enum Command: Equatable {
         case "float-all": self = .floatAll
         case "retile": self = .retile
         case "settings": self = .settings
+        case "move": guard let d = arg.flatMap(Heading.init(rawValue:)) else { return nil }; self = .move(d)
+        case "width": guard let a = arg, ["wider", "narrower"].contains(a) else { return nil }; self = .width(wider: a == "wider")
+        case "center": self = .center
+        case "put-back": self = .putBack
+        case "next-display": self = .nextDisplay
         default: return nil
         }
     }

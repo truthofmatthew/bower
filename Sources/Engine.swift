@@ -162,11 +162,13 @@ final class Engine {
         if let n = (1...8).map({ (state.current + $0) % 9 }).first(where: { !used.contains($0) }) { switchTo(n) }
     }
 
-    enum Direction { case left, right, up, down }
+    typealias Direction = Heading
 
-    /// ⌘⌥J/L/I/K: focuses the nearest visible window in that direction, measured between centres.
-    func focusNeighbour(_ d: Direction) {
-        guard let from = AX.focusedWindow()?.frame else { return }
+    /// ⌘⌥J/L/I/K: focuses the nearest visible window in that direction, measured between centres; failing that,
+    /// the nearest window on the display that lies that way. False when there's nothing that way.
+    @discardableResult
+    func focusNeighbour(_ d: Direction) -> Bool {
+        guard let from = AX.focusedWindow()?.frame else { return false }
         let c = CGPoint(x: from.midX, y: from.midY)
         let candidates = AX.windows().compactMap { w -> (Win, CGFloat)? in
             guard let f = w.frame, !isParked(f), f != from else { return nil }
@@ -180,7 +182,23 @@ final class Engine {
             }
             return ahead ? (w, hypot(dx, dy)) : nil
         }
-        candidates.min { $0.1 < $1.1 }?.0.focus()
+        if let w = candidates.min(by: { $0.1 < $1.1 })?.0 { w.focus(); return true }
+        return NSScreen.containing(ax: from).map { focusOtherDisplay(d, from: from, on: $0) } ?? false
+    }
+
+    /// Focuses the window nearest `from` on the display lying `d` of `s`. False when there's no display that way,
+    /// or nothing showing on it.
+    func focusOtherDisplay(_ d: Direction, from: CGRect, on s: NSScreen) -> Bool {
+        let others = NSScreen.screens.filter { $0 != s }.map { ($0, $0.axFrame) }
+        guard let to = Compass.nearest(from: s.axFrame, others, d) else { return false }
+        let wins = AX.windows().compactMap { w -> (Win, CGRect)? in
+            guard let f = w.frame, !isParked(f), !ignores(w), NSScreen.containing(ax: f) == to,
+                  (state.assignment[w.key] ?? state.current) == state.current else { return nil }
+            return (w, f)
+        }
+        guard let w = wins.min(by: { Compass.distance($0.1, from) < Compass.distance($1.1, from) })?.0 else { return false }
+        w.focus()
+        return true
     }
 
     func setKeepEmptySpace(_ on: Bool) {
@@ -455,6 +473,7 @@ final class Engine {
     func setMode(_ m: WindowMode, display uuid: String, layout n: Int) {
         let was = state.layouts[n].modes[uuid] ?? .native
         store.update { $0.layouts[n].modes[uuid] = m }
+        if was != m { live.bentoOrder["\(n)|\(uuid)"] = nil }  // a fresh Bento display goes front to back again
         if was == .dock, m != .dock { leaveDock(display: uuid, layout: n) }
         // Leaving Tabs mode puts the tabs behind others back; that has to happen before the new mode arranges them.
         if was == .tabs, m != .tabs, n == state.current { onWindowsChanged() }
@@ -520,11 +539,7 @@ final class Engine {
     /// Bento tiling of one display: the most recently focused window takes the left column.
     func retile(_ s: NSScreen, toast: Bool = true) {
         if mode(of: s) == .dock { return rebalance(s) }
-        let order = AX.zOrder()
-        let wins = AX.windows().filter { w in
-            guard let f = w.frame, !isParked(f), NSScreen.containing(ax: f) == s, !ignores(w) else { return false }
-            return (state.assignment[w.key] ?? state.current) == state.current
-        }.sorted { (order.firstIndex(of: $0.id) ?? .max) < (order.firstIndex(of: $1.id) ?? .max) }
+        let wins = bentoWindows(on: s)
         // "Keep its space empty": windows of quit apps that lived here hold their tiles, at the end of the grid.
         let running = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
         let held = state.keepEmptySpace
@@ -533,6 +548,20 @@ final class Engine {
                                 mins: wins.map(\.minSize) + Array(repeating: nil, count: held))
         Motion.shared.apply(Array(zip(wins, tiles)), engine: self)
         if toast, !wins.isEmpty { onRetile(wins.count, s) }
+    }
+
+    /// A Bento display's windows in tile order: front to back, or the order a keyboard move set (`Bento.order`).
+    func bentoWindows(on s: NSScreen) -> [Win] {
+        let order = AX.zOrder()
+        let wins = AX.windows().filter { w in
+            guard let f = w.frame, !isParked(f), NSScreen.containing(ax: f) == s, !ignores(w) else { return false }
+            return (state.assignment[w.key] ?? state.current) == state.current
+        }.sorted { (order.firstIndex(of: $0.id) ?? .max) < (order.firstIndex(of: $1.id) ?? .max) }
+        let k = dockKey(s)
+        guard let kept = live.bentoOrder[k] else { return wins }
+        let keys = Bento.order(z: wins.map(\.key), kept: kept)
+        live.bentoOrder[k] = keys
+        return keys.compactMap { k in wins.first { $0.key == k } }
     }
 
     // MARK: Snapping

@@ -123,6 +123,64 @@ enum Bento {
     }
 }
 
+extension Bento {
+    /// Bento's window order. Normally front to back (`z`); once a window was moved by keyboard, the order it set
+    /// (`kept`) stays, with windows new since then first, as the most recently focused.
+    static func order(z: [String], kept: [String]?) -> [String] {
+        guard let kept else { return z }
+        let here = Set(z)
+        return z.filter { !kept.contains($0) } + kept.filter(here.contains)
+    }
+}
+
+/// A way to go from one window (or display) to the next: arrow keys, H J K L, bower://focus/left.
+enum Heading: String, CaseIterable { case left, right, up, down }
+
+/// Which rectangle lies a given way from another. Pure geometry, so the keyboard moves are tested on their own.
+enum Compass {
+    /// `r` lies wholly past `from`'s edge that way (1 point of slack for touching edges).
+    static func ahead(_ r: CGRect, of from: CGRect, _ d: Heading) -> Bool {
+        switch d {
+        case .left: r.maxX <= from.minX + 1
+        case .right: r.minX >= from.maxX - 1
+        case .up: r.maxY <= from.minY + 1
+        case .down: r.minY >= from.maxY - 1
+        }
+    }
+
+    /// The nearest rectangle that way, measured between centres; nil when nothing lies that way.
+    static func nearest<K>(from: CGRect, _ candidates: [(K, CGRect)], _ d: Heading) -> K? {
+        candidates.filter { ahead($0.1, of: from, d) }
+            .min { distance($0.1, from) < distance($1.1, from) }?.0
+    }
+
+    static func distance(_ a: CGRect, _ b: CGRect) -> CGFloat { hypot(a.midX - b.midX, a.midY - b.midY) }
+}
+
+/// ⌃⌥W and ⌃⌥⇧W: a window's width steps through these fractions of the room it has.
+enum WidthCycle {
+    static let steps: [Double] = [1.0 / 2, 2.0 / 3, 0.9, 1]
+
+    /// The next step past `current` (a fraction), wider or narrower; nil at the end.
+    static func next(from current: Double, wider: Bool) -> Double? {
+        wider ? steps.first { $0 > current + 0.01 } : steps.last { $0 < current - 0.01 }
+    }
+
+    /// `f` at `width`, centred on where it was, keeping its height, kept inside `v`.
+    static func frame(_ f: CGRect, width: CGFloat, in v: CGRect) -> CGRect {
+        let w = min(width, v.width), h = min(f.height, v.height)
+        let x = min(max(f.midX - w / 2, v.minX), v.maxX - w)
+        let y = min(max(f.minY, v.minY), v.maxY - h)
+        return CGRect(x: x, y: y, width: w, height: h).integral
+    }
+
+    /// `f`, same size, in the middle of `v` (shrunk to fit if it's bigger).
+    static func centred(_ f: CGRect, in v: CGRect) -> CGRect {
+        let w = min(f.width, v.width), h = min(f.height, v.height)
+        return CGRect(x: v.midX - w / 2, y: v.midY - h / 2, width: w, height: h).integral
+    }
+}
+
 /// Snap Wheel geometry from the component sheet, in the wheel panel's flipped coordinates.
 enum WheelGeometry {
     static let panelSize = CGSize(width: 420, height: 460)

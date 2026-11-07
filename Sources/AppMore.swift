@@ -202,6 +202,17 @@ extension AppDelegate {
         case .floatAll: if let s = engine.focusedScreen { engine.floatAll(s) }
         case .retile: if let s = engine.focusedScreen { engine.retile(s) }
         case .settings: openSettings()
+        case .move(let d): moveWindow(d)
+        case .width(let wider): engine.cycleWidth(wider: wider)
+        case .center: engine.centre()
+        case .putBack: engine.putBack()
+        case .nextDisplay: engine.sendToNextDisplay()
         }
+    }
+
+    /// Move window: a Tabs mode tab moves along its strip; everything else is the engine's.
+    func moveWindow(_ d: Heading) {
+        if tabs.shiftFocused(d) { return }
+        engine.moveWindow(d)
     }
 }

@@ -12,6 +12,8 @@ final class EngineLive {
     var collapsed: [String: CollapsedIcon] = [:]
     var resizeWork: DispatchWorkItem?
     var seamWork: DispatchWorkItem?
+    /// Bento's tile order per "layout|display", once a window was moved there by keyboard; window keys.
+    var bentoOrder: [String: [String]] = [:]
 }
 
 extension Engine {
@@ -332,31 +334,28 @@ extension Engine {
 
     var focusedScreen: NSScreen? { AX.focusedWindow().flatMap(screen(of:)) ?? NSScreen.underMouse }
 
-    /// To the neighbouring window: when zoomed to one window, the zoom moves along; past the edge sideways,
-    /// the next or previous layout.
+    /// To the neighbouring window: when zoomed to one window, the zoom moves along; past the edge, a window on the
+    /// display that lies that way; past the last display sideways, the next or previous layout.
     func neighbour(_ dir: Direction) {
-        guard let s = focusedScreen, mode(of: s) == .dock, let w = AX.focusedWindow() else { return focusNeighbour(dir) }
+        guard let s = focusedScreen, mode(of: s) == .dock, let w = AX.focusedWindow() else { focusNeighbour(dir); return }
         let d = dockLayout(s)
         let all = d.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap), mins: dockMins).frames
-        guard let from = all[w.key] else { return focusNeighbour(dir) }
-        let next = all.filter { $0.key != w.key && !d.root.backgroundTabs.contains($0.key) }.compactMap { k, f -> (String, CGFloat)? in
-            let dx = f.midX - from.midX, dy = f.midY - from.midY
-            let ahead: Bool
-            switch dir {
-            case .left: ahead = f.maxX <= from.minX + 1
-            case .right: ahead = f.minX >= from.maxX - 1
-            case .up: ahead = f.maxY <= from.minY + 1
-            case .down: ahead = f.minY >= from.maxY - 1
-            }
-            return ahead ? (k, hypot(dx, dy)) : nil
-        }.min { $0.1 < $1.1 }?.0
-        guard let next else {
+        guard let from = all[w.key] else { focusNeighbour(dir); return }
+        guard let next = dockNeighbour(of: w.key, dir, frames: all, layout: d) else {
+            if focusOtherDisplay(dir, from: from, on: s) { return }
             if dir == .left || dir == .right { step(dir == .right ? 1 : -1) }
             return
         }
         if let z = d.zoom, d.root[z]?.kind != .split, let p = d.root.path(of: next) { setZoom(s, p) }
         AX.windows().first { $0.key == next }?.focus()
         onHUD(String(localized: "Moved."))
+    }
+
+    /// The tile nearest `key`'s that way in a solved tree, leaving out tabs behind another.
+    func dockNeighbour(of key: String, _ dir: Direction, frames all: [String: CGRect], layout d: DockLayout) -> String? {
+        guard let from = all[key] else { return nil }
+        let behind = d.root.backgroundTabs
+        return Compass.nearest(from: from, all.filter { $0.key != key && !behind.contains($0.key) }.map { ($0.key, $0.value) }, dir)
     }
 
     // MARK: Changing the tree by hand

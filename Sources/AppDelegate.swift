@@ -327,8 +327,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         case .cycleLayouts: return hk.add(c.key, c.mods) { [weak self] in self?.engine.cycle() }
         case .emptyLayout: return hk.add(c.key, c.mods) { [weak self] in self?.engine.switchToEmptyLayout() }
         case .focus:
-            let dir: [Engine.Direction] = [.left, .right, .up, .down]
-            return hk.add(c.key, c.mods) { [weak self] in self?.engine.neighbour(dir[i]); self?.flashMap() }
+            let d = Heading.allCases[i % 4]
+            return hk.add(c.key, c.mods) { [weak self] in self?.engine.neighbour(d); self?.flashMap() }
+        case .moveWindow:
+            let d = Heading.allCases[i % 4]
+            return hk.add(c.key, c.mods) { [weak self] in self?.moveWindow(d) }
+        case .wider: return hk.add(c.key, c.mods) { [weak self] in self?.engine.cycleWidth(wider: true) }
+        case .narrower: return hk.add(c.key, c.mods) { [weak self] in self?.engine.cycleWidth(wider: false) }
+        case .center: return hk.add(c.key, c.mods) { [weak self] in self?.engine.centre() }
+        case .putBack: return hk.add(c.key, c.mods) { [weak self] in self?.engine.putBack() }
+        case .nextDisplay: return hk.add(c.key, c.mods) { [weak self] in self?.engine.sendToNextDisplay() }
         case .retile:
             return hk.add(c.key, c.mods) { [weak self] in
                 guard let self else { return }
