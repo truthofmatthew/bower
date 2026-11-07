@@ -105,58 +105,6 @@
         }
       }
     },
-    "%1$@ with the arrows is %2$@. Change that first.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ mit den Pfeiltasten ist schon „%2$@“. Ändere das zuerst."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ con las flechas ya es %2$@. Cámbialo primero."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "‏⁨%1$@⁩ با کلیدهای جهت‌نما برای ⁨%2$@⁩ گرفته شده. اول اونو عوض کن."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ avec les flèches correspond déjà à %2$@. Modifiez-le d’abord."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ con le frecce è già %2$@. Cambialo prima."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "矢印キーと%1$@の組み合わせは「%2$@」に使われています。先にそちらを変更してください。"
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ com as setas já é %2$@. Mude isso primeiro."
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ 加箭头键已用于“%2$@”。请先更改它。"
-          }
-        }
-      }
-    },
     "%@ (waiting)": {
       "localizations": {
         "de": {
@@ -593,10 +541,58 @@
     },
     "%@ with the arrows is %@. Change that first.": {
       "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ mit den Pfeiltasten ist schon „%2$@“. Ändere das zuerst."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "new",
             "value": "%1$@ with the arrows is %2$@. Change that first."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ con las flechas ya es %2$@. Cámbialo primero."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "‏⁨%1$@⁩ با کلیدهای جهت‌نما برای ⁨%2$@⁩ گرفته شده. اول اونو عوض کن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ avec les flèches correspond déjà à %2$@. Modifiez-le d’abord."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ con le frecce è già %2$@. Cambialo prima."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "矢印キーと%1$@の組み合わせは「%2$@」に使われています。先にそちらを変更してください。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ com as setas já é %2$@. Mude isso primeiro."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ 加箭头键已用于“%2$@”。请先更改它。"
           }
         }
       }
@@ -2440,6 +2436,7 @@
       }
     },
     "A new Window Mode where windows never overlap. Drag a window to another's edge to dock it; drag the gaps to resize.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -5202,6 +5199,58 @@
         }
       }
     },
+    "Back down the same steps, to half the width.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieselben Stufen zurück, bis zur halben Breite."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelve por los mismos pasos, hasta la mitad del ancho."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "همون پله‌ها رو برمی‌گرده، تا نصف پهنا."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Redescend les mêmes étapes, jusqu’à la moitié de la largeur."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torna indietro per gli stessi passi, fino a metà larghezza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ段階を戻り、幅の半分まで狭くします。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volta pelos mesmos passos, até metade da largura."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按相同的档位缩回，直到一半宽度。"
+          }
+        }
+      }
+    },
     "Back to how they came. Layouts, shortcuts and workspaces stay.": {
       "localizations": {
         "de": {
@@ -6666,6 +6715,7 @@
       }
     },
     "Browser profiles get their own layouts": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -7966,6 +8016,7 @@
       }
     },
     "Commands by link": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -10431,6 +10482,7 @@
       }
     },
     "Expand and the overview": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -10483,6 +10535,7 @@
       }
     },
     "Expand part of your arrangement to fill the screen, frame one window, and see every window at once with ⌃⌥O.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -18481,6 +18534,7 @@
       }
     },
     "Moving between layouts now takes the swipe from macOS instead of both happening. Hold fn for macOS's own.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -24996,6 +25050,7 @@
       }
     },
     "Recipes can use Claude or OpenAI with your own key, or a model on this Mac. Settings › AI.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -26564,6 +26619,7 @@
       }
     },
     "Run Bower from Raycast, Alfred, Shortcuts or a script with bower:// links.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -26980,6 +27036,7 @@
       }
     },
     "Save a view with ⌃⌥⇧1–9, come back with ⌃⌥1–9, and go back and forward like a browser.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -27298,6 +27355,7 @@
       }
     },
     "Saved views and history": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -30753,6 +30811,7 @@
       }
     },
     "Swipes that don't fight macOS": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -31373,6 +31432,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "该键不能用于 Bower。"
+          }
+        }
+      }
+    },
+    "That's every window. Drag around fewer to expand them.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das sind alle Fenster. Zieh um weniger, um sie auszubreiten."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son todas las ventanas. Arrastra alrededor de menos para expandirlas."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "این همه‌ی پنجره‌هاست. دور پنجره‌های کمتری بکش تا گسترش پیدا کنن."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "C’est toutes les fenêtres. Entourez-en moins pour les déployer."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sono tutte le finestre. Trascina intorno a meno finestre per espanderle."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すべてのウインドウが入っています。展開するには、もっと少なく囲んでください。"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "São todas as janelas. Arraste em volta de menos para expandi-las."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这是所有窗口。框选更少的窗口才能展开。"
           }
         }
       }
@@ -35922,6 +36033,7 @@
       }
     },
     "With an Edge or Chrome window in front, Bower's menu › the app › New windows open in routes just that profile.": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {
@@ -36702,6 +36814,7 @@
       }
     },
     "Your own AI": {
+      "extractionState": "stale",
       "localizations": {
         "de": {
           "stringUnit": {

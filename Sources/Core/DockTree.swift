@@ -105,6 +105,14 @@ struct DockNode: Codable, Equatable {
     }
 
     /// Adds a window next to `beside` (or to the whole tree), along the longer side of where it is now.
+    /// Which tile a new window splits: the focused one, unless it's already under a sixth of `area`; then the
+    /// largest, so a burst of new windows doesn't halve one corner again and again.
+    static func splitTarget(focused: String?, frames: [String: CGRect], area: CGRect) -> String? {
+        let size = { (r: CGRect) in r.width * r.height }
+        if let f = focused, let r = frames[f], size(r) >= size(area) / 6 { return f }
+        return frames.max { a, b in size(a.value) < size(b.value) || (size(a.value) == size(b.value) && a.key > b.key) }?.key ?? focused
+    }
+
     mutating func add(_ key: String, beside: String?, frames: [String: CGRect]) {
         let target = beside.flatMap { path(of: $0) } ?? []
         let r = beside.flatMap { frames[$0] }

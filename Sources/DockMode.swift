@@ -11,6 +11,8 @@ final class EngineLive {
     var solved: [String: DockNode.Solved] = [:]
     var collapsed: [String: CollapsedIcon] = [:]
     var resizeWork: DispatchWorkItem?
+    /// Floating windows centred with ⌃⌥C keep their size instead of filling the Desktop's tile.
+    var centredFloats: Set<String> = []
     var seamWork: DispatchWorkItem?
     /// Bento's tile order per "layout|display", once a window was moved there by keyboard; window keys.
     var bentoOrder: [String: [String]] = [:]
@@ -84,7 +86,8 @@ extension Engine {
             }
             for w in wins where !d.root.keys.contains(w.key) && !d.floating.contains(w.key) {
                 let frames = d.root.solve(in: rect, gap: gap, mins: dockMins).frames
-                let beside = focused.flatMap { frames[$0] != nil ? $0 : nil } ?? d.root.keys.last
+                let beside = DockNode.splitTarget(focused: focused.flatMap { frames[$0] != nil ? $0 : nil } ?? d.root.keys.last,
+                                                  frames: frames, area: rect)
                 d.root.add(w.key, beside: beside, frames: frames)
             }
             // The Desktop's tile: there while windows float on it, or when shown on purpose; never when hidden.
@@ -118,7 +121,8 @@ extension Engine {
         let floating = wins.filter { d.floating.contains($0.key) }
         for w in wins {
             if d.floating.contains(w.key) {
-                if floating.count == 1, state.prefs.soleFloatTakesDesktop, let dr = shown.desktop ?? full.desktop { moves.append((w, dr)) }
+                if floating.count == 1, state.prefs.soleFloatTakesDesktop, !live.centredFloats.contains(w.key),
+                   let dr = shown.desktop ?? full.desktop { moves.append((w, dr)) }
                 continue
             }
             guard let f = shown.frames[w.key], !behind.contains(w.key) else {
@@ -173,6 +177,7 @@ extension Engine {
         updateDock(s) { d in
             if floating {
                 d.floating.remove(w.key)
+                live.centredFloats.remove(w.key)
             } else {
                 d.root.remove(w.key, share: state.prefs.shareRemovedSpace)
                 d.floating.insert(w.key)
@@ -317,6 +322,7 @@ extension Engine {
 
     /// Zooms each Dock display to the smallest part holding every window inside `rect` (AX coordinates).
     func zoom(to rect: CGRect) {
+        var expanded = false
         for s in NSScreen.screens where mode(of: s) == .dock && s.axFrame.intersects(rect) {
             let d = dockLayout(s)
             let solved = d.root.solve(in: dockRect(s), gap: CGFloat(state.prefs.gap), mins: dockMins)
@@ -327,9 +333,10 @@ extension Engine {
                 p = Array(zip(p, q).prefix { $0 == $1 }.map(\.0))
             }
             setZoom(s, p.isEmpty ? nil : p)
+            expanded = expanded || !p.isEmpty
         }
         onDid("marquee")
-        onHUD(String(localized: "Expanded to fit."))
+        onHUD(expanded ? String(localized: "Expanded to fit.") : String(localized: "That's every window. Drag around fewer to expand them."))
     }
 
     var focusedScreen: NSScreen? { AX.focusedWindow().flatMap(screen(of:)) ?? NSScreen.underMouse }

@@ -264,10 +264,14 @@ final class Store: ObservableObject {
         DispatchQueue.main.async { self.flush() }
     }
 
+    /// What's on disk, so an update that changed nothing (the 5-second records refresh, mostly) isn't written again.
+    private var saved: Data?
+
     func flush() {
         savePending = false
         let enc = JSONEncoder()
         enc.outputFormatting = [.prettyPrinted, .sortedKeys]
-        try? enc.encode(state).write(to: url, options: .atomic)
+        guard let data = try? enc.encode(state), data != saved else { return }
+        if (try? data.write(to: url, options: .atomic)) != nil { saved = data }
     }
 }

@@ -267,7 +267,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                   // A launcher-script app arrives with pid -1; its bundle ID still finds the real process.
                   let pid = app.processIdentifier > 0 ? app.processIdentifier
                       : AX.apps().first(where: { $0.app.bundleIdentifier == app.bundleIdentifier })?.pid,
-                  pid != ProcessInfo.processInfo.processIdentifier else { return }
+                  pid != ProcessInfo.processInfo.processIdentifier,
+                  // Only when you switched apps: one that comes forward on its own (a VPN client, a notification)
+                  // shouldn't take you to its layout.
+                  CGEventSource.secondsSinceLastEventType(.hidSystemState, eventType: CGEventType(rawValue: ~0)!) < 1.5
+            else { return }
             self.engine.follow(pid: pid)
             self.tabs.reveal(pid: pid)
         }

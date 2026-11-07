@@ -43,10 +43,16 @@ extension Engine {
     }
 
     private func moveBento(_ w: Win, _ dir: Direction, on s: NSScreen) {
-        let wins = bentoWindows(on: s)
-        let tiles = Bento.tiles(count: wins.count, in: s.axUsableFrame, gap: CGFloat(state.prefs.gap), mins: wins.map(\.minSize))
-        guard let i = wins.firstIndex(where: { $0.key == w.key }), tiles.indices.contains(i) else { return }
-        let others = tiles.indices.filter { $0 != i }.map { ($0, tiles[$0]) }
+        let tiles = bentoTiles(bentoWindows(on: s), on: s)
+        // Each tile's window is the one sitting in it now: bringing a window forward changes the front-to-back
+        // order without moving anything, so that order can't say whose tile is whose.
+        var left = bentoWindows(on: s)
+        let wins = tiles.prefix(left.count).map { t -> Win in
+            let i = left.indices.min { a, b in Bento.distance(left[a].frame, t) < Bento.distance(left[b].frame, t) }!
+            return left.remove(at: i)
+        }
+        guard let i = wins.firstIndex(where: { $0.key == w.key }) else { return }
+        let others = wins.indices.filter { $0 != i }.map { ($0, tiles[$0]) }
         guard let j = Compass.nearest(from: tiles[i], others, dir) else {
             return onHUD(String(localized: "Nothing further that way."))
         }
@@ -109,8 +115,16 @@ extension Engine {
     /// of its display, keeping its size.
     func centre() {
         guard let w = AX.focusedWindow(), let s = screen(of: w) else { return }
-        if mode(of: s) == .dock, isDocked(w) { return toggleFloat(w) }
         guard let f = w.frame else { return }
+        // Dock mode keeps tiles clear: the window floats, at its size, in the middle of the Desktop's tile.
+        if mode(of: s) == .dock {
+            live.centredFloats.insert(w.key)
+            if isDocked(w) { toggleFloat(w) }
+            guard let dr = live.solved[s.uuid]?.desktop else { return }
+            let size = CGSize(width: min(f.width, dr.width), height: min(f.height, dr.height))
+            return move(w, to: CGRect(x: (dr.midX - size.width / 2).rounded(), y: (dr.midY - size.height / 2).rounded(),
+                                      width: size.width, height: size.height))
+        }
         move(w, to: WidthCycle.centred(f, in: s.axUsableFrame))
     }
 

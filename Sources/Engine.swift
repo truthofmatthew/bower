@@ -540,14 +540,18 @@ final class Engine {
     func retile(_ s: NSScreen, toast: Bool = true) {
         if mode(of: s) == .dock { return rebalance(s) }
         let wins = bentoWindows(on: s)
-        // "Keep its space empty": windows of quit apps that lived here hold their tiles, at the end of the grid.
+        Motion.shared.apply(Array(zip(wins, bentoTiles(wins, on: s))), engine: self)
+        if toast, !wins.isEmpty { onRetile(wins.count, s) }
+    }
+
+    /// Bento's tiles for `wins`. "Keep its space empty": windows of quit apps that lived here hold their tiles, at
+    /// the end of the grid.
+    func bentoTiles(_ wins: [Win], on s: NSScreen) -> [CGRect] {
         let running = Set(NSWorkspace.shared.runningApplications.compactMap(\.bundleIdentifier))
         let held = state.keepEmptySpace
             ? state.orphans.filter { $0.layout == state.current && $0.display == s.uuid && !running.contains($0.bundleID) }.count : 0
-        let tiles = Bento.tiles(count: wins.count + held, in: s.axUsableFrame, gap: CGFloat(state.prefs.gap),
-                                mins: wins.map(\.minSize) + Array(repeating: nil, count: held))
-        Motion.shared.apply(Array(zip(wins, tiles)), engine: self)
-        if toast, !wins.isEmpty { onRetile(wins.count, s) }
+        return Bento.tiles(count: wins.count + held, in: s.axUsableFrame, gap: CGFloat(state.prefs.gap),
+                           mins: wins.map(\.minSize) + Array(repeating: nil, count: held))
     }
 
     /// A Bento display's windows in tile order: front to back, or the order a keyboard move set (`Bento.order`).

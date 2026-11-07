@@ -82,9 +82,10 @@ extension Engine {
 
     /// Remembers which windows sit on which display, relative to its top-left. Runs every few seconds and before a switch.
     func snapshotDisplays() {
+        let wins = AX.windows()
         var snap: [String: (display: DisplayRecord, windows: [WindowRecord])] = [:]
         for s in NSScreen.screens { snap[s.uuid] = (Engine.displayRecord(s), []) }
-        for w in AX.windows() {
+        for w in wins {
             guard let f = restingFrame(w), let s = NSScreen.containing(ax: f) else { continue }
             let rel = f.offsetBy(dx: -s.axFrame.minX, dy: -s.axFrame.minY)
             if let r = record(w, frame: rel) { snap[s.uuid]?.windows.append(r) }
@@ -95,7 +96,7 @@ extension Engine {
             snap[uuid] = old
         }
         displaySnapshot = snap
-        updateRecords(AX.windows())
+        updateRecords(wins)
     }
 
     /// Called when displays connect or disconnect. A display that left goes on the shelf with its windows;

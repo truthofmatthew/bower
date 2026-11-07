@@ -56,6 +56,7 @@ final class Overview {
         panels = []
         monitors.forEach(NSEvent.removeMonitor)
         monitors = []
+        FocusRing.shared.refresh()  // hidden while the overview was up
     }
 }
 

@@ -116,4 +116,17 @@ final class DockTreeTests: XCTestCase {
         let cols = DockNode.split(.h, [.split(.v, [.window("a"), .window("b")]), .window("c")])
         XCTAssertEqual(cols.solve(in: screen, gap: 0, mins: ["b": CGSize(width: 700, height: 0)]).frames["a"]?.width, 700)
     }
+
+    /// Ten windows opened beside the focused one, one after another, never leave a tile under a tenth of the
+    /// largest one's area, as halving one corner again and again would.
+    func testBurstOfNewWindowsStaysBalanced() {
+        var t = DockNode.split(.h, [.window("0")])
+        for i in 1..<10 {
+            let frames = t.solve(in: screen, gap: 0).frames
+            t.add(String(i), beside: DockNode.splitTarget(focused: String(i - 1), frames: frames, area: screen), frames: frames)
+        }
+        let areas = t.solve(in: screen, gap: 0).frames.values.map { $0.width * $0.height }
+        XCTAssertEqual(areas.count, 10)
+        XCTAssertGreaterThan(areas.min()!, areas.max()! / 10)
+    }
 }

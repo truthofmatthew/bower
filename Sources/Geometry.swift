@@ -97,6 +97,12 @@ enum Bento {
         return out
     }
 
+    /// How far a window's frame is from a tile, centre to centre; a window with no frame is as far as can be.
+    static func distance(_ f: CGRect?, _ t: CGRect) -> CGFloat {
+        guard let f else { return .greatestFiniteMagnitude }
+        return hypot(f.midX - t.midX, f.midY - t.midY)
+    }
+
     /// The same tiles, made to fit windows that can't go smaller than `mins` (by index; nil for no limit). The
     /// even grid when everything fits it; otherwise the same shape, with room taken from tiles that can spare it.
     static func tiles(count n: Int, in visible: CGRect, gap g: CGFloat = 6, mins: [CGSize?]) -> [CGRect] {
