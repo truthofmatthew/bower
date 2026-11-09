@@ -1,10 +1,14 @@
 # Releasing Bower
 
-`./release.sh` builds Bower, signs it with your Developer ID, has Apple notarize it, staples the ticket and publishes
-`Bower.zip` as a GitHub release, so it opens on anyone's Mac without the "Open Anyway" step. It needs two things set
-up once on your Mac; after that a release is one command.
+`./release.sh` builds Bower and publishes `Bower.zip` as the GitHub release for the version in `project.yml`.
 
-## Once: 1. A Developer ID certificate
+- **Without the paid Apple Developer Program** (how it works today): it's signed with your Apple Development
+  certificate and not notarized. People open it once with **Open Anyway** in System Settings › Privacy & Security;
+  the site, README and release notes say how. Nothing to set up: skip to [Every release](#every-release).
+- **With the program**: do the two one-time steps below and the same command also has Apple notarize the app, so it
+  opens anywhere without a warning. It switches by itself once the Developer ID certificate is in your keychain.
+
+## Later, with the program: 1. A Developer ID certificate
 
 This needs a paid [Apple Developer Program](https://developer.apple.com/programs/) membership, and the team's
 Account Holder role (Bower's team is `3GHX277DW6`).
@@ -13,7 +17,7 @@ Account Holder role (Bower's team is `3GHX277DW6`).
 2. Click **Manage Certificates…**, then **+**, then **Developer ID Application**.
 3. Check it's there: `security find-identity -v -p codesigning` lists "Developer ID Application: …".
 
-## Once: 2. Notarization credentials
+## Later, with the program: 2. Notarization credentials
 
 1. At [account.apple.com](https://account.apple.com) › Sign-In and Security › **App-Specific Passwords**, make one
    called "Bower notarization" and copy it.
@@ -29,8 +33,7 @@ xcrun notarytool store-credentials bower-notary --apple-id YOUR_APPLE_ID --team-
 1. Set `MARKETING_VERSION` (and bump `CURRENT_PROJECT_VERSION`) in `project.yml`, update What's New in
    `Sources/Lessons.swift`, and commit.
 2. Run `./release.sh`, or `./release.sh notes.md` with your own release notes.
-   - If that version's release already exists, only its `Bower.zip` is replaced. Running it now re-publishes 1.2,
-     notarized.
+   - If that version's release already exists, only its `Bower.zip` is replaced, rebuilt from what's committed.
 3. People who turned on "Check for updates automatically" (Settings › General › Updates) hear about it within a
    day; anyone can choose Help › Check for Updates in Bower's menu.
 
