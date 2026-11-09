@@ -82,6 +82,7 @@ final class TabsController {
             (engine.state.assignment[w.key] ?? current) == current && screen(of: w) == s && !(w.frame.map(engine.isPinned) ?? false)
         }
         let byKey = Dictionary(wins.map { ($0.key, $0) }, uniquingKeysWith: { a, _ in a })
+        known.merge(byKey) { _, new in new }
         var tg = state(s)
         tg.groups = tg.groups.map { $0.filter { byKey[$0] != nil } }
         let known = Set(tg.groups.joined())
@@ -146,6 +147,7 @@ final class TabsController {
     func applyDock() {
         var ids = Set<String>()
         let wins = Dictionary(AX.windows().map { ($0.key, $0) }, uniquingKeysWith: { a, _ in a })
+        known.merge(wins) { _, new in new }
         let focused = AX.focusedWindow()?.key
         for g in engine.dockGroups() {
             let id = "dock|\(g.keys.first ?? "")"
@@ -280,10 +282,44 @@ final class TabsController {
         }
     }
 
+    /// Windows seen at the last refresh, so a tab's × doesn't have to list every app's windows to find its own.
+    private var known: [String: Win] = [:]
+
     func close(_ windowKey: String) {
-        guard let w = AX.windows().first(where: { $0.key == windowKey }),
+        guard let w = known[windowKey] ?? AX.windows().first(where: { $0.key == windowKey }),
               let button: AXUIElement = AX.value(w.el, kAXCloseButtonAttribute) else { return }
         AXUIElementPerformAction(button, kAXPressAction as CFString)
+        whenGone(w, tries: 10) { [weak self] in
+            self?.known[windowKey] = nil
+            self?.showNext(after: windowKey)
+        }
+    }
+
+    /// Runs `then` once the window is really gone: a document with changes asks first, and its sheet must stay
+    /// in view rather than be covered by the next tab.
+    private func whenGone(_ w: Win, tries: Int, then: @escaping () -> Void) {
+        if (AX.value(w.el, kAXRoleAttribute) as String?) == nil { return then() }
+        guard tries > 0 else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { self.whenGone(w, tries: tries - 1, then: then) }
+    }
+
+    /// The tab beside a closing one shows at once, rather than after macOS reports the close and every window is
+    /// listed again. The usual refresh follows and finds it already in place.
+    private func showNext(after windowKey: String) {
+        for s in NSScreen.screens where engine.mode(of: s) == .tabs {
+            var tg = state(s)
+            guard let g = tg.groups.firstIndex(where: { $0.contains(windowKey) }), let i = tg.groups[g].firstIndex(of: windowKey) else { continue }
+            tg.groups[g].remove(at: i)
+            let showing = tg.active[g] == windowKey
+            if showing { tg.active[g] = tg.groups[g].indices.contains(i) ? tg.groups[g][i] : tg.groups[g].last }
+            save(tg, s)
+            if showing, let k = tg.active[g], let w = known[k] { w.setFrame(rects(s, groups: tg.groups.count)[g].pane) }
+            if let p = strips["\(s.uuid)#\(g)"] {
+                p.model.tabs.removeAll { $0.id == windowKey }
+                p.model.active = tg.active[g]
+            }
+            return
+        }
     }
 
     /// Drag a tab onto the other group's strip.

@@ -170,8 +170,12 @@ enum AX {
     /// Every standard, non-minimized, non-fullscreen window of every regular app that isn't hidden.
     static func windows() -> [Win] {
         let me = ProcessInfo.processInfo.processIdentifier
+        // Only apps that own a window somewhere (any desktop, parked or not): asking one with none still costs a
+        // round trip of 20–70 ms, and most running apps have none.
+        let info = CGWindowListCopyWindowInfo([.optionAll, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] ?? []
+        let owners = Set(info.compactMap { w in (w[kCGWindowLayer as String] as? Int) == 0 ? w[kCGWindowOwnerPID as String] as? pid_t : nil })
         return apps()
-            .filter { !$0.app.isHidden && $0.pid != me }
+            .filter { !$0.app.isHidden && $0.pid != me && owners.contains($0.pid) }
             .flatMap { pid, app -> [Win] in
                 let list: [AXUIElement] = value(AXUIElementCreateApplication(pid), kAXWindowsAttribute) ?? []
                 return list.compactMap { win($0, pid, app) }
