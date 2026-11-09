@@ -131,6 +131,10 @@ Everything is in `~/Library/Application Support/Bower/state.json`: layout names,
 
 ## Install
 
+**[Download Bower](https://github.com/truthofmatthew/bower/releases/latest/download/Bower.zip)** (macOS 14 or later), open the zip and drag Bower into Applications. The first time you open it, macOS says it can't check Bower yet, because this build isn't notarized: choose Done, then click **Open Anyway** in System Settings → Privacy & Security. You only do this once. [All releases](https://github.com/truthofmatthew/bower/releases)
+
+### Build it yourself
+
 You need Xcode 16 or later and [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`).
 
 1. Clone the repo.
