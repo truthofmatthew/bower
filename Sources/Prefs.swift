@@ -2,7 +2,7 @@ import AppKit
 
 /// Settings and state added with the docking, zoom and gesture features. Kept apart from `DeskState`'s older
 /// fields so it reads as one group in state.json; every key is optional, as there.
-struct Prefs: Codable {
+struct Prefs: Codable, Equatable {
     // Gestures
     /// Fingers that move between layouts: macOS's own Spaces swipe is taken over when it uses the same count.
     var swipeFingers = 3

@@ -102,7 +102,7 @@ final class TabsController {
             for k in tg.groups[g] {
                 guard let w = byKey[k], let f = w.frame else { continue }
                 if k == tg.active[g] {
-                    if f != r[g].pane { w.setFrame(r[g].pane) }
+                    place(w, f, in: r[g].pane)
                 } else if engine.isParked(f) {
                     engine.store.update { $0.saved[k] = r[g].pane }
                 } else {
@@ -115,18 +115,28 @@ final class TabsController {
         if focusActive, let k = tg.active[tg.focus], let w = byKey[k] { w.focus() }
     }
 
+    /// The pane each showing tab was last asked to fill, and the frame its app answered with.
+    private var asked: [String: (pane: CGRect, answer: CGRect?)] = [:]
+
+    /// Puts the showing tab in its pane, once: some apps keep their own height or position (Claude and Edge stay
+    /// full height), and asking again on every refresh made them jump back and forth.
+    private func place(_ w: Win, _ f: CGRect, in pane: CGRect) {
+        guard f != pane else { asked[w.key] = nil; return }
+        if let a = asked[w.key], a.pane == pane {
+            if a.answer == nil { asked[w.key]?.answer = f }  // its answer: leave it there
+            if asked[w.key]?.answer == f { return }
+        }
+        asked[w.key] = (pane, nil)
+        w.setFrame(pane)
+    }
+
     private func showStrip(_ s: NSScreen, group g: Int, rect: CGRect, tg: TabGroups, wins: [String: Win]) {
         let id = "\(s.uuid)#\(g)"
         let panel = strips[id] ?? StripPanel(controller: self)
         strips[id] = panel
-        panel.model.screen = s
-        panel.model.group = g
-        panel.model.dock = false
-        panel.model.prefs = engine.state.prefs
-        panel.model.focused = g == tg.focus
-        panel.model.active = tg.active[g]
-        panel.model.tabs = tg.groups[g].compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } }
-        panel.setFrame(NSScreen.appKit(rect), display: true)
+        panel.update(screen: s, group: g, dock: false, prefs: engine.state.prefs, active: tg.active[g], focused: g == tg.focus,
+                     tabs: tg.groups[g].compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } },
+                     frame: NSScreen.appKit(rect))
         if !tucked.contains(id) { panel.orderFrontRegardless() }
     }
 
@@ -142,14 +152,11 @@ final class TabsController {
             ids.insert(id)
             let panel = strips[id] ?? StripPanel(controller: self)
             strips[id] = panel
-            panel.model.screen = g.screen
-            panel.model.dock = true
-            panel.model.prefs = engine.state.prefs
-            panel.model.active = g.selected
-            panel.model.focused = focused.map(g.keys.contains) ?? false
-            panel.model.tabs = g.keys.compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } }
             let strip = CGRect(x: g.frame.minX, y: g.frame.minY - Self.stripHeight, width: g.frame.width, height: Self.stripHeight)
-            panel.setFrame(NSScreen.appKit(strip), display: true)
+            panel.update(screen: g.screen, group: panel.model.group, dock: true, prefs: engine.state.prefs, active: g.selected,
+                         focused: focused.map(g.keys.contains) ?? false,
+                         tabs: g.keys.compactMap { k in wins[k].map { StripModel.Tab(id: k, title: $0.title, icon: $0.icon) } },
+                         frame: NSScreen.appKit(strip))
             if !tucked.contains(id) { panel.orderFrontRegardless() }
         }
         for (k, p) in strips where k.hasPrefix("dock|") && !ids.contains(k) { p.orderOut(nil); strips[k] = nil }
@@ -202,7 +209,7 @@ final class TabsController {
             guard let self else { return false }
             self.dragKey = nil
             // Cheap checks first: some group exists, and the click is on a window's buttons (its first 80 × 30 points).
-            guard !self.strips.isEmpty, !e.fn, let hit = AX.hit(p), p.y - hit.bounds.minY < 30 else { return false }
+            guard !self.strips.isEmpty, !e.fn, !self.onStrip(p), let hit = AX.hit(p), p.y - hit.bounds.minY < 30 else { return false }
             if self.engine.state.prefs.tuckStrips, self.groupKeys(of: String(hit.id)) != nil { self.dragKey = String(hit.id) }
             guard p.x - hit.bounds.minX < 80, let keys = self.groupKeys(of: String(hit.id)), keys.count > 1,
                   let w = AX.window(id: hit.id, pid: hit.pid) else { return false }
@@ -236,6 +243,12 @@ final class TabsController {
             return false
         }
         EventTap.shared.add("tabButtons", h)
+    }
+
+    /// A point (AX coordinates) on one of the strips showing: the strip takes that click, not a window under it.
+    private func onStrip(_ p: CGPoint) -> Bool {
+        let q = NSScreen.appKit(CGRect(origin: p, size: .zero)).origin
+        return strips.values.contains { $0.isVisible && $0.frame.contains(q) }
     }
 
     // MARK: Actions from the strip
@@ -373,6 +386,8 @@ final class StripModel: ObservableObject {
         let id: String
         let title: String
         let icon: NSImage?
+        /// The icon is the app's and only changes with it; a fresh copy of it isn't a change.
+        static func == (a: Tab, b: Tab) -> Bool { a.id == b.id && a.title == b.title }
     }
 
     @Published var tabs: [Tab] = []
@@ -400,6 +415,20 @@ final class StripPanel: NSPanel {
     }
 
     override var canBecomeKey: Bool { false }
+
+    /// Only what changed: every assignment redraws the strip, and a redraw between a press and its release loses
+    /// the click (and flickers).
+    func update(screen: NSScreen, group: Int, dock: Bool, prefs: Prefs, active: String?, focused: Bool, tabs: [StripModel.Tab], frame: NSRect) {
+        let m = model
+        if m.screen != screen { m.screen = screen }
+        if m.group != group { m.group = group }
+        if m.dock != dock { m.dock = dock }
+        if m.prefs != prefs { m.prefs = prefs }
+        if m.active != active { m.active = active }
+        if m.focused != focused { m.focused = focused }
+        if m.tabs != tabs { m.tabs = tabs }
+        if self.frame != frame { setFrame(frame, display: true) }
+    }
 }
 
 /// A transparent drop zone on the pane's right edge, shown while a tab is dragged, to split the pane.
@@ -602,6 +631,7 @@ private struct CloseButton: View {
                 .foregroundStyle(configuration.isPressed ? TC.label : TC.label2)
                 .frame(width: 16, height: 16)
                 .background(configuration.isPressed ? TC.fill2 : .clear, in: RoundedRectangle(cornerRadius: 4))
+                .contentShape(Rectangle())  // the whole square takes the click, not just the cross's strokes
         }
     }
 }

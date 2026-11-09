@@ -143,7 +143,7 @@ extension DeskState {
 }
 
 /// A window as Bower can find it again after its app or the Mac restarts: by app and title, not by window ID.
-struct WindowRecord: Codable {
+struct WindowRecord: Codable, Equatable {
     var bundleID: String
     var title: String
     var layout: Int

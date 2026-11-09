@@ -268,9 +268,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
                   let pid = app.processIdentifier > 0 ? app.processIdentifier
                       : AX.apps().first(where: { $0.app.bundleIdentifier == app.bundleIdentifier })?.pid,
                   pid != ProcessInfo.processInfo.processIdentifier,
-                  // Only when you switched apps: one that comes forward on its own (a VPN client, a notification)
-                  // shouldn't take you to its layout.
-                  CGEventSource.secondsSinceLastEventType(.hidSystemState, eventType: CGEventType(rawValue: ~0)!) < 1.5
+                  // Only when you switched apps (a click or a key: the Dock, ⌘Tab, Spotlight): one that comes forward
+                  // on its own (a VPN client, a notification) shouldn't take you to its layout, even as the pointer moves.
+                  [CGEventType.leftMouseDown, .rightMouseDown, .otherMouseDown, .keyDown].contains(where: {
+                      CGEventSource.secondsSinceLastEventType(.hidSystemState, eventType: $0) < 1.5
+                  })
             else { return }
             self.engine.follow(pid: pid)
             self.tabs.reveal(pid: pid)
