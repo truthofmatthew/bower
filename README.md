@@ -143,6 +143,8 @@ You need Xcode 16 or later and [XcodeGen](https://github.com/yonaskolb/XcodeGen)
 
 On first launch macOS asks you to allow Bower under System Settings → Privacy & Security → Accessibility. Bower checks once a second and starts working as soon as you do.
 
+Publishing a notarized release for others to download: [docs/RELEASING.md](docs/RELEASING.md).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

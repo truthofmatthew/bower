@@ -39,6 +39,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.truthofmatthew.Bower
         ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_ENTITLEMENTS: Sources/Bower.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   BowerTests:
     type: bundle.unit-test
