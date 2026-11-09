@@ -116,18 +116,20 @@ final class TabsController {
         if focusActive, let k = tg.active[tg.focus], let w = byKey[k] { w.focus() }
     }
 
-    /// The pane each showing tab was last asked to fill, and the frame its app answered with.
-    private var asked: [String: (pane: CGRect, answer: CGRect?)] = [:]
+    /// The pane each showing tab was last asked to fill, when, and the frame its app answered with.
+    private var asked: [String: (pane: CGRect, at: Date, answer: CGRect?)] = [:]
 
     /// Puts the showing tab in its pane, once: some apps keep their own height or position (Claude and Edge stay
-    /// full height), and asking again on every refresh made them jump back and forth.
+    /// full height), and asking again on every refresh made them jump back and forth. Only a frame the window
+    /// settled on counts as its answer: not the hidden spot it's leaving, nor where it was a moment after asking.
     private func place(_ w: Win, _ f: CGRect, in pane: CGRect) {
         guard f != pane else { asked[w.key] = nil; return }
-        if let a = asked[w.key], a.pane == pane {
-            if a.answer == nil { asked[w.key]?.answer = f }  // its answer: leave it there
-            if asked[w.key]?.answer == f { return }
+        if let a = asked[w.key], a.pane == pane, !engine.isParked(f) {
+            if Date().timeIntervalSince(a.at) < 1 { return }  // still moving
+            if a.answer == nil { asked[w.key]?.answer = f; return }
+            if a.answer == f { return }
         }
-        asked[w.key] = (pane, nil)
+        asked[w.key] = (pane, Date(), nil)
         w.setFrame(pane)
     }
 
